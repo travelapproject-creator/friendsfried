@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const pool = require('./db');
+const { rateImageWithClaude } = require('./ai');
 
-// Posts for a table on a given date (defaults to today); optional seat_id includes that seat's my_vote
 router.get('/table/:code', async (req, res) => {
   try {
     const tableResult = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
@@ -33,7 +33,6 @@ router.get('/table/:code', async (req, res) => {
   }
 });
 
-// All posts for a single seat (history)
 router.get('/seat/:seatId', async (req, res) => {
   try {
     const result = await pool.query(
@@ -50,7 +49,6 @@ router.get('/seat/:seatId', async (req, res) => {
   }
 });
 
-// Create a post
 router.post('/', async (req, res) => {
   const { table_id, seat_id, image_url, caption } = req.body;
   if (!table_id || !seat_id || !image_url) return res.status(400).json({ error: 'table_id, seat_id, image_url required' });
@@ -59,7 +57,20 @@ router.post('/', async (req, res) => {
       'insert into posts (table_id, seat_id, image_url, caption) values ($1,$2,$3,$4) returning *',
       [table_id, seat_id, image_url, caption || null]
     );
-    res.status(201).json({ post: result.rows[0] });
+    let post = result.rows[0];
+    try {
+      const rating = await rateImageWithClaude(image_url);
+      if (rating) {
+        const upd = await pool.query(
+          'update posts set ai_score=$1, ai_verdict=$2 where id=$3 returning *',
+          [rating.score, rating.verdict, post.id]
+        );
+        post = upd.rows[0];
+      }
+    } catch (aiErr) {
+      console.error('AI rating failed:', aiErr.message);
+    }
+    res.status(201).json({ post });
   } catch (err) {
     console.error(err);
     if (err.code === '23505') return res.status(409).json({ error: 'Already posted today' });
@@ -67,7 +78,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Praise/fry a post
 router.post('/:id/votes', async (req, res) => {
   const { voter_seat_id, vote_type } = req.body;
   if (!voter_seat_id || !['praise', 'fry'].includes(vote_type)) return res.status(400).json({ error: 'voter_seat_id and valid vote_type required' });
@@ -85,7 +95,6 @@ router.post('/:id/votes', async (req, res) => {
   }
 });
 
-// Comment on a post
 router.post('/:id/comments', async (req, res) => {
   const { seat_id, text } = req.body;
   if (!seat_id || !text) return res.status(400).json({ error: 'seat_id and text required' });
@@ -101,7 +110,6 @@ router.post('/:id/comments', async (req, res) => {
   }
 });
 
-// Comments on a post
 router.get('/:id/comments', async (req, res) => {
   try {
     const result = await pool.query(
@@ -116,7 +124,6 @@ router.get('/:id/comments', async (req, res) => {
   }
 });
 
-// Edit a comment
 router.patch('/comments/:id', async (req, res) => {
   const { text } = req.body;
   if (!text) return res.status(400).json({ error: 'text required' });

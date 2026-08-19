@@ -1,5 +1,8 @@
 -- Friends Fried — Postgres schema
 -- Matches the prototype: tables seat 5, seat lock-in, daily posts, escalating praise/fry, comments, history.
+-- Scoring (computed at read time, see GET /tables/:code/scores): per post, votes of each type are ordered by
+-- created_at and scored 1, 1, 2, 4 (doubling from the 3rd vote), Fry counting the same scale as negative points.
+-- Leaderboard score = sum of those points + (seat's average ai_score / 10).
 
 create extension if not exists "pgcrypto";
 
@@ -28,9 +31,15 @@ create table posts (
   post_date     date not null default current_date,  -- one post per seat per day
   image_url     text not null,
   caption       text,
+  ai_score      int check (ai_score between 1 and 100),  -- Claude's 1-100 health-score rating of the plate
+  ai_verdict    text,                                    -- Claude's one-line verdict
   created_at    timestamptz not null default now(),
   unique (seat_id, post_date)
 );
+
+-- Migration: run if the posts table already exists without these columns
+-- alter table posts add column if not exists ai_score int check (ai_score between 1 and 100);
+-- alter table posts add column if not exists ai_verdict text;
 
 create table votes (
   id            uuid primary key default gen_random_uuid(),
