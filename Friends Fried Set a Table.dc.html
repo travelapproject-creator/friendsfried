@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Karla:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+body{margin:0;font-family:'Karla',system-ui,sans-serif;color:#22190F;background:#F2CE45;
+  background-image:radial-gradient(circle at 1px 1px,rgba(34,25,15,.13) 1px,transparent 0);
+  background-size:22px 22px;-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh}
+a{color:inherit;text-decoration:none}
+a:hover{color:inherit}
+</style>
+</helmet>
+
+<nav style="background:#22190F;border-bottom:4px solid #DC4230">
+  <div style="max-width:1060px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true" style="display:block;flex-shrink:0">
+      <circle cx="24" cy="24" r="10" fill="#E8CE9B" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="24" cy="7" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="40" cy="18.5" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="34" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="14" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="8" cy="18.5" r="4.5" fill="#DC4230" stroke="#FBF7EC" stroke-width="2.5"></circle>
+    </svg>
+    <a href="index.html" style="display:flex;align-items:center"><div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.045em;text-transform:uppercase;line-height:1;color:#FBF7EC">Friends<span style="color:#F2CE45">Fried</span></div></a>
+    <a href="Friends Fried.dc.html" style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:rgba(251,247,236,.75)">← Back home</a>
+  </div>
+</nav>
+
+<div style="max-width:640px;margin:0 auto;padding:56px 22px 80px">
+<sc-if value="{{ inRoom }}" hint-placeholder-val="{{ false }}">
+    <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">{{ groupName }}</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(32px,5vw,48px);margin:10px 0 20px">Dining Room</h1>
+  </sc-if>
+
+  <sc-if value="{{ inRoom }}" hint-placeholder-val="{{ false }}"></sc-if>
+
+  <sc-if value="{{ showIntro }}" hint-placeholder-val="{{ true }}">
+    <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Get started</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(32px,5vw,48px);margin:10px 0 12px">Start a table</h1>
+    <p style="font-size:17px;color:#6B5B48;max-width:480px;margin-bottom:20px">Give it your name, and you'll get a code to send your friends. Once someone takes a seat it's theirs — only they, or whoever created the table, can free it up.</p>
+    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:22px">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+        <button style="font-size:13.5px;background:none;border:none;cursor:pointer;padding:0;font-weight:{{ t.weight }};color:{{ t.color }};text-decoration:{{ t.decoration }}" onClick="{{ t.onClick }}">{{ t.label }}</button>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showCreateForm }}" hint-placeholder-val="{{ true }}">
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 24px;max-width:440px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:8px">Your name</div>
+      <input value="{{ hostName }}" onChange="{{ onHostNameChange }}" style="width:100%;padding:14px;font-size:16px;font-family:inherit;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" style-focus="outline:3px solid #56284F;outline-offset:3px" maxlength="20" placeholder="Your name" autocomplete="off"></input>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin:16px 0 8px">Table name</div>
+      <input value="{{ groupName }}" onChange="{{ onGroupNameChange }}" style="width:100%;padding:14px;font-size:16px;font-family:inherit;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" style-focus="outline:3px solid #56284F;outline-offset:3px" maxlength="24" placeholder="e.g. Sunday Dinners" autocomplete="off"></input>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin:16px 0 8px">Your mark</div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:7px">
+        <sc-for list="{{ hostEmojiGrid }}" as="e" hint-placeholder-count="12">
+          <button style="aspect-ratio:1;font-size:21px;border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:{{ e.bg }};border:2.5px solid {{ e.borderColor }};box-shadow:{{ e.shadow }}" onClick="{{ e.onClick }}" aria-label="{{ e.emoji }}">{{ e.emoji }}</button>
+        </sc-for>
+      </div>
+      <div style="height:16px"></div>
+      <button disabled="{{ tableNameInvalid }}" style="width:100%;padding:14px 22px;border-radius:3px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none" onClick="{{ createTable }}">Start my table</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showCodeReveal }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 24px;max-width:440px;text-align:center">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">{{ groupName }} · your table code</div>
+      <div style="font-family:'Space Mono',monospace;font-size:44px;font-weight:700;letter-spacing:.22em;margin:14px 0;color:#22190F">{{ tableCode }}</div>
+      <p style="font-size:14.5px;line-height:1.5;color:#6B5B48;margin:0 0 18px">Share it with up to four friends — whoever has this code can sit down.</p>
+      <button style="width:100%;padding:14px 22px;border-radius:3px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none" onClick="{{ enterDashboard }}">Enter my table →</button>
+      <div style="height:10px"></div>
+      <button style="width:100%;padding:12px 22px;border-radius:3px;background:none;color:#6B5B48;border:none;font-size:13.5px;text-decoration:underline;cursor:pointer" onClick="{{ copyCode }}">Copy code</button>
+      <sc-if value="{{ codeCopied }}" hint-placeholder-val="{{ false }}">
+        <p style="font-size:13px;color:#3F7D3B;margin:0">Copied.</p>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showAdminDashboard }}" hint-placeholder-val="{{ false }}">
+    <div style="max-width:520px">
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:4px">
+        <button style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:#6B5B48;background:none;border:none;cursor:pointer;padding:0" onClick="{{ copyCode }}">CODE {{ tableCode }} · COPY</button>
+      </div>
+      <sc-if value="{{ codeCopied }}" hint-placeholder-val="{{ false }}">
+        <p style="font-size:12px;color:#3F7D3B;margin:0 0 4px;text-align:right">Copied.</p>
+      </sc-if>
+      <sc-if value="{{ showMainViews }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;justify-content:center">
+        <div style="position:relative;width:100%;max-width:330px;flex:1 1 280px;aspect-ratio:1">
+          <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44%;aspect-ratio:1;border-radius:50%;background:#F2CE45;border:2.5px solid #22190F;box-shadow:4px 5px 0 rgba(34,25,15,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px">
+            <div style="font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#6B5B48">{{ groupName }}</div>
+            <div style="font-family:'Space Mono',monospace;font-size:16px;font-weight:700">{{ tableCode }}</div>
+          </div>
+          <sc-for list="{{ roomSeats }}" as="s" hint-placeholder-count="5">
+            <div onClick="{{ s.onClick }}" style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:{{ s.x }}%;top:{{ s.y }}%;cursor:{{ s.cursor }}">
+              <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;border-style:{{ s.chairBorderStyle }};display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;background:{{ s.chairBg }};box-shadow:3px 4px 0 rgba(34,25,15,.75)">{{ s.initial }}</div>
+              <div style="font-size:12.5px;font-weight:700;margin-top:7px">{{ s.label }}</div>
+              <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid {{ s.chipColor }};color:{{ s.chipColor }}">{{ s.chipText }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="flex:1 1 160px;max-width:200px;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:4px 5px 0 rgba(34,25,15,.75);padding:14px">
+          <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#6B5B48;margin-bottom:8px">Scoreboard</div>
+          <sc-for list="{{ scoreboard }}" as="sb" hint-placeholder-count="5">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dotted rgba(34,25,15,.25)">
+              <span style="font-size:13px;font-weight:700"><span style="margin-right:5px">{{ sb.emoji }}</span>{{ sb.name }}</span>
+              <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700">{{ sb.score }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <sc-if value="{{ hasTodayFeed }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:18px;margin-top:20px">
+          <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#6B5B48;margin-bottom:10px">Today's Feed \u2014 who's posted</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+            <sc-for list="{{ todayFeed }}" as="f" hint-placeholder-count="3">
+              <div onClick="{{ f.onClick }}" style="aspect-ratio:1;border-radius:4px;overflow:hidden;border:2px solid #22190F;position:relative;cursor:pointer">
+                <image-slot id="{{ f.slotId }}" shape="rect" placeholder=""></image-slot>
+                <div style="position:absolute;left:0;right:0;bottom:0;background:rgba(34,25,15,.72);padding:4px 6px;display:flex;align-items:center;gap:4px">
+                  <span style="font-size:12px">{{ f.emoji }}</span>
+                  <span style="color:#FBF7EC;font-size:10.5px;font-weight:700">{{ f.name }}</span>
+                </div>
+              </div>
+            </sc-for>
+            <div style="aspect-ratio:1;border-radius:4px;background:#22190F;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;padding:4px">
+              <svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true">
+                <circle cx="24" cy="24" r="10" fill="#E8CE9B" stroke="#FBF7EC" stroke-width="2.5"></circle>
+                <circle cx="24" cy="7" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+                <circle cx="40" cy="18.5" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+                <circle cx="34" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+                <circle cx="14" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+                <circle cx="8" cy="18.5" r="4.5" fill="#DC4230" stroke="#FBF7EC" stroke-width="2.5"></circle>
+              </svg>
+              <span style="font-family:'Space Mono',monospace;font-size:8px;font-weight:700;letter-spacing:.06em;color:#F2CE45">{{ feedBrandText }}</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:22px;margin-top:20px">
+        <sc-if value="{{ isIdleAction }}" hint-placeholder-val="{{ true }}">
+          <p style="font-size:14px;color:#6B5B48;margin:0;text-align:center">Tap an empty chair to add someone, or a seated friend to see their history.</p>
+        </sc-if>
+        <sc-if value="{{ isAdding }}" hint-placeholder-val="{{ false }}">
+          <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:8px">Seat someone</div>
+          <div style="display:flex;gap:7px;margin-bottom:12px">
+            <input value="{{ addSeatName }}" onChange="{{ onAddSeatNameChange }}" style="flex:1;padding:9px 11px;font-size:14px;font-family:inherit;background:rgba(34,25,15,.05);border:1.5px solid rgba(34,25,15,.3);border-radius:2px;color:#22190F;min-width:0" maxlength="20" placeholder="Their name" autocomplete="off"></input>
+            <button style="padding:9px 10px;border-radius:2px;background:none;color:#6B5B48;font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;border:1.5px solid rgba(34,25,15,.25);cursor:pointer" onClick="{{ cancelAddSeat }}">×</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:14px">
+            <sc-for list="{{ addSeatEmojiGrid }}" as="e" hint-placeholder-count="12">
+              <button style="aspect-ratio:1;font-size:17px;border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:{{ e.bg }};border:2px solid {{ e.borderColor }}" onClick="{{ e.onClick }}" aria-label="{{ e.emoji }}">{{ e.emoji }}</button>
+            </sc-for>
+          </div>
+          <button disabled="{{ addSeatDisabled }}" style="width:100%;padding:12px;border-radius:2px;background:#22190F;color:#FBF7EC;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;border:none;cursor:pointer" onClick="{{ confirmAddSeat }}">SEAT THEM</button>
+        </sc-if>
+        <sc-if value="{{ isRemoving }}" hint-placeholder-val="{{ false }}">
+          <p style="font-size:14.5px;color:#22190F;margin:0 0 12px;text-align:center">Remove <b>{{ removingName }}</b> from the table?</p>
+          <div style="display:flex;gap:9px">
+            <button style="flex:1;padding:12px;border-radius:2px;background:none;color:#6B5B48;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;border:1.5px solid rgba(34,25,15,.25);cursor:pointer" onClick="{{ cancelRemove }}">CANCEL</button>
+            <button style="flex:1;padding:12px;border-radius:2px;background:#DC4230;color:#fff;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;border:none;cursor:pointer" onClick="{{ confirmRemove }}">REMOVE</button>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 24px;margin-top:20px">
+        <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:10px">Last 14 days</div>
+        <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px">
+          <sc-for list="{{ calChips }}" as="c" hint-placeholder-count="14">
+            <button onClick="{{ c.onClick }}" style="flex-shrink:0;min-width:56px;padding:9px 6px;border-radius:4px;font-family:'Space Mono',monospace;cursor:pointer;background:{{ c.bg }};border:{{ c.border }};text-align:center">
+              <div style="font-size:8.5px;letter-spacing:.06em;color:#6B5B48">{{ c.dow }}</div>
+              <div style="font-size:12px;font-weight:700;color:#22190F;margin-top:2px">{{ c.label }}</div>
+            </button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ hasSelectedDay }}" hint-placeholder-val="{{ false }}">
+          <div style="border-top:2px dotted rgba(34,25,15,.3);margin-top:18px;padding-top:16px">
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.03em;font-size:19px">{{ selectedDayLabel }}</div>
+            <p style="font-size:13px;color:#6B5B48;margin:0 0 12px">You can only post under your own name.</p>
+            <sc-for list="{{ dayPeople }}" as="p" hint-placeholder-count="5">
+              <div style="padding:0 0 24px;border-bottom:2px solid rgba(34,25,15,.15);margin-bottom:24px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <span style="font-size:20px">{{ p.emoji }}</span>
+                  <span style="font-weight:700;font-size:15.5px">{{ p.name }}</span>
+                  <span style="font-family:'Space Mono',monospace;font-size:12px;color:#6B5B48;margin-left:auto">{{ p.score }} pts</span>
+                </div>
+                <div style="width:100%;aspect-ratio:4/5;border-radius:6px;overflow:hidden">
+                  <sc-if value="{{ p.isMine }}" hint-placeholder-val="{{ false }}">
+                    <image-slot id="{{ p.slotId }}" shape="rect" placeholder="Drop your plate photo"></image-slot>
+                  </sc-if>
+                  <sc-if value="{{ p.notMine }}" hint-placeholder-val="{{ true }}">
+                    <div style="width:100%;height:100%;border:2px dashed rgba(34,25,15,.25);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;color:#A2937E;text-transform:uppercase">Waiting for photo</div>
+                  </sc-if>
+                </div>
+                <sc-if value="{{ p.showPostBtn }}" hint-placeholder-val="{{ false }}">
+                  <button style="width:100%;margin-top:12px;padding:13px;border-radius:3px;background:#DC4230;color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;letter-spacing:.02em;text-transform:uppercase;border:none;cursor:pointer" onClick="{{ p.onPost }}">Post</button>
+                </sc-if>
+                <sc-if value="{{ p.canVote }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;gap:9px;margin-top:12px">
+                    <button style="flex:1;padding:11px;border-radius:3px;border:2px solid #3F7D3B;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;cursor:pointer;background:{{ p.prBg }};color:{{ p.prColor }}" onClick="{{ p.onVotePr }}">👏 {{ p.prLabel }}</button>
+                    <button style="flex:1;padding:11px;border-radius:3px;border:2px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;cursor:pointer;background:{{ p.fryBg }};color:{{ p.fryColor }}" onClick="{{ p.onVoteFry }}">🔥 {{ p.fryLabel }}</button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ p.isPosted }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:14px">
+                    <sc-for list="{{ p.comments }}" as="cm" hint-placeholder-count="0">
+                      <sc-if value="{{ cm.isEditing }}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+                          <input value="{{ cm.editDraft }}" onChange="{{ cm.onEditDraftChange }}" style="flex:1;padding:6px 8px;font-size:13px;font-family:inherit;background:rgba(34,25,15,.05);border:1.5px solid rgba(34,25,15,.2);border-radius:2px;color:#22190F;min-width:0" maxlength="140"></input>
+                          <button style="padding:6px 9px;border-radius:2px;background:#22190F;color:#FBF7EC;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;border:none;cursor:pointer" onClick="{{ cm.onSaveEdit }}">SAVE</button>
+                          <button style="padding:6px 8px;border-radius:2px;background:none;color:#6B5B48;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;border:1.5px solid rgba(34,25,15,.25);cursor:pointer" onClick="{{ cm.onCancelEdit }}">×</button>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{ cm.isEditing }}" hint-placeholder-val="{{ false }}"></sc-if>
+                      <div style="display:{{ cm.rowDisplay }};align-items:baseline;gap:6px;margin-bottom:6px">
+                        <div style="font-size:13.5px;line-height:1.4"><b>{{ cm.name }}</b> <span style="color:#6B5B48">{{ cm.text }}</span></div>
+                        <button style="font-family:'Space Mono',monospace;font-size:9.5px;color:#A2937E;background:none;border:none;cursor:pointer;padding:0" onClick="{{ cm.onStartEdit }}">edit</button>
+                      </div>
+                    </sc-for>
+                    <div style="display:flex;align-items:center;gap:7px;margin-top:6px">
+                      <span style="font-family:'Space Mono',monospace;font-size:9.5px;color:#6B5B48;flex-shrink:0">{{ myName }}:</span>
+                      <input value="{{ p.commentDraft }}" onChange="{{ p.onCommentChange }}" onKeyDown="{{ p.onCommentKeyDown }}" style="flex:1;padding:7px 9px;font-size:13px;font-family:inherit;background:rgba(34,25,15,.05);border:1.5px solid rgba(34,25,15,.2);border-radius:2px;color:#22190F;min-width:0" maxlength="140" placeholder="Add a comment"></input>
+                      <button style="padding:7px 10px;border-radius:2px;background:#22190F;color:#FBF7EC;font-family:'Space Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;border:none;cursor:pointer" onClick="{{ p.onAddComment }}">SEND</button>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isViewingHistory }}" hint-placeholder-val="{{ false }}">
+        <button style="font-size:13.5px;color:#6B5B48;text-decoration:underline;background:none;border:none;cursor:pointer;padding:0;margin-bottom:16px" onClick="{{ closeHistory }}">← Back to the table</button>
+        <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 24px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span style="font-size:22px">{{ history.emoji }}</span>
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.04em;font-size:22px">{{ history.name }}</span>
+            <span style="font-family:'Space Mono',monospace;font-size:13px;color:#6B5B48;margin-left:auto">{{ history.score }} pts</span>
+          </div>
+          <button style="margin-top:12px;padding:10px 16px;border-radius:3px;background:#22190F;color:#FBF7EC;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;text-transform:uppercase;border:none;cursor:pointer" onClick="{{ toggleShareCard }}">📤 Share</button>
+          <sc-if value="{{ showShareCard }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:16px;background:#F2CE45;border:3px solid #22190F;border-radius:4px;box-shadow:7px 8px 0 rgba(34,25,15,.85);padding:26px 22px;text-align:center">
+              <div style="font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">{{ groupName }} · Friends Fried</div>
+              <div style="width:72px;height:72px;border-radius:50%;background:#FBF7EC;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:34px;margin:14px auto 12px;box-shadow:3px 4px 0 rgba(34,25,15,.6)">{{ history.emoji }}</div>
+              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.04em;font-size:26px">{{ history.name }}</div>
+              <div style="font-family:'Space Mono',monospace;font-size:34px;font-weight:700;margin:8px 0;color:#22190F">{{ history.score }} <span style="font-size:14px;color:#6B5B48">PTS</span></div>
+              <sc-if value="{{ history.hasPosts }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px">
+                  <sc-for list="{{ history.posts }}" as="h" hint-placeholder-count="4">
+                    <div style="aspect-ratio:4/5;border-radius:4px;overflow:hidden;border:2px solid #22190F">
+                      <image-slot id="{{ h.slotId }}" shape="rect" placeholder=""></image-slot>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px">
+                <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;text-transform:uppercase">🍽️ Friends Fried</span>
+              </div>
+            </div>
+            <button style="width:100%;margin-top:12px;padding:12px;border-radius:3px;background:#FBF7EC;color:#22190F;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;text-transform:uppercase;cursor:pointer" onClick="{{ shareHistory }}">Copy caption to share</button>
+            <sc-if value="{{ shareCopied }}" hint-placeholder-val="{{ false }}">
+              <p style="font-size:12.5px;color:#3F7D3B;text-align:center;margin:8px 0 0">Copied.</p>
+            </sc-if>
+          </sc-if>
+          <sc-if value="{{ history.hasPosts }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px">
+              <sc-for list="{{ history.posts }}" as="h" hint-placeholder-count="3">
+                <div>
+                  <div style="width:100%;aspect-ratio:4/5;border-radius:5px;overflow:hidden;border:1.5px solid #22190F">
+                    <image-slot id="{{ h.slotId }}" shape="rect" placeholder="No photo"></image-slot>
+                  </div>
+                  <div style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:#6B5B48;margin-top:4px;text-align:center">{{ h.day }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ history.noPosts }}" hint-placeholder-val="{{ false }}">
+            <p style="font-size:14px;color:#6B5B48;margin:18px 0 0">No plates posted yet.</p>
+          </sc-if>
+          <sc-if value="{{ history.notHost }}" hint-placeholder-val="{{ false }}">
+            <button style="width:100%;margin-top:20px;padding:12px;border-radius:2px;background:none;color:#DC4230;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;border:1.5px solid #DC4230;cursor:pointer" onClick="{{ history.onRemove }}">REMOVE FROM TABLE</button>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+<sc-if value="{{ showJoinCodeForm }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 24px;max-width:440px">
+      <p style="font-size:14.5px;line-height:1.5;color:#6B5B48;margin:0 0 18px">Enter the table's code and your name. If you've already got a seat there, we'll take you right to it — otherwise you'll pick an open one.</p>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:8px">Table code</div>
+      <input value="{{ joinCode }}" onChange="{{ onJoinCodeChange }}" style="width:100%;padding:16px 14px;font-size:26px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.34em;font-weight:700;text-align:center;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" maxlength="4" placeholder="ABCD" autocomplete="off"></input>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin:16px 0 8px">Your name</div>
+      <input value="{{ joinName }}" onChange="{{ onJoinNameChange }}" style="width:100%;padding:14px;font-size:16px;font-family:inherit;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" maxlength="20" placeholder="Your name" autocomplete="off"></input>
+      <div style="height:16px"></div>
+      <button disabled="{{ joinCodeInvalid }}" style="width:100%;padding:14px 22px;border-radius:3px;background:#22190F;color:#FBF7EC;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" onClick="{{ findJoinTable }}">Find my seat</button>
+      <sc-if value="{{ hasJoinError }}" hint-placeholder-val="{{ false }}">
+        <p style="font-size:13.5px;color:#DC4230;margin-top:11px">{{ joinError }}</p>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showJoinSeatPicker }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 24px;max-width:440px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:8px">Your mark</div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:18px">
+        <sc-for list="{{ joinEmojiGrid }}" as="e" hint-placeholder-count="12">
+          <button style="aspect-ratio:1;font-size:21px;border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:{{ e.bg }};border:2.5px solid {{ e.borderColor }};box-shadow:{{ e.shadow }}" onClick="{{ e.onClick }}" aria-label="{{ e.emoji }}">{{ e.emoji }}</button>
+        </sc-for>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">{{ groupName }} · pick an open seat</div>
+      <div style="height:12px"></div>
+      <sc-for list="{{ joinSeatOptions }}" as="s" hint-placeholder-count="5">
+        <div onClick="{{ s.onClick }}" style="display:flex;justify-content:space-between;align-items:center;padding:11px 4px;border-bottom:1.5px dotted rgba(34,25,15,.3);cursor:{{ s.cursor }};background:{{ s.rowBg }}">
+          <span style="font-weight:700;font-size:14.5px;color:{{ s.textColor }}">{{ s.label }}</span>
+          <span style="font-family:'Space Mono',monospace;font-size:11px;color:{{ s.chipColor }}">{{ s.chipText }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showJoinConfirmed }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 24px;max-width:440px;text-align:center">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">You're seated</div>
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.045em;font-size:28px;margin:10px 0">{{ joinName }}</div>
+      <p style="font-size:14.5px;line-height:1.5;color:#6B5B48;margin:0 0 18px">You've got a seat at {{ groupName }}. It's yours — only you or the table's creator can free it up.</p>
+      <button style="width:100%;padding:14px 22px;border-radius:3px;background:#FBF7EC;color:#22190F;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" onClick="{{ leaveSeat }}">Leave my seat</button>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const SEAT_POS = [[50,13],[85,38.8],[71.6,79.7],[28.4,79.7],[15,38.8]];
+const AVA = ['🍜','🥑','🌮','🍕','🍓','🥐','🍣','🧋','🥟','🍩','🌶️','🍳'];
+
+class Component extends DCLogic {
+  state = {
+    hostName: '', groupName: '', hostEmoji: '', table: null, codeCopied: false,
+    tableMode: (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('mode') === 'join') ? 'join' : 'create',
+    joinCode: '', joinError: '', joinFound: false,
+    joinPickedSeat: null, joinName: '', joinConfirmed: false, joinSeatIndex: null,
+    addingSeatIndex: null, addSeatName: '', addSeatEmoji: '', removingSeatIndex: null, enteredDashboard: false,
+    selectedDay: null, posts: {}, personComments: {}, personCommentDrafts: {}, joinEmoji: '',
+    editingComment: null, editDraft: '', postVotes: {}, viewingHistorySeat: null, shareCopied: false,
+    showShareCard: false
+  };
+
+  componentWillUnmount() { clearTimeout(this._copyTimer); }
+
+  onHostNameChange = (e) => this.setState({ hostName: e.target.value });
+  onGroupNameChange = (e) => this.setState({ groupName: e.target.value });
+  setHostEmoji = (e) => this.setState({ hostEmoji: e });
+  genCode() {
+    const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    return code;
+  }
+  createTable = () => {
+    if (this.state.hostName.trim().length < 2 || this.state.groupName.trim().length < 2 || !this.state.hostEmoji) return;
+    const table = { code: this.genCode(), groupName: this.state.groupName.trim(), seats: [{ name: this.state.hostName.trim(), emoji: this.state.hostEmoji }, null, null, null, null] };
+    this.setState({ table, enteredDashboard: false });
+  };
+  enterDashboard = () => this.setState({ enteredDashboard: true });
+  copyCode = () => {
+    if (this.state.table && navigator.clipboard) navigator.clipboard.writeText(this.state.table.code);
+    this.setState({ codeCopied: true });
+    clearTimeout(this._copyTimer);
+    this._copyTimer = setTimeout(() => this.setState({ codeCopied: false }), 2200);
+  };
+  removeMember = (i) => {
+    if (i === 0 || !this.state.table) return;
+    const seats = this.state.table.seats.slice();
+    seats[i] = null;
+    this.setState({ table: { ...this.state.table, seats }, removingSeatIndex: null });
+  };
+  startRemove = (i) => this.setState({ removingSeatIndex: i, addingSeatIndex: null });
+  cancelRemove = () => this.setState({ removingSeatIndex: null });
+  startAddSeat = (i) => this.setState({ addingSeatIndex: i, addSeatName: '', addSeatEmoji: '', removingSeatIndex: null });
+  cancelAddSeat = () => this.setState({ addingSeatIndex: null, addSeatName: '', addSeatEmoji: '' });
+  onAddSeatNameChange = (e) => this.setState({ addSeatName: e.target.value });
+  setAddSeatEmoji = (e) => this.setState({ addSeatEmoji: e });
+  confirmAddSeat = (i) => {
+    if (this.state.addSeatName.trim().length < 2 || !this.state.addSeatEmoji) return;
+    const seats = this.state.table.seats.slice();
+    seats[i] = { name: this.state.addSeatName.trim(), emoji: this.state.addSeatEmoji };
+    this.setState({ table: { ...this.state.table, seats }, addingSeatIndex: null, addSeatName: '', addSeatEmoji: '' });
+  };
+  setMode = (mode) => this.setState({
+    tableMode: mode, joinCode: '', joinError: '', joinFound: false, joinPickedSeat: null,
+    joinName: '', joinConfirmed: false
+  });
+  onJoinCodeChange = (e) => this.setState({ joinCode: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4), joinError: '' });
+  onJoinNameChange = (e) => this.setState({ joinName: e.target.value });
+  findJoinTable = () => {
+    if (!this.state.table || this.state.joinCode !== this.state.table.code) {
+      this.setState({ joinError: 'No table with that code.' });
+      return;
+    }
+    const name = this.state.joinName.trim();
+    const idx = this.state.table.seats.findIndex(s => s && s.name.trim().toLowerCase() === name.toLowerCase());
+    if (idx !== -1) {
+      if (idx === 0) { this.setState({ tableMode: 'create', enteredDashboard: true }); return; }
+      this.setState({ joinFound: true, joinConfirmed: true, joinSeatIndex: idx, joinName: this.state.table.seats[idx].name });
+      return;
+    }
+    if (!this.state.table.seats.some(s => !s)) {
+      this.setState({ joinError: 'This table is full.' });
+      return;
+    }
+    this.setState({ joinFound: true, joinName: name });
+  };
+  setJoinEmoji = (e) => this.setState({ joinEmoji: e });
+  pickJoinSeat = (i) => {
+    if (this.state.table.seats[i] || !this.state.joinEmoji) return;
+    const seats = this.state.table.seats.slice();
+    seats[i] = { name: this.state.joinName, emoji: this.state.joinEmoji };
+    this.setState({ table: { ...this.state.table, seats }, joinConfirmed: true, joinSeatIndex: i });
+  };
+  leaveSeat = () => {
+    const i = this.state.joinSeatIndex;
+    const seats = this.state.table.seats.slice();
+    seats[i] = null;
+    this.setState({ table: { ...this.state.table, seats }, joinConfirmed: false, joinFound: false, joinPickedSeat: null, joinName: '', joinCode: '' });
+  };
+
+  selectDay = (d) => this.setState({ selectedDay: d });
+  postPlate = (key) => this.setState(s => ({ posts: { ...s.posts, [key]: true } }));
+  votePost = (key, type) => {
+    const meName = (this.state.table && this.state.table.seats[0]) ? this.state.table.seats[0].name : 'You';
+    const arr = (this.state.postVotes[key] || []).slice();
+    const idx = arr.findIndex(v => v.voter === meName);
+    if (idx >= 0) { if (arr[idx].type === type) arr.splice(idx, 1); else arr[idx] = { voter: meName, type }; }
+    else arr.push({ voter: meName, type });
+    this.setState(s => ({ postVotes: { ...s.postVotes, [key]: arr } }));
+  };
+  postScore(arr) {
+    let pr = 0, fry = 0, total = 0;
+    (arr || []).forEach(v => { if (v.type === 'pr') { pr++; total += pr; } else { fry++; total -= fry; } });
+    return total;
+  }
+  getSeatScore(seatIdx) {
+    let score = 0;
+    Object.keys(this.state.postVotes).forEach(key => {
+      const parts = key.split('-');
+      if (parseInt(parts[parts.length - 1], 10) === seatIdx) score += this.postScore(this.state.postVotes[key]);
+    });
+    return score;
+  }
+  openHistory = (i) => this.setState({ viewingHistorySeat: i, showShareCard: false });
+  closeHistory = () => this.setState({ viewingHistorySeat: null, showShareCard: false });
+  toggleShareCard = () => this.setState(s => ({ showShareCard: !s.showShareCard }));
+  shareHistory = () => {
+    const h = this.buildPersonHistory();
+    if (!h || !this.state.table) return;
+    const text = h.emoji + ' ' + h.name + ' \u00b7 ' + h.score + ' pts at ' + this.state.table.groupName + ' on Friends Fried';
+    if (navigator.share) {
+      navigator.share({ title: 'Friends Fried', text }).catch(() => {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      this.setState({ shareCopied: true });
+      clearTimeout(this._shareTimer);
+      this._shareTimer = setTimeout(() => this.setState({ shareCopied: false }), 2200);
+    }
+  };
+  buildPersonHistory() {
+    const i = this.state.viewingHistorySeat;
+    if (!this.state.table || i == null) return null;
+    const occ = this.state.table.seats[i];
+    if (!occ) return null;
+    const chips = this.buildCalendar().chips;
+    const posts = chips.filter(c => this.state.posts[c.key + '-' + i]).map(c => ({
+      day: c.label, slotId: 'plate-' + this.state.table.code + '-seat' + i + '-' + c.key,
+      score: this.postScore(this.state.postVotes[c.key + '-' + i])
+    })).reverse();
+    return {
+      name: occ.name, emoji: occ.emoji, isHost: i === 0, notHost: i !== 0,
+      hasPosts: posts.length > 0, noPosts: posts.length === 0, posts,
+      score: this.getSeatScore(i), onRemove: () => { this.removeMember(i); this.closeHistory(); }
+    };
+  }
+  todayKey() {
+    const d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  }
+  buildTodayFeed() {
+    if (!this.state.table) return [];
+    const tk = this.todayKey();
+    return this.state.table.seats.map((occ, i) => {
+      if (!occ) return null;
+      const key = tk + '-' + i;
+      if (!this.state.posts[key]) return null;
+      return { idx: i, emoji: occ.emoji, name: occ.name, slotId: 'plate-' + this.state.table.code + '-seat' + i + '-' + tk, onClick: () => this.openHistory(i) };
+    }).filter(Boolean);
+  }
+  buildScoreboard() {
+    if (!this.state.table) return [];
+    return this.state.table.seats.map((occ, i) => occ ? { idx: i, emoji: occ.emoji, name: occ.name, score: this.getSeatScore(i) } : null)
+      .filter(Boolean).sort((a, b) => b.score - a.score);
+  }
+  onPersonCommentChange = (key, e) => {
+    const val = e.target.value;
+    this.setState(s => ({ personCommentDrafts: { ...s.personCommentDrafts, [key]: val } }));
+  };
+  addPersonComment = (key) => {
+    const text = (this.state.personCommentDrafts[key] || '').trim();
+    if (!text) return;
+    const name = (this.state.table && this.state.table.seats[0]) ? this.state.table.seats[0].name : 'You';
+    const list = [...(this.state.personComments[key] || []), { name, text }];
+    this.setState(s => ({
+      personComments: { ...s.personComments, [key]: list },
+      personCommentDrafts: { ...s.personCommentDrafts, [key]: '' }
+    }));
+  };
+  startEditComment = (key, idx, text) => this.setState({ editingComment: key + '|' + idx, editDraft: text });
+  cancelEditComment = () => this.setState({ editingComment: null, editDraft: '' });
+  onEditDraftChange = (e) => this.setState({ editDraft: e.target.value });
+  saveEditComment = (key, idx) => {
+    const text = this.state.editDraft.trim();
+    if (!text) return;
+    const list = (this.state.personComments[key] || []).slice();
+    list[idx] = { ...list[idx], text };
+    this.setState(s => ({ personComments: { ...s.personComments, [key]: list }, editingComment: null, editDraft: '' }));
+  };
+  buildDayPeople(mySeat) {
+    if (!this.state.table || this.state.selectedDay == null) return [];
+    return this.state.table.seats.map((occ, i) => {
+      if (!occ) return null;
+      const key = this.state.selectedDay + '-' + i;
+      const isMine = i === mySeat;
+      const isPosted = !!this.state.posts[key];
+      const meName = (this.state.table.seats[0] || {}).name || 'You';
+      const votesArr = this.state.postVotes[key] || [];
+      const prCount = votesArr.filter(v => v.type === 'pr').length;
+      const fryCount = votesArr.filter(v => v.type === 'fry').length;
+      const mine = votesArr.find(v => v.voter === meName);
+      const myVote = mine ? mine.type : undefined;
+      return {
+        idx: i, emoji: occ.emoji || '🍽️', name: occ.name + (i === 0 ? ' (host)' : ''),
+        score: this.getSeatScore(i),
+        isMine, notMine: !isMine, slotId: 'plate-' + this.state.table.code + '-seat' + i + '-' + this.state.selectedDay,
+        showPostBtn: isMine && !isPosted, onPost: () => this.postPlate(key),
+        isPosted, canVote: isPosted,
+        prLabel: 'Praise' + (prCount ? ' ' + prCount : ''), fryLabel: 'Fry' + (fryCount ? ' ' + fryCount : ''),
+        prBg: myVote === 'pr' ? '#3F7D3B' : 'transparent', prColor: myVote === 'pr' ? '#fff' : '#22190F',
+        fryBg: myVote === 'fry' ? '#DC4230' : 'transparent', fryColor: myVote === 'fry' ? '#fff' : '#22190F',
+        onVotePr: () => this.votePost(key, 'pr'), onVoteFry: () => this.votePost(key, 'fry'),
+        comments: (this.state.personComments[key] || []).map((cm, ci) => {
+          const editKey = key + '|' + ci;
+          const isEditing = this.state.editingComment === editKey;
+          return {
+            name: cm.name, text: cm.text, isEditing, rowDisplay: isEditing ? 'none' : 'flex',
+            editDraft: isEditing ? this.state.editDraft : '',
+            onEditDraftChange: this.onEditDraftChange,
+            onStartEdit: () => this.startEditComment(key, ci, cm.text),
+            onSaveEdit: () => this.saveEditComment(key, ci),
+            onCancelEdit: this.cancelEditComment
+          };
+        }),
+        commentDraft: this.state.personCommentDrafts[key] || '',
+        onCommentChange: (e) => this.onPersonCommentChange(key, e),
+        onCommentKeyDown: (e) => { if (e.key === 'Enter') this.addPersonComment(key); },
+        onAddComment: () => this.addPersonComment(key)
+      };
+    }).filter(Boolean);
+  }
+  buildCalendar() {
+    const now = new Date();
+    const chips = [];
+    for (let back = 13; back >= 0; back--) {
+      const d = new Date(now); d.setDate(now.getDate() - back);
+      const dayNum = d.getDate();
+      const isToday = back === 0;
+      const key = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + dayNum;
+      const selected = this.state.selectedDay === key;
+      chips.push({
+        key, dow: d.toLocaleString('en-US', { weekday: 'short' }).toUpperCase(),
+        label: d.toLocaleString('en-US', { month: 'short' }) + ' ' + dayNum,
+        isToday, bg: selected ? '#F2CE45' : (isToday ? '#FBF7EC' : 'transparent'),
+        border: isToday ? '2px solid #22190F' : '1.5px solid rgba(34,25,15,.25)',
+        onClick: () => this.selectDay(key)
+      });
+    }
+    return { chips };
+  }
+  buildRoomSeats() {
+    if (!this.state.table) return [];
+    return this.state.table.seats.map((occ, i) => {
+      const [x, y] = SEAT_POS[i];
+      const isAdding = this.state.addingSeatIndex === i;
+      return {
+        idx: i, x, y,
+        initial: occ ? (occ.emoji || occ.name.trim()[0].toUpperCase()) : (isAdding ? '−' : '+'),
+        label: i === 0 ? occ.name + ' (you)' : occ ? occ.name : 'Open',
+        chairBg: occ ? '#F2CE45' : (isAdding ? '#F2CE45' : 'transparent'),
+        chairBorderStyle: occ ? 'solid' : 'dashed',
+        chipText: i === 0 ? 'TAP FOR HISTORY' : occ ? 'TAP FOR HISTORY' : (isAdding ? 'TAP TO CLOSE' : 'TAP TO ADD'),
+        chipColor: i === 0 ? '#D9A81F' : occ ? '#3F7D3B' : '#3F7D3B',
+        cursor: 'pointer',
+        onClick: occ ? (() => this.openHistory(i)) : (() => isAdding ? this.cancelAddSeat() : this.startAddSeat(i))
+      };
+    });
+  }
+  buildJoinSeatOptions() {
+    if (!this.state.table) return [];
+    return this.state.table.seats.map((occ, i) => ({
+      idx: i, cursor: occ ? 'default' : 'pointer',
+      rowBg: 'transparent', textColor: occ ? '#A2937E' : '#22190F',
+      label: i === 0 ? occ.name : occ ? occ.name : 'Seat ' + (i + 1),
+      chipText: i === 0 ? 'HOST' : occ ? 'TAKEN' : 'OPEN — SIT HERE',
+      chipColor: i === 0 ? '#D9A81F' : occ ? '#A2937E' : '#3F7D3B',
+      onClick: occ ? (() => {}) : (() => this.pickJoinSeat(i))
+    }));
+  }
+  buildEmojiGrid(current, onPick) {
+    return AVA.map(a => ({
+      emoji: a, onClick: () => onPick(a),
+      bg: a === current ? '#F2CE45' : '#FBF7EC',
+      borderColor: a === current ? '#22190F' : 'rgba(34,25,15,.18)',
+      shadow: a === current ? '2px 3px 0 #22190F' : 'none'
+    }));
+  }
+
+  renderVals() {
+    return {
+      hostName: this.state.hostName, groupName: this.state.table ? this.state.table.groupName : this.state.groupName,
+      onGroupNameChange: this.onGroupNameChange,
+      tableNameInvalid: this.state.hostName.trim().length < 2 || this.state.groupName.trim().length < 2 || !this.state.hostEmoji,
+      onHostNameChange: this.onHostNameChange, createTable: this.createTable,
+      hostEmojiGrid: this.buildEmojiGrid(this.state.hostEmoji, this.setHostEmoji),
+      copyCode: this.copyCode, codeCopied: this.state.codeCopied,
+      tableCode: this.state.table ? this.state.table.code : '',
+      showCreateForm: this.state.tableMode === 'create' && !this.state.table,
+      showCodeReveal: this.state.tableMode === 'create' && !!this.state.table && !this.state.enteredDashboard,
+      showAdminDashboard: this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard,
+      enterDashboard: this.enterDashboard,
+      showJoinCodeForm: this.state.tableMode === 'join' && !this.state.joinFound,
+      showJoinSeatPicker: this.state.tableMode === 'join' && this.state.joinFound && !this.state.joinConfirmed,
+      showJoinConfirmed: this.state.tableMode === 'join' && this.state.joinConfirmed,
+      inRoom: (this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard) || (this.state.tableMode === 'join' && this.state.joinConfirmed),
+      showIntro: !((this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard) || (this.state.tableMode === 'join' && this.state.joinConfirmed)),
+      tabs: [
+        { key: 'create', label: 'Start a table', weight: this.state.tableMode === 'create' ? 800 : 400, color: this.state.tableMode === 'create' ? '#22190F' : '#6B5B48', decoration: this.state.tableMode === 'create' ? 'underline' : 'none', onClick: () => this.setMode('create') },
+        { key: 'join', label: 'Already have a code? Enter here', weight: this.state.tableMode === 'join' ? 800 : 400, color: this.state.tableMode === 'join' ? '#22190F' : '#6B5B48', decoration: this.state.tableMode === 'join' ? 'underline' : 'none', onClick: () => this.setMode('join') }
+      ],
+      joinSeatOptions: this.buildJoinSeatOptions(), roomSeats: this.buildRoomSeats(),
+      isAdding: this.state.addingSeatIndex != null, addSeatName: this.state.addSeatName,
+      onAddSeatNameChange: this.onAddSeatNameChange, cancelAddSeat: this.cancelAddSeat,
+      confirmAddSeat: () => this.confirmAddSeat(this.state.addingSeatIndex),
+      addSeatDisabled: this.state.addSeatName.trim().length < 2 || !this.state.addSeatEmoji,
+      isRemoving: this.state.removingSeatIndex != null,
+      removingName: this.state.removingSeatIndex != null && this.state.table ? this.state.table.seats[this.state.removingSeatIndex].name : '',
+      cancelRemove: this.cancelRemove, confirmRemove: () => this.removeMember(this.state.removingSeatIndex),
+      isIdleAction: this.state.addingSeatIndex == null && this.state.removingSeatIndex == null,
+      joinCode: this.state.joinCode, onJoinCodeChange: this.onJoinCodeChange,
+      joinCodeInvalid: this.state.joinCode.length !== 4 || this.state.joinName.trim().length < 2,
+      findJoinTable: this.findJoinTable,
+      joinEmojiGrid: this.buildEmojiGrid(this.state.joinEmoji, this.setJoinEmoji),
+      joinPickDisabled: !this.state.joinEmoji,
+      addSeatEmojiGrid: this.buildEmojiGrid(this.state.addSeatEmoji, this.setAddSeatEmoji),
+      hasJoinError: !!this.state.joinError, joinError: this.state.joinError,
+      joinName: this.state.joinName, onJoinNameChange: this.onJoinNameChange,
+      leaveSeat: this.leaveSeat,
+      calChips: this.buildCalendar().chips,
+      hasSelectedDay: this.state.selectedDay != null,
+      selectedDayLabel: (this.buildCalendar().chips.find(c => c.key === this.state.selectedDay) || {}).label || '',
+      dayPeople: this.buildDayPeople(0), scoreboard: this.buildScoreboard(), todayFeed: this.buildTodayFeed(),
+      hasTodayFeed: this.buildTodayFeed().length > 0,
+      feedBrandText: this.state.table && this.buildTodayFeed().length >= this.state.table.seats.filter(s => s).length ? 'TABLE\u2019S FRIED' : 'STILL COOKING',
+      isViewingHistory: this.state.viewingHistorySeat != null,
+      showMainViews: this.state.viewingHistorySeat == null,
+      history: this.buildPersonHistory(), closeHistory: this.closeHistory,
+      shareHistory: this.shareHistory, shareCopied: this.state.shareCopied,
+      showShareCard: this.state.showShareCard, toggleShareCard: this.toggleShareCard,
+      myName: (this.state.table && this.state.table.seats[0]) ? this.state.table.seats[0].name : 'You'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Karla:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Karla',system-ui,sans-serif;color:#22190F;background:#F6EFDD;
+  background-image:radial-gradient(circle at 1px 1px,rgba(34,25,15,.07) 1px,transparent 0);
+  background-size:22px 22px;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+a:hover{color:inherit}
+@keyframes ffPop{from{transform:scale(.7);opacity:0}}
+</style>
+</helmet>
+
+<div style="background:#22190F;color:#FBF7EC;border-bottom:4px solid #DC4230;padding:13px 0">
+  <div style="max-width:520px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:11px">
+    <svg width="28" height="28" viewBox="0 0 48 48" aria-hidden="true" style="display:block;flex-shrink:0">
+      <circle cx="24" cy="24" r="10" fill="#E8CE9B" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="24" cy="7" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="40" cy="18.5" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="34" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="14" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="8" cy="18.5" r="4.5" fill="#DC4230" stroke="#FBF7EC" stroke-width="2.5"></circle>
+    </svg>
+    <a href="index.html" style="display:flex;align-items:center"><div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;letter-spacing:-.045em;text-transform:uppercase;line-height:1">Friends<span style="color:#F2CE45">Fried</span></div></a>
+    <button style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.16em;padding:5px 9px;border-radius:4px;background:rgba(251,247,236,.14);color:#FBF7EC;border:none;cursor:pointer" onClick="{{ restart }}" title="Restart demo">K7QM ⟳</button>
+  </div>
+</div>
+
+<div style="max-width:520px;margin:0 auto;padding:0 18px 40px">
+
+<sc-if value="{{ isLand }}" hint-placeholder-val="{{ true }}">
+  <div style="padding-top:44px">
+    <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">One plate a day · 10pm deadline</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.92;font-size:clamp(34px,9vw,46px);margin:14px 0 0">Your friends<br>judge what<br>you ate</h1>
+    <p style="font-size:16px;line-height:1.5;color:#6B5B48;margin:18px 0 26px;max-width:400px">Five friends, one table. One plate a day, scored out of 100, then everyone weighs in.</p>
+    <button style="width:100%;padding:14px;border-radius:3px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none" onClick="{{ goJoin }}">I have a code</button>
+    <div style="height:10px"></div>
+    <button style="width:100%;padding:14px;border-radius:3px;background:#FBF7EC;color:#22190F;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none" onClick="{{ goJoin }}">Set a table</button>
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);padding:18px;margin-top:30px">
+      <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:11px">How a day goes</div>
+      <div style="font-size:14.5px;line-height:1.6;color:#6B5B48">
+        <div style="margin-bottom:9px"><b style="color:#22190F">1.</b> Post one plate before 10pm.</div>
+        <div style="margin-bottom:9px"><b style="color:#22190F">2.</b> It goes on the table for everyone to see.</div>
+        <div style="margin-bottom:9px"><b style="color:#22190F">3.</b> Everyone else's plates unlock.</div>
+        <div><b style="color:#22190F">4.</b> Praise them, judge them, comment.</div>
+      </div>
+    </div>
+    <p style="font-size:12.5px;color:#6B5B48;text-align:center;margin-top:22px;line-height:1.5">Demo with sample data. Calorie numbers are estimates for fun, not nutrition advice.</p>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isJoin }}" hint-placeholder-val="{{ false }}">
+  <div style="padding-top:40px">
+    <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">friendsfried.app/join</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.92;font-size:clamp(32px,8.5vw,46px);margin:12px 0 10px">Got a code?</h1>
+    <p style="font-size:15.5px;line-height:1.5;color:#6B5B48;margin-bottom:22px">Four letters from whoever set the table. Try <b style="font-family:'Space Mono',monospace;color:#22190F">K7QM</b>.</p>
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);padding:18px">
+      <input value="{{ codeInput }}" onChange="{{ onCodeChange }}" style="width:100%;padding:16px 14px;font-size:26px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.34em;font-weight:700;text-align:center;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" maxlength="4" placeholder="ABCD" aria-label="Table code" autocomplete="off"></input>
+      <div style="height:13px"></div>
+      <button disabled="{{ findDisabled }}" style="width:100%;padding:14px;border-radius:3px;background:#22190F;color:#FBF7EC;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" onClick="{{ findTable }}">Find the table</button>
+      <sc-if value="{{ hasCodeError }}" hint-placeholder-val="{{ false }}">
+        <p style="font-size:13.5px;color:#DC4230;margin-top:11px">{{ codeError }}</p>
+      </sc-if>
+    </div>
+    <p style="font-size:13px;color:#6B5B48;margin-top:18px;text-align:center">
+      <button style="font-size:13.5px;color:#6B5B48;text-decoration:underline;background:none;border:none;cursor:pointer" onClick="{{ goLand }}">← Back</button>
+    </p>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isSeat }}" hint-placeholder-val="{{ false }}">
+  <div style="padding-top:26px">
+    <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Table five · K7QM</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.92;font-size:clamp(28px,7vw,38px);margin:10px 0 4px">Pick a seat</h1>
+    <p style="font-size:15px;color:#6B5B48">{{ seatsLeftText }}</p>
+    <div style="position:relative;width:100%;max-width:340px;margin:14px auto 0;aspect-ratio:1">
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44%;aspect-ratio:1;border-radius:50%;background:#F2CE45;border:2.5px solid #22190F;box-shadow:4px 5px 0 rgba(34,25,15,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase">Dinner<br>court</div>
+      </div>
+      <sc-for list="{{ joinSeats }}" as="s" hint-placeholder-count="5">
+        <div style="position:absolute;transform:translate(-50%,-50%);width:82px;text-align:center;cursor:pointer;left:{{ s.x }}%;top:{{ s.y }}%" onClick="{{ s.onClick }}">
+          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:25px;box-shadow:3px 4px 0 rgba(34,25,15,.75);background:{{ s.chairBg }};border-style:{{ s.chairBorderStyle }}">{{ s.emoji }}</div>
+          <div style="font-size:12.5px;font-weight:700;margin-top:7px">{{ s.label }}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid {{ s.chipColor }};color:{{ s.chipColor }}">{{ s.chipText }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="height:14px"></div>
+    <sc-if value="{{ hasPickedSeat }}" hint-placeholder-val="{{ false }}">
+      <button style="width:100%;padding:14px;border-radius:3px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" onClick="{{ toName }}">Take this seat</button>
+    </sc-if>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isName }}" hint-placeholder-val="{{ false }}">
+  <div style="padding-top:40px">
+    <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Seat {{ seatNo }} · Table five</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.92;font-size:clamp(28px,7vw,38px);margin:12px 0 18px">Who are you?</h1>
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);padding:18px">
+      <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:8px">Your name at the table</div>
+      <input value="{{ nameInput }}" onChange="{{ onNameChange }}" style="width:100%;padding:13px 14px;font-size:16px;font-family:inherit;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" maxlength="16" placeholder="Name" autocomplete="off"></input>
+      <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin:18px 0 8px">Your mark</div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:7px">
+        <sc-for list="{{ emojiOptions }}" as="e" hint-placeholder-count="12">
+          <button style="aspect-ratio:1;font-size:21px;border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:{{ e.bg }};border:2.5px solid {{ e.borderColor }};box-shadow:{{ e.shadow }}" onClick="{{ e.onClick }}" aria-label="{{ e.emoji }}">{{ e.emoji }}</button>
+        </sc-for>
+      </div>
+      <div style="height:16px"></div>
+      <button disabled="{{ nameInvalid }}" style="width:100%;padding:14px;border-radius:3px;background:#22190F;color:#FBF7EC;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" onClick="{{ sitDownSeat }}">Sit down</button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isTable }}" hint-placeholder-val="{{ false }}">
+  <div>
+    <div style="padding-top:22px;font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Table five · your table</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.92;font-size:clamp(28px,7vw,38px);margin:10px 0 2px">Tonight</h1>
+    <div style="position:relative;width:100%;max-width:340px;margin:14px auto 0;aspect-ratio:1">
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44%;aspect-ratio:1;border-radius:50%;background:#F2CE45;border:2.5px solid #22190F;box-shadow:4px 5px 0 rgba(34,25,15,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px">
+        <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#6B5B48">{{ inCount }} of 5 in</div>
+        <div style="font-family:'Space Mono',monospace;font-size:17px;font-weight:700">{{ clock }}</div>
+        <div style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#6B5B48">until 10pm</div>
+      </div>
+      <sc-for list="{{ tableSeats }}" as="s" hint-placeholder-count="5">
+        <div style="position:absolute;transform:translate(-50%,-50%);width:82px;text-align:center;cursor:pointer;left:{{ s.x }}%;top:{{ s.y }}%" onClick="{{ s.onClick }}">
+          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:25px;background:{{ s.chairBg }};box-shadow:3px 4px 0 rgba(34,25,15,.75);position:relative;border-width:{{ s.chairBorderWidth }}">
+            {{ s.emoji }}
+            <sc-if value="{{ s.posted }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;right:-9px;bottom:-7px;width:27px;height:27px;border-radius:50%;border:2.5px solid #22190F;overflow:hidden;background:#FBF7EC"><img src="{{ s.plateImg }}" style="width:100%;height:100%;object-fit:cover;display:block"></img></div>
+            </sc-if>
+          </div>
+          <div style="font-size:12.5px;font-weight:700;margin-top:7px;line-height:1.2">{{ s.name }}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid {{ s.chipColor }};color:{{ s.chipColor }}">{{ s.chipText }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="height:16px"></div>
+    <sc-if value="{{ showPostBtn }}" hint-placeholder-val="{{ true }}">
+      <button style="width:100%;padding:14px;border-radius:3px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" onClick="{{ startPost }}">Post today's plate</button>
+    </sc-if>
+    <sc-if value="{{ showFeedBtn }}" hint-placeholder-val="{{ false }}">
+      <button style="width:100%;padding:14px;border-radius:3px;background:#22190F;color:#FBF7EC;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" onClick="{{ goFeed }}">See tonight's plates</button>
+    </sc-if>
+    <div style="height:9px"></div>
+    <button style="width:100%;padding:14px;border-radius:3px;background:#FBF7EC;color:#22190F;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" onClick="{{ goBoard }}">The board</button>
+    <p style="font-size:13px;color:#6B5B48;text-align:center;margin-top:12px">{{ tableHint }}</p>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+  <div style="padding-top:22px">
+    <button style="font-size:13.5px;color:#6B5B48;text-decoration:underline;background:none;border:none;cursor:pointer;margin:0 0 14px" onClick="{{ goTable }}">← Back to the table</button>
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);padding:18px;margin-bottom:22px">
+      <div style="display:flex;align-items:center;gap:13px">
+        <div style="width:62px;height:62px;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:29px;box-shadow:3px 4px 0 rgba(34,25,15,.75);background:{{ profile.avatarBg }}">{{ profile.emoji }}</div>
+        <div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.92;font-size:27px">{{ profile.name }}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-top:4px">Seat {{ profile.seatNo }} · Table five</div>
+        </div>
+      </div>
+      <sc-if value="{{ profile.hasBadges }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:15px">
+          <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:7px">Titles held</div>
+          <sc-for list="{{ profile.badges }}" as="b" hint-placeholder-count="1">
+            <span style="display:inline-block;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;padding:5px 10px;border-radius:2px;border:2.5px solid {{ b.color }};margin:0 6px 6px 0;color:{{ b.color }}">{{ b.title }}</span>
+          </sc-for>
+        </div>
+      </sc-if>
+      <div style="display:flex;margin-top:15px;border-top:2px dotted rgba(34,25,15,.3)">
+        <div style="flex:1;text-align:center;padding:10px 4px">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em">{{ profile.plateCount }}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#6B5B48;margin-top:3px">Plates</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:10px 4px;border-left:2px dotted rgba(34,25,15,.3)">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em;color:{{ profile.avgColor }}">{{ profile.avg }}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#6B5B48;margin-top:3px">Avg score</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:10px 4px;border-left:2px dotted rgba(34,25,15,.3)">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em">{{ profile.todayText }}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#6B5B48;margin-top:3px">Today</div>
+        </div>
+      </div>
+    </div>
+
+    <sc-if value="{{ profile.hasCalendar }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);padding:18px;margin-bottom:22px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px">
+          <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">{{ profile.calLabel }}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:11px;color:#6B5B48">{{ profile.calSummary }}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px">
+          <sc-for list="{{ dowLabels }}" as="d" hint-placeholder-count="7">
+            <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#6B5B48;text-align:center;padding-bottom:3px">{{ d }}</div>
+          </sc-for>
+        </div>
+        <div style="height:5px"></div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px">
+          <sc-for list="{{ profile.calCells }}" as="c" hint-placeholder-count="35">
+            <div style="aspect-ratio:1;border-radius:2px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:13px;color:#6B5B48;border:{{ c.border }};opacity:{{ c.opacity }}" title="{{ c.title }}">
+              <sc-if value="{{ c.showNum }}" hint-placeholder-val="{{ false }}">
+                <span style="position:absolute;top:1px;left:3px;font-family:'Space Mono',monospace;font-size:8px;color:{{ c.numColor }};z-index:2">{{ c.day }}</span>
+              </sc-if>
+              <sc-if value="{{ c.isSkip }}" hint-placeholder-val="{{ false }}">—</sc-if>
+              <sc-if value="{{ c.isFilled }}" hint-placeholder-val="{{ false }}">
+                <img src="{{ c.img }}" style="width:100%;height:100%;object-fit:cover;display:block"></img>
+                <div style="position:absolute;left:0;right:0;bottom:0;height:5px;background:{{ c.dot }}"></div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:#6B5B48">
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:11px;height:11px;border-radius:2px;border:1.5px solid #22190F;background:#3F7D3B;display:inline-block"></span>75+</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:11px;height:11px;border-radius:2px;border:1.5px solid #22190F;background:#D9A81F;display:inline-block"></span>45-74</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:11px;height:11px;border-radius:2px;border:1.5px solid #22190F;background:#DC4230;display:inline-block"></span>Under 45</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="width:11px;height:11px;border-radius:2px;border-style:dashed;border-color:#22190F;background:transparent;display:inline-block"></span>Skipped</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:10px">{{ profile.plateHeading }}</div>
+    <sc-if value="{{ profile.hasPlates }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        <sc-for list="{{ profile.thumbs }}" as="t" hint-placeholder-count="3">
+          <div style="position:relative;border:2.5px solid #22190F;border-radius:3px;overflow:hidden;aspect-ratio:4/5">
+            <img src="{{ t.img }}" alt="{{ t.dish }}" style="width:100%;height:100%;object-fit:cover;display:block;filter:{{ t.blur }}"></img>
+            <sc-if value="{{ t.locked }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:19px;background:rgba(34,25,15,.35)">🔒</div>
+            </sc-if>
+            <sc-if value="{{ t.unlockedScore }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;right:0;bottom:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;color:#fff;padding:2px 7px;border-top:2.5px solid #22190F;border-left:2.5px solid #22190F;background:{{ t.color }}">{{ t.score }}</div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{ profile.hasPlates }}" hint-placeholder-val="{{ false }}"></sc-if>
+    <sc-if value="{{ profile.noPlates }}" hint-placeholder-val="{{ false }}">
+      <p style="font-size:14.5px;color:#6B5B48">Nothing posted yet.</p>
+    </sc-if>
+    <sc-if value="{{ profile.locked }}" hint-placeholder-val="{{ false }}">
+      <p style="font-size:13.5px;color:#6B5B48;margin-top:14px;line-height:1.5">Today's plate is locked until you post yours.</p>
+    </sc-if>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isPost }}" hint-placeholder-val="{{ false }}">
+  <div style="padding-top:30px">
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);overflow:hidden">
+      <div style="position:relative;border-bottom:2.5px solid #22190F">
+        <img src="{{ postImg }}" style="width:100%;aspect-ratio:4/5;object-fit:cover;display:block"></img>
+        <sc-if value="{{ isScanning }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;inset:0;background:rgba(34,25,15,.72);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#FBF7EC">
+            <div style="font-size:30px">⟳</div>
+            <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#F2CE45;margin-top:9px">Analyzing</div>
+          </div>
+        </sc-if>
+      </div>
+      <div style="padding:18px">
+        <sc-if value="{{ isScanning }}" hint-placeholder-val="{{ true }}">
+          <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Analyzing…</div>
+        </sc-if>
+        <sc-if value="{{ isPostResult }}" hint-placeholder-val="{{ false }}">
+          <div style="position:relative;margin-top:-52px;margin-bottom:14px;text-align:right">
+            <span style="display:inline-block;background:{{ postColor }};color:#fff;border:2.5px solid #22190F;border-radius:3px;padding:7px 13px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:31px;box-shadow:4px 5px 0 rgba(34,25,15,.85);transform:rotate(-4deg);animation:ffPop .3s cubic-bezier(.2,1.5,.5,1) both">{{ postScore }}</span>
+          </div>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.045em;font-size:21px">{{ postDish }}</div>
+          <p style="font-size:14.5px;line-height:1.45;margin:9px 0 12px;color:#6B5B48">{{ postVerdict }}</p>
+          <div style="font-family:'Space Mono',monospace;font-size:17px;font-weight:700">{{ postKcal }} <span style="font-size:10px;color:#6B5B48">KCAL</span></div>
+          <div style="height:16px"></div>
+          <button style="width:100%;padding:14px;border-radius:3px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" onClick="{{ confirmPost }}">Put it on the table</button>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isFeed }}" hint-placeholder-val="{{ false }}">
+  <div style="padding-top:22px">
+    <button style="font-size:13.5px;color:#6B5B48;text-decoration:underline;background:none;border:none;cursor:pointer;margin:0 0 14px" onClick="{{ goTable }}">← Back to the table</button>
+    <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Tonight at Table five</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.92;font-size:clamp(26px,6.4vw,34px);margin:9px 0 18px">Five plates in</h1>
+    <sc-for list="{{ feed }}" as="f" hint-placeholder-count="5">
+      <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);margin-bottom:30px;transform:rotate({{ f.rotate }})">
+        <div style="padding:18px 18px 12px;display:flex;align-items:center;gap:9px">
+          <span style="font-size:21px">{{ f.emoji }}</span>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:15px">{{ f.name }}</div>
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:#6B5B48;letter-spacing:.06em">Seat {{ f.seatNo }}</div>
+          </div>
+          <span style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:{{ f.voteStatusColor }}">{{ f.voteStatus }}</span>
+        </div>
+        <div style="position:relative;border-top:2.5px solid #22190F;border-bottom:2.5px solid #22190F">
+          <img src="{{ f.img }}" alt="{{ f.dish }}" style="display:block;width:100%;aspect-ratio:4/5;object-fit:cover"></img>
+          <div style="position:absolute;right:-9px;bottom:-20px;width:84px;padding:7px 5px 9px;border:2.5px solid #22190F;border-radius:3px;box-shadow:4px 5px 0 rgba(34,25,15,.9);transform:rotate(-4deg);text-align:center;color:#fff;background:{{ f.color }}">
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:38px;line-height:.82;letter-spacing:-.06em">{{ f.score }}</div>
+            <div style="font-family:'Space Mono',monospace;font-size:8px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-top:3px;opacity:.85">Score</div>
+          </div>
+        </div>
+        <div style="padding:24px 18px 0">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.045em;font-size:19px;padding-right:72px">{{ f.dish }}</div>
+          <div style="font-size:13.5px;line-height:1.45;padding:9px 12px;border-left:3px solid {{ f.color }};margin:12px 0 4px"><b>The judge:</b> {{ f.verdict }}</div>
+        </div>
+        <div style="border-top:2.5px dashed rgba(34,25,15,.3);display:flex">
+          <button style="flex:1;padding:12px 8px;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;border:none;cursor:pointer;background:{{ f.prBg }};color:{{ f.prColor }}" onClick="{{ f.onVotePr }}">👏 {{ f.prLabel }}</button>
+          <div style="width:2.5px;background:rgba(34,25,15,.3)"></div>
+          <button style="flex:1;padding:12px 8px;display:flex;align-items:center;justify-content:center;gap:7px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;border:none;cursor:pointer;background:{{ f.juBg }};color:{{ f.juColor }}" onClick="{{ f.onVoteJu }}">💩 {{ f.juLabel }}</button>
+        </div>
+        <div style="padding:12px 18px 18px">
+          <sc-for list="{{ f.comments }}" as="cm" hint-placeholder-count="0">
+            <div style="font-size:14px;line-height:1.4;margin-bottom:8px"><span style="margin-right:5px">{{ cm.emoji }}</span><b>{{ cm.name }}</b> <span style="color:#6B5B48">{{ cm.text }}</span></div>
+          </sc-for>
+          <div style="display:flex;gap:7px;margin-top:{{ f.inputMargin }}">
+            <input value="{{ f.draft }}" onChange="{{ f.onDraftChange }}" onKeyDown="{{ f.onKeyDown }}" style="flex:1;padding:9px 11px;font-size:14px;font-family:inherit;background:rgba(34,25,15,.05);border:1.5px solid rgba(34,25,15,.2);border-radius:2px;color:#22190F;min-width:0" maxlength="120" placeholder="Add your verdict"></input>
+            <button style="padding:9px 12px;border-radius:2px;background:#22190F;color:#FBF7EC;font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.1em;border:none;cursor:pointer" onClick="{{ f.onAdd }}">SEND</button>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isBoard }}" hint-placeholder-val="{{ false }}">
+  <div style="padding-top:22px">
+    <button style="font-size:13.5px;color:#6B5B48;text-decoration:underline;background:none;border:none;cursor:pointer;margin:0 0 14px" onClick="{{ goTable }}">← Back to the table</button>
+    <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Table five · week of Aug 3</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.92;font-size:clamp(26px,6.4vw,34px);margin:9px 0 18px">The board</h1>
+
+    <div style="border:2.5px solid #DC4230;border-radius:3px;padding:13px 12px;background:#FBF7EC;margin-bottom:22px">
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.04em;font-size:26px;color:#DC4230">Fry of the Week</div>
+      <div style="display:flex;align-items:center;gap:9px;margin-top:4px">
+        <span style="font-size:26px">{{ board.roastEmoji }}</span>
+        <span style="font-weight:700;font-size:17px">{{ board.roast }}</span>
+        <span style="font-family:'Space Mono',monospace;margin-left:auto;font-size:13px;color:#DC4230">{{ board.roastJu }} judgements</span>
+      </div>
+      <div style="font-size:13.5px;line-height:1.45;margin-top:9px;color:#6B5B48">Took more heat than anyone this week, and posted anyway. Resets Monday.</div>
+    </div>
+
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);padding:18px;margin-bottom:20px">
+      <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:4px">Weekly average · resets Monday</div>
+      <p style="font-size:13px;color:#6B5B48;margin:0 0 6px">Everyone starts even each week.</p>
+      <sc-for list="{{ board.rows }}" as="r" hint-placeholder-count="5">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1.5px dotted rgba(34,25,15,.28)">
+          <div style="display:flex;align-items:center;gap:9px;min-width:0">
+            <span style="font-family:'Space Mono',monospace;font-size:12px;color:#6B5B48;width:20px">{{ r.rank }}</span>
+            <span style="font-size:18px">{{ r.emoji }}</span>
+            <div style="min-width:0">
+              <div style="font-weight:700;font-size:14.5px">{{ r.name }}</div>
+              <div style="font-family:'Space Mono',monospace;font-size:10px;color:#6B5B48">{{ r.plates }} plates</div>
+            </div>
+          </div>
+          <div style="text-align:right;min-width:96px">
+            <div style="font-family:'Space Mono',monospace;font-weight:700;font-size:17px;color:{{ r.color }}">{{ r.avg }}</div>
+            <div style="height:7px;border:1.5px solid #22190F;border-radius:1px;margin-top:5px;margin-left:auto;width:{{ r.avg }}%;background:{{ r.color }}"></div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);padding:18px;margin-bottom:20px">
+      <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:4px">All time · counts only</div>
+      <p style="font-size:13px;color:#6B5B48;margin:0 0 6px">Praise and judges received, judges handed out. No lifetime score.</p>
+      <sc-for list="{{ board.counts }}" as="c" hint-placeholder-count="5">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1.5px dotted rgba(34,25,15,.28)">
+          <div style="display:flex;align-items:center;gap:9px"><span style="font-size:17px">{{ c.emoji }}</span><span style="font-weight:700;font-size:14px">{{ c.name }}</span></div>
+          <div style="font-family:'Space Mono',monospace;font-size:12px;color:#6B5B48">👏 {{ c.prIn }} &nbsp; 💩 {{ c.juIn }} &nbsp;·&nbsp; gave {{ c.juOut }}</div>
+        </div>
+      </sc-for>
+    </div>
+
+    <p style="font-size:12.5px;color:#6B5B48;line-height:1.5;text-align:center;margin-bottom:16px">Titles are handed out Monday morning and held for the week.</p>
+    <button style="width:100%;padding:14px;border-radius:3px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" onClick="{{ shareResults }}">Share the results</button>
+
+    <sc-if value="{{ shareOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="height:20px"></div>
+      <div style="background:#F2CE45;border:3px solid #22190F;border-radius:4px;box-shadow:7px 8px 0 rgba(34,25,15,.85);padding:22px 20px;text-align:center">
+        <div style="font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Table five · week of Aug 3</div>
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.045em;font-size:29px;margin:9px 0 16px">The verdict</div>
+        <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;padding:15px 16px;margin-bottom:9px;display:flex;align-items:center;gap:11px;text-align:left">
+          <span style="font-size:30px">{{ board.roastEmoji }}</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;color:#DC4230">Fry of the Week</div>
+            <div style="font-size:15px;font-weight:700">{{ board.roast }}</div>
+          </div>
+          <div style="font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:#DC4230">{{ board.roastJu }}</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px">
+          <svg width="19" height="19" viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M9 39 Q4 34 9 29 L29 9 Q34 4 39 9 Q44 14 39 19 L19 39 Q14 44 9 39 Z" fill="#FBF7EC" stroke="#22190F" stroke-width="3" stroke-linejoin="round"></path>
+            <path d="M29 9 Q34 4 39 9 Q44 14 39 19 Z" fill="#D3AE72" stroke="#22190F" stroke-width="3" stroke-linejoin="round"></path>
+          </svg>
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;font-size:15px">Friends Fried</span>
+        </div>
+      </div>
+      <div style="height:12px"></div>
+      <button style="width:100%;padding:14px;border-radius:3px;background:#FBF7EC;color:#22190F;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" onClick="{{ copyResults }}">Copy for the group chat</button>
+      <sc-if value="{{ copied }}" hint-placeholder-val="{{ false }}">
+        <p style="font-size:13px;color:#3F7D3B;text-align:center;margin-top:10px">Copied.</p>
+      </sc-if>
+    </sc-if>
+  </div>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const POS = [[50,13],[85,38.8],[71.6,79.7],[28.4,79.7],[15,38.8]];
+const P_SVG = {
+poke:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#EFE3CC"/><circle cx="200" cy="150" r="118" fill="#2F3A3F"/><circle cx="200" cy="150" r="104" fill="#F6F1E4"/><circle cx="160" cy="120" r="26" fill="#E8734A"/><circle cx="205" cy="105" r="24" fill="#E8734A"/><circle cx="185" cy="160" r="25" fill="#E8734A"/><ellipse cx="255" cy="140" rx="34" ry="18" fill="#6F9B4A" transform="rotate(-25 255 140)"/><circle cx="150" cy="200" r="11" fill="#4E7C3A"/><circle cx="206" cy="205" r="11" fill="#4E7C3A"/></svg>`,
+wrap:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#6E4A2C"/><rect x="30" y="60" width="340" height="180" rx="10" fill="#8A6039"/><rect x="90" y="80" width="130" height="150" rx="18" fill="#E8CE9B"/><rect x="180" y="80" width="130" height="150" rx="18" fill="#F0DAAF"/><path d="M195 95h80v40h-80z" fill="#B4652F"/><path d="M195 145h80v22h-80z" fill="#7C9B4E"/><path d="M195 205h80v16h-80z" fill="#C0392B"/></svg>`,
+donut:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#EDE6D8"/><circle cx="115" cy="130" r="62" fill="#D9A05B"/><circle cx="115" cy="130" r="52" fill="#E86A9B"/><circle cx="115" cy="130" r="20" fill="#EDE6D8"/><circle cx="235" cy="105" r="58" fill="#D9A05B"/><circle cx="235" cy="105" r="48" fill="#6B4226"/><circle cx="235" cy="105" r="18" fill="#EDE6D8"/><circle cx="200" cy="205" r="55" fill="#D9A05B"/><circle cx="200" cy="205" r="45" fill="#F2D06B"/><circle cx="200" cy="205" r="17" fill="#EDE6D8"/></svg>`,
+curry:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#E4DECD"/><circle cx="155" cy="155" r="105" fill="#FBF7EC"/><circle cx="155" cy="155" r="92" fill="#8FA85C"/><ellipse cx="130" cy="130" rx="30" ry="16" fill="#C4553A" transform="rotate(-18 130 130)"/><circle cx="190" cy="120" r="13" fill="#4E7C3A"/><circle cx="320" cy="200" r="66" fill="#FBF7EC"/></svg>`,
+salad:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#EFEADC"/><circle cx="200" cy="150" r="110" fill="#FBF7EC"/><circle cx="200" cy="150" r="96" fill="#7FA24C"/><circle cx="165" cy="125" r="20" fill="#C0392B"/><circle cx="235" cy="165" r="18" fill="#C0392B"/><ellipse cx="215" cy="115" rx="26" ry="14" fill="#A8C46A" transform="rotate(20 215 115)"/><circle cx="160" cy="185" r="14" fill="#E8CE9B"/></svg>`,
+toast:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><rect width="400" height="300" fill="#EDE4D2"/><rect x="110" y="70" width="180" height="160" rx="18" fill="#D9A05B"/><rect x="128" y="88" width="144" height="124" rx="10" fill="#8FA85C"/><circle cx="175" cy="130" r="16" fill="#F2D06B"/><circle cx="225" cy="165" r="16" fill="#F2D06B"/></svg>`
+};
+const CANDIDATES = [
+ {pic:"salad",dish:"Chopped salad, tahini",score:82,verdict:"Vegetables, visible protein, actual effort. Fine, well done.",kcal:470},
+ {pic:"donut",dish:"Two donuts and a coffee",score:27,verdict:"Bold at this hour. The coffee is not a vegetable.",kcal:740},
+ {pic:"wrap",dish:"Burrito, extra everything",score:55,verdict:"Structurally sound. Nutritionally negotiable.",kcal:810}
+];
+const VERDICTS = {
+ "Natasha":"Colour, protein, and something green. Annoyingly correct.",
+ "Ani":"Solid protein, decent wrap. The garlic sauce is doing overtime.",
+ "Mhero":"Committed to the bit. Three is a choice, not an accident.",
+ "Tal":"Vegetables present and accounted for. Coconut milk keeps it honest."
+};
+const AVA = ["🍜","🥑","🌮","🍕","🍓","🥐","🍣","🧋","🥟","🍩","🌶️","🍳"];
+
+function initPeople() {
+  return [
+   {seat:0,name:"Ani",emoji:"🌮",today:{pic:"wrap",dish:"Chicken shawarma wrap",score:61},
+    history:[{pic:"toast",dish:"Egg on toast",score:64},{pic:"donut",dish:"Pastry run",score:31}],badges:[]},
+   {seat:1,name:"Natasha",emoji:"🥑",today:{pic:"poke",dish:"Salmon poke bowl",score:78},
+    history:[{pic:"salad",dish:"Chopped salad",score:84},{pic:"curry",dish:"Dal and rice",score:73},{pic:"toast",dish:"Avocado toast",score:69}],badges:[]},
+   {seat:2,name:"Mhero",emoji:"🍩",today:{pic:"donut",dish:"Three donuts, cold brew",score:24},
+    history:[{pic:"wrap",dish:"Burrito, obviously",score:52},{pic:"donut",dish:"Second breakfast",score:28}],badges:[["Fry of the Week","#DC4230"]]},
+   {seat:3,name:"You",emoji:"🍳",today:null,history:[{pic:"curry",dish:"Green curry",score:70},{pic:"salad",dish:"Desk salad",score:77}],badges:[],me:true},
+   {seat:4,name:"Tal",emoji:"🌶️",today:{pic:"curry",dish:"Green curry, jasmine rice",score:71},
+    history:[{pic:"salad",dish:"Big salad",score:81},{pic:"poke",dish:"Poke, no rice",score:79}],badges:[]}
+  ];
+}
+function initWeek() {
+  return {
+   "Natasha":{avg:78,plates:6,prIn:14,juIn:2,juOut:5},
+   "Ani":{avg:61,plates:5,prIn:8,juIn:6,juOut:9},
+   "You":{avg:66,plates:5,prIn:9,juIn:4,juOut:17},
+   "Mhero":{avg:31,plates:6,prIn:5,juIn:19,juOut:11},
+   "Tal":{avg:74,plates:6,prIn:12,juIn:3,juOut:4}
+  };
+}
+function initHist() {
+  return {
+   "You":{1:["curry",70],2:["salad",77],3:"skip",4:["wrap",58],5:["poke",81],6:["donut",34],7:["salad",75],8:["curry",68]},
+   "Natasha":{1:["salad",84],2:["curry",73],3:["toast",69],4:["poke",80],5:["salad",86],6:"skip",7:["curry",71],8:["poke",78]},
+   "Ani":{1:["toast",64],2:["donut",31],3:["wrap",59],4:"skip",5:["wrap",62],6:["curry",66],7:["toast",57],8:["wrap",61]},
+   "Mhero":{1:["donut",28],2:["wrap",52],3:["donut",22],4:["toast",44],5:"skip",6:["donut",26],7:["wrap",49],8:["donut",24]},
+   "Tal":{1:["salad",81],2:["poke",79],3:["curry",74],4:["salad",83],5:["curry",70],6:["poke",77],7:"skip",8:["curry",71]}
+  };
+}
+function initVotes() {
+  return {
+   "Natasha":{Mhero:"pr",Ani:"pr",Tal:"pr"},
+   "Ani":{Natasha:"pr",Tal:"pr",Mhero:"ju"},
+   "Mhero":{Natasha:"ju",Ani:"ju",Tal:"ju"},
+   "Tal":{Natasha:"pr",Ani:"pr"}
+  };
+}
+function initComments() {
+  return {
+   "Natasha":[{emoji:"🍩",name:"Mhero",text:"showing off again"}],
+   "Mhero":[{emoji:"🥑",name:"Natasha",text:"it's 9am Mhero"},{emoji:"🌶️",name:"Tal",text:"the cold brew is not saving you"}],
+   "Ani":[{emoji:"🌶️",name:"Tal",text:"where is this from, asking for me"}],
+   "Tal":[]
+  };
+}
+
+class Component extends DCLogic {
+  state = {
+    view: 'land', people: initPeople(), pickedSeat: null, myEmoji: '🍳',
+    nameInput: '', codeInput: '', codeError: '', profileSeat: null,
+    postCandidate: null, postPhase: null, votes: initVotes(), comments: initComments(),
+    commentDrafts: {}, weekData: initWeek(), histData: initHist(),
+    clock: '00:00:00', shareOpen: false, copied: false
+  };
+
+  componentDidMount() {
+    this.tickClock();
+    this._clockTimer = setInterval(this.tickClock, 1000);
+  }
+  componentWillUnmount() {
+    clearInterval(this._clockTimer);
+    clearTimeout(this._revealTimer);
+    clearTimeout(this._copyTimer);
+  }
+  tickClock = () => {
+    const now = new Date(); const d = new Date(now); d.setHours(21,0,0,0);
+    if (d < now) d.setDate(d.getDate()+1);
+    let s = Math.floor((d-now)/1000); const p = n => String(n).padStart(2,'0');
+    this.setState({ clock: p(Math.floor(s/3600))+':'+p(Math.floor((s%3600)/60))+':'+p(s%60) });
+  };
+  img(key) { return "data:image/svg+xml;utf8," + encodeURIComponent(P_SVG[key]); }
+  col(score) { return score>=75 ? "#3F7D3B" : score>=45 ? "#D9A81F" : "#DC4230"; }
+  me() { return this.state.people.find(p => p.me); }
+
+  restart = () => this.setState({
+    view:'land', people: initPeople(), pickedSeat:null, myEmoji:'🍳', nameInput:'', codeInput:'',
+    codeError:'', profileSeat:null, postCandidate:null, postPhase:null, votes: initVotes(),
+    comments: initComments(), commentDrafts:{}, weekData: initWeek(), histData: initHist(),
+    shareOpen:false, copied:false
+  });
+  goLand = () => this.setState({ view:'land' });
+  goJoin = () => this.setState({ view:'join' });
+  goTable = () => this.setState({ view:'table' });
+  goFeed = () => this.setState({ view:'feed' });
+  goBoard = () => this.setState({ view:'board' });
+
+  onCodeChange = (e) => {
+    const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,4);
+    this.setState({ codeInput: v, codeError: '' });
+  };
+  findTable = () => {
+    if (this.state.codeInput !== 'K7QM') { this.setState({ codeError: 'No table with that code. Try K7QM.' }); return; }
+    this.setState({ view: 'seat' });
+  };
+  pickSeat = (seat) => this.setState({ pickedSeat: seat });
+  toName = () => this.setState({ view: 'name' });
+  setEmoji = (e) => this.setState({ myEmoji: e });
+  onNameChange = (e) => this.setState({ nameInput: e.target.value });
+  sitDownSeat = () => {
+    const name = this.state.nameInput.trim();
+    const emoji = this.state.myEmoji;
+    const seat = this.state.pickedSeat != null ? this.state.pickedSeat : this.me().seat;
+    const people = this.state.people.map(p => p.me ? { ...p, seat, name, emoji } : p);
+    let weekData = { ...this.state.weekData }, histData = { ...this.state.histData };
+    if (name !== 'You') {
+      weekData[name] = weekData['You']; delete weekData['You'];
+      histData[name] = histData['You']; delete histData['You'];
+    }
+    this.setState({ people, weekData, histData, view: 'table' });
+  };
+  openProfile = (seat) => this.setState({ profileSeat: seat, view: 'profile' });
+  startPost = () => {
+    const c = CANDIDATES[Math.floor(Math.random()*CANDIDATES.length)];
+    this.setState({ postCandidate: c, postPhase: 'scanning', view: 'post' });
+    this._revealTimer = setTimeout(() => this.setState({ postPhase: 'result' }), 1700);
+  };
+  confirmPost = () => {
+    const c = this.state.postCandidate;
+    const meName = this.me().name;
+    const people = this.state.people.map(p => p.me ? { ...p, today: { pic:c.pic, dish:c.dish, score:c.score } } : p);
+    const votes = { ...this.state.votes, [meName]: this.state.votes[meName] || {} };
+    const comments = { ...this.state.comments, [meName]: this.state.comments[meName] || [] };
+    this.setState({ people, votes, comments, view: 'feed' });
+  };
+  vote = (name, type) => {
+    const meName = this.me().name;
+    const v = { ...(this.state.votes[name] || {}) };
+    if (v[meName] === type) delete v[meName]; else v[meName] = type;
+    this.setState({ votes: { ...this.state.votes, [name]: v } });
+  };
+  onDraftChange = (name, e) => {
+    const val = e.target.value;
+    this.setState(s => ({ commentDrafts: { ...s.commentDrafts, [name]: val } }));
+  };
+  addComment = (name) => {
+    const meName = this.me().name, meEmoji = this.me().emoji;
+    const text = (this.state.commentDrafts[name] || '').trim();
+    if (!text) return;
+    const list = [...(this.state.comments[name] || []), { emoji: meEmoji, name: meName, text }];
+    this.setState(s => ({ comments: { ...s.comments, [name]: list }, commentDrafts: { ...s.commentDrafts, [name]: '' } }));
+  };
+  shareResults = () => this.setState({ shareOpen: true });
+  copyResults = () => {
+    const b = this.buildBoard();
+    const t = `Table five, week of Aug 3\n\nFry of the Week: ${b.roast}\n${b.roastJu} judgements taken\n\nfriendsfried.app`;
+    if (navigator.clipboard) navigator.clipboard.writeText(t);
+    this.setState({ copied: true });
+    this._copyTimer = setTimeout(() => this.setState({ copied: false }), 2200);
+  };
+
+  buildJoinSeats() {
+    return this.state.people.map(p => {
+      const [x,y] = POS[p.seat];
+      if (!p.me) return { seat:p.seat, x, y, emoji:p.emoji, label:p.name, chipText:'Seated', chipColor:'#3F7D3B', chairBg:'#FBF7EC', chairBorderStyle:'solid', onClick: () => {} };
+      const picked = this.state.pickedSeat === p.seat;
+      return {
+        seat:p.seat, x, y, emoji: picked ? this.state.myEmoji : '+', label: picked ? 'You' : 'Empty',
+        chipText: picked ? 'Yours' : 'Sit here', chipColor: picked ? '#22190F' : '#6B5B48',
+        chairBg: picked ? '#F2CE45' : 'transparent', chairBorderStyle: picked ? 'solid' : 'dashed',
+        onClick: () => this.pickSeat(p.seat)
+      };
+    });
+  }
+  buildTableSeats() {
+    return this.state.people.map(p => {
+      const [x,y] = POS[p.seat];
+      return {
+        seat:p.seat, x, y, emoji:p.emoji, name:p.name, posted: !!p.today,
+        plateImg: p.today ? this.img(p.today.pic) : '',
+        chipText: p.today ? 'Posted' : 'Waiting', chipColor: p.today ? '#3F7D3B' : '#DC4230',
+        chairBg: p.me ? '#F2CE45' : '#FBF7EC', chairBorderWidth: p.me ? '3.5px' : '2.5px',
+        onClick: () => this.openProfile(p.seat)
+      };
+    });
+  }
+  buildCalendar(name) {
+    const rec = this.state.histData[name] || {};
+    const first = new Date(2026,7,1), pad = (first.getDay()+6)%7;
+    const days = new Date(2026,8,0).getDate(), today = 9;
+    const cells = [];
+    for (let i=0;i<pad;i++) cells.push({ key:'b'+i, isSkip:false, isFilled:false, showNum:false, border:'none', opacity:1, title:'' });
+    for (let d=1; d<=days; d++) {
+      const e = rec[d];
+      if (e === 'skip') {
+        cells.push({ key:d, day:d, isSkip:true, isFilled:false, showNum:true, numColor:'#6B5B48', border:'1.5px dashed rgba(34,25,15,.4)', opacity:1, title:'Day '+d+' \u00b7 skipped' });
+      } else if (Array.isArray(e)) {
+        cells.push({ key:d, day:d, isSkip:false, isFilled:true, showNum:true, numColor:'#fff', img:this.img(e[0]), dot:this.col(e[1]), border:'2px solid #22190F', opacity:1, title:'Day '+d+' \u00b7 scored '+e[1] });
+      } else {
+        cells.push({ key:d, day:d, isSkip:false, isFilled:false, showNum:true, numColor:'#6B5B48', border:'1.5px solid rgba(34,25,15,.22)', opacity: d>today?0.35:1, title:'Day '+d });
+      }
+    }
+    const filled = Object.values(rec).filter(v=>Array.isArray(v)).length;
+    const skips = Object.values(rec).filter(v=>v==='skip').length;
+    return { cells, label:'August 2026', summary: filled+' posted \u00b7 '+skips+' skipped' };
+  }
+  buildProfile() {
+    const p = this.state.people.find(x => x.seat === this.state.profileSeat) || this.me();
+    const meP = this.me();
+    const locked = !meP.today && !p.me;
+    const all = [...(p.today ? [p.today] : []), ...p.history];
+    const avg = all.length ? Math.round(all.reduce((a,b)=>a+b.score,0)/all.length) : 0;
+    const thumbs = all.map((m,i) => {
+      const lock = locked && i===0 && !!p.today;
+      return { img:this.img(m.pic), dish:m.dish, score:m.score, color:this.col(m.score), locked:lock, unlockedScore: !lock, blur: lock ? 'blur(7px)' : 'none' };
+    });
+    const cal = p.me ? this.buildCalendar(p.name) : null;
+    return {
+      emoji:p.emoji, name:p.name, seatNo:p.seat+1, avatarBg: p.me ? '#F2CE45' : '#FBF7EC',
+      hasBadges: p.badges.length>0, badges: p.badges.map(b=>({title:b[0],color:b[1]})),
+      plateCount: all.length, avg, avgColor:this.col(avg), todayText: p.today ? 'In' : '\u2014',
+      hasCalendar: !!cal, calLabel: cal?cal.label:'', calSummary: cal?cal.summary:'', calCells: cal?cal.cells:[],
+      plateHeading: p.me ? 'Recent plates' : p.name+"'s plates",
+      hasPlates: all.length>0, noPlates: all.length===0, thumbs, locked
+    };
+  }
+  buildBoard() {
+    const names = Object.keys(this.state.weekData);
+    const emOf = n => { const pp = this.state.people.find(p=>p.name===n); return pp ? pp.emoji : '🍽️'; };
+    const sortedByAvg = names.slice().sort((a,b)=>this.state.weekData[b].avg-this.state.weekData[a].avg);
+    const roast = names.slice().sort((a,b)=>this.state.weekData[b].juIn-this.state.weekData[a].juIn)[0];
+    const rows = sortedByAvg.map((n,i) => ({ rank:i+1, name:n, emoji:emOf(n), avg:this.state.weekData[n].avg, plates:this.state.weekData[n].plates, color:this.col(this.state.weekData[n].avg) }));
+    const counts = names.map(n => ({ name:n, emoji:emOf(n), prIn:this.state.weekData[n].prIn, juIn:this.state.weekData[n].juIn, juOut:this.state.weekData[n].juOut }));
+    return { roast, roastEmoji: emOf(roast), roastJu: this.state.weekData[roast].juIn, rows, counts };
+  }
+  buildFeed() {
+    const list = this.state.people.filter(p => p.today);
+    const meName = this.me().name;
+    return list.map((p,i) => {
+      const v = this.state.votes[p.name] || {};
+      const prCount = Object.values(v).filter(t=>t==='pr').length;
+      const juCount = Object.values(v).filter(t=>t==='ju').length;
+      const mine = v[meName];
+      const comments = this.state.comments[p.name] || [];
+      const verdict = p.me ? (this.state.postCandidate ? this.state.postCandidate.verdict : '') : (VERDICTS[p.name] || 'Filed without comment.');
+      return {
+        name:p.name, emoji:p.emoji, seatNo:p.seat+1, img:this.img(p.today.pic), dish:p.today.dish,
+        score:p.today.score, color:this.col(p.today.score), rotate: i%2 ? '0.45deg' : '-0.5deg',
+        voteStatus: mine ? 'Voted' : 'Not voted', voteStatusColor: mine ? '#6B5B48' : '#D9A81F',
+        prLabel: 'Praise' + (prCount ? ' '+prCount : ''), juLabel: 'Fry' + (juCount ? ' '+juCount : ''),
+        prBg: mine==='pr' ? '#3F7D3B' : 'transparent', prColor: mine==='pr' ? '#FBF7EC' : '#22190F',
+        juBg: mine==='ju' ? '#DC4230' : 'transparent', juColor: mine==='ju' ? '#FBF7EC' : '#22190F',
+        onVotePr: () => this.vote(p.name,'pr'), onVoteJu: () => this.vote(p.name,'ju'),
+        comments, inputMargin: comments.length ? '10px' : '0',
+        draft: this.state.commentDrafts[p.name] || '',
+        onDraftChange: (e) => this.onDraftChange(p.name, e),
+        onKeyDown: (e) => { if (e.key === 'Enter') this.addComment(p.name); },
+        onAdd: () => this.addComment(p.name), verdict
+      };
+    });
+  }
+
+  renderVals() {
+    const view = this.state.view;
+    const meP = this.me();
+    const hasPosted = !!meP.today;
+    const emojiOptions = AVA.map(a => ({
+      emoji:a, onClick: () => this.setEmoji(a),
+      bg: a===this.state.myEmoji ? '#F2CE45' : '#FBF7EC',
+      borderColor: a===this.state.myEmoji ? '#22190F' : 'rgba(34,25,15,.18)',
+      shadow: a===this.state.myEmoji ? '2px 3px 0 #22190F' : 'none'
+    }));
+    const taken = this.state.people.filter(p=>!p.me).length;
+    let postImg = '', postColor='', postScore=0, postDish='', postVerdict='', postKcal=0;
+    if (this.state.postCandidate) {
+      const c = this.state.postCandidate;
+      postImg = this.img(c.pic); postColor = this.col(c.score); postScore = c.score;
+      postDish = c.dish; postVerdict = c.verdict; postKcal = c.kcal;
+    }
+    return {
+      isLand: view==='land', isJoin: view==='join', isSeat: view==='seat', isName: view==='name',
+      isTable: view==='table', isProfile: view==='profile', isPost: view==='post', isFeed: view==='feed', isBoard: view==='board',
+      restart: this.restart, goLand: this.goLand, goJoin: this.goJoin, goTable: this.goTable, goFeed: this.goFeed, goBoard: this.goBoard,
+      codeInput: this.state.codeInput, onCodeChange: this.onCodeChange, findDisabled: this.state.codeInput.length!==4,
+      findTable: this.findTable, hasCodeError: !!this.state.codeError, codeError: this.state.codeError,
+      seatsLeftText: (5-taken)+' of 5 seats open.', joinSeats: this.buildJoinSeats(), hasPickedSeat: this.state.pickedSeat!=null,
+      toName: this.toName, seatNo: (this.state.pickedSeat!=null?this.state.pickedSeat:meP.seat)+1,
+      nameInput: this.state.nameInput, onNameChange: this.onNameChange, emojiOptions,
+      nameInvalid: this.state.nameInput.trim().length<2, sitDownSeat: this.sitDownSeat,
+      inCount: this.state.people.filter(p=>p.today).length, clock: this.state.clock,
+      tableSeats: this.buildTableSeats(), showPostBtn: !hasPosted, showFeedBtn: hasPosted, startPost: this.startPost,
+      tableHint: hasPosted ? 'Tap a seat for someone\u2019s profile.' : 'Plates stay locked until yours is on the table.',
+      profile: this.buildProfile(), dowLabels: ['M','T','W','T','F','S','S'],
+      postImg, postColor, postScore, postDish, postVerdict, postKcal,
+      isScanning: this.state.postPhase==='scanning', isPostResult: this.state.postPhase==='result',
+      confirmPost: this.confirmPost, feed: this.buildFeed(), board: this.buildBoard(),
+      shareResults: this.shareResults, shareOpen: this.state.shareOpen, copyResults: this.copyResults, copied: this.state.copied
+    };
+  }
+}
+</script>
+</body>
+</html>

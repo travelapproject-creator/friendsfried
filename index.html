@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Karla:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Karla',system-ui,sans-serif;color:#22190F;background:#F2CE45;
+  background-image:radial-gradient(circle at 1px 1px,rgba(34,25,15,.13) 1px,transparent 0);
+  background-size:22px 22px;-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+a:hover{color:inherit}
+@keyframes ffFadeIn{from{opacity:0;transform:translateY(6px)}}
+@keyframes ffStampIn{from{opacity:0;transform:scale(.5) rotate(-22deg)}}
+</style>
+</helmet>
+
+<nav style="background:#22190F;border-bottom:4px solid #DC4230">
+  <div style="max-width:1060px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true" style="display:block;flex-shrink:0">
+      <circle cx="24" cy="24" r="10" fill="#E8CE9B" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="24" cy="7" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="40" cy="18.5" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="34" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="14" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="8" cy="18.5" r="4.5" fill="#DC4230" stroke="#FBF7EC" stroke-width="2.5"></circle>
+    </svg>
+    <a href="index.html" style="display:flex;align-items:center"><div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.045em;text-transform:uppercase;line-height:1;color:#FBF7EC">Friends<span style="color:#F2CE45">Fried</span></div></a>
+    <a href="Friends Fried Set a Table.dc.html" style="background:#F2CE45;color:#22190F;border:2.5px solid #F2CE45;padding:9px 16px;border-radius:3px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;text-transform:uppercase">Start a table</a>
+  </div>
+</nav>
+
+<div style="max-width:1060px;margin:0 auto;padding:0 22px">
+  <div style="display:flex;flex-wrap:wrap;gap:48px;align-items:center;padding:64px 0 72px">
+    <div style="flex:1 1 460px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Five friends · one table · 10pm deadline</div>
+      <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(40px,5.6vw,64px);margin:14px 0 0">Your friends<br>judge what<br>you eat</h1>
+      <p style="font-size:19px;line-height:1.5;margin:20px 0 26px;max-width:440px">Each meal you post gets attention — <b>praised</b>, <b>fried</b>, and commented on.</p>
+      <sc-if value="{{ formVisible1 }}" hint-placeholder-val="{{ true }}">
+        <form style="display:flex;gap:9px;max-width:440px;flex-wrap:wrap" onSubmit="{{ onSubscribe1 }}">
+          <input style="flex:1;min-width:200px;padding:14px;font-size:16px;font-family:inherit;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" style-focus="outline:3px solid #56284F;outline-offset:3px" type="email" required="true" placeholder="you@email.com" aria-label="Email address"></input>
+          <button style="padding:14px 22px;border-radius:3px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35);transition:transform .1s,box-shadow .1s" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none" type="submit">Get early access</button>
+        </form>
+      </sc-if>
+      <sc-if value="{{ subscribed1 }}" hint-placeholder-val="{{ false }}">
+        <p style="font-size:16px;font-weight:700;color:#3F7D3B">You're on the list. We'll email you when it's your turn.</p>
+      </sc-if>
+      <p style="font-size:13px;color:#6B5B48;margin-top:12px">Free. No calorie goals, no streak guilt, no fitness influencers.</p>
+      <a href="Friends Fried Set a Table.dc.html?mode=join" style="display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:12px 18px;border-radius:3px;background:#FBF7EC;border:2.5px solid #22190F;color:#22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none">Already have a code? Enter here →</a>
+    </div>
+    <div style="flex:1 1 260px;max-width:290px;margin:0 auto;width:100%">
+      <div style="background:#22190F;border:2.5px solid #22190F;border-radius:26px;padding:11px;box-shadow:6px 7px 0 rgba(34,25,15,.55)">
+        <div style="background:#F2CE45;border-radius:17px;overflow:hidden;position:relative">
+          <div style="background:#22190F;color:#FBF7EC;padding:11px 12px;display:flex;align-items:center;gap:8px;border-bottom:3px solid #DC4230">
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;letter-spacing:-.045em;text-transform:uppercase;line-height:1">Friends<span style="color:#F2CE45">Fried</span></div>
+            <span style="font-family:'Space Mono',monospace;margin-left:auto;font-size:9px;letter-spacing:.14em;opacity:.75">K7QM</span>
+          </div>
+          <div style="padding:11px;min-height:392px">
+            <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
+              <div style="background:#22190F;color:#FBF7EC;border-radius:3px;padding:15px 13px;text-align:center;box-shadow:3px 4px 0 rgba(34,25,15,.45)">
+                <div style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#F2CE45">4 plates in</div>
+                <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;font-size:18px;margin:7px 0 6px;line-height:1.1">Post to see<br>everyone else</div>
+                <div style="font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:#F2CE45">{{ clock }}</div>
+              </div>
+              <div style="height:10px"></div>
+              <div style="filter:blur(8px);opacity:.55">
+                <dc-import name="FriendsFriedMiniCard" pr="{{ pr }}" ju="{{ ju }}" says="{{ says }}" stamped="{{ stamped }}" scored="{{ scored }}" plate-img="{{ plateImg }}" hint-size="100%,220px"></dc-import>
+              </div>
+            </sc-if>
+            <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ false }}">
+              <dc-import name="FriendsFriedMiniCard" pr="{{ pr }}" ju="{{ ju }}" says="{{ says }}" stamped="{{ stamped }}" scored="{{ scored }}" plate-img="{{ plateImg }}" hint-size="100%,220px"></dc-import>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section style="padding:66px 0;background:#FBF7EC;border-top:4px solid #22190F;border-bottom:4px solid #22190F">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px">
+    <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">How it works</div>
+    <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(30px,4vw,44px);margin:10px 0 12px">Five seats.<br>That's the app.</h2>
+    <p style="font-size:17px;color:#6B5B48;max-width:520px;margin-bottom:36px">You don't follow anyone on Friends Fried. You sit down.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:44px;align-items:center">
+      <div style="flex:1 1 320px;position:relative;width:100%;max-width:330px;margin:0 auto;aspect-ratio:1">
+        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44%;aspect-ratio:1;border-radius:50%;background:#F2CE45;border:2.5px solid #22190F;box-shadow:4px 5px 0 rgba(34,25,15,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px">
+          <div style="font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#6B5B48">Table five</div>
+          <div style="font-family:'Space Mono',monospace;font-size:16px;font-weight:700">K7QM</div>
+        </div>
+        <div style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:50%;top:13%">
+          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:24px;background:#FBF7EC;box-shadow:3px 4px 0 rgba(34,25,15,.75)">🌮</div>
+          <div style="font-size:12.5px;font-weight:700;margin-top:7px">Ani</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid #3F7D3B;color:#3F7D3B">Posted</div>
+        </div>
+        <div style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:85%;top:38.8%">
+          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:24px;background:#FBF7EC;box-shadow:3px 4px 0 rgba(34,25,15,.75)">🥑</div>
+          <div style="font-size:12.5px;font-weight:700;margin-top:7px">Natasha</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid #3F7D3B;color:#3F7D3B">Posted</div>
+        </div>
+        <div style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:71.6%;top:79.7%">
+          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:24px;background:#FBF7EC;box-shadow:3px 4px 0 rgba(34,25,15,.75)">🍩</div>
+          <div style="font-size:12.5px;font-weight:700;margin-top:7px">Mhero</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid #3F7D3B;color:#3F7D3B">Posted</div>
+        </div>
+        <div style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:28.4%;top:79.7%">
+          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:24px;background:#FBF7EC;box-shadow:3px 4px 0 rgba(34,25,15,.75)">🌶️</div>
+          <div style="font-size:12.5px;font-weight:700;margin-top:7px">Tal</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid #DC4230;color:#DC4230">Waiting</div>
+        </div>
+        <div style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:15%;top:38.8%">
+          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px dashed #22190F;display:flex;align-items:center;justify-content:center;font-size:24px;background:transparent;color:#6B5B48">+</div>
+          <div style="font-size:12.5px;font-weight:700;margin-top:7px">Empty</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid rgba(34,25,15,.3);color:#6B5B48">Sit here</div>
+        </div>
+      </div>
+      <div style="flex:2 1 420px;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:8px 20px">
+        <sc-for list="{{ rules }}" as="r" hint-placeholder-count="7">
+          <div style="display:flex;gap:13px;padding:15px 0;border-bottom:1.5px dotted rgba(34,25,15,.3)">
+            <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#D9A81F;letter-spacing:.1em;padding-top:2px;flex-shrink:0">{{ r.num }}</div>
+            <div>
+              <h4 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16.5px;letter-spacing:-.02em;margin:0 0 4px">{{ r.title }}</h4>
+              <p style="font-size:14.5px;line-height:1.55;color:#6B5B48;margin:0">{{ r.body }}</p>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:66px 0">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px;display:flex;flex-wrap:wrap;gap:44px;align-items:center">
+    <div style="flex:1 1 400px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">The rule that makes it work</div>
+      <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(30px,4vw,44px);margin-top:10px">You can't see<br>theirs until<br>you post yours</h2>
+      <p style="font-size:17px;color:#6B5B48;max-width:520px;margin-top:18px">The feed stays blurred until your plate is in. No lurking, no judging from the sidelines. Everyone eats, everyone posts, everyone gets looked at.</p>
+      <p style="font-size:15.5px;line-height:1.6;color:#6B5B48">Deadline is 10pm. Miss it and you're marked absent — or tap <b style="color:#22190F">no plate today</b> and skip without a streak lecture.</p>
+    </div>
+    <div style="flex:1 1 320px;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 22px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:14px">Tonight · 10:00 pm</div>
+      <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1.5px dotted rgba(34,25,15,.3)"><span style="font-weight:700">Natasha</span><span style="font-family:'Space Mono',monospace;color:#3F7D3B;font-size:13px">POSTED</span></div>
+      <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1.5px dotted rgba(34,25,15,.3)"><span style="font-weight:700">Ani</span><span style="font-family:'Space Mono',monospace;color:#3F7D3B;font-size:13px">POSTED</span></div>
+      <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1.5px dotted rgba(34,25,15,.3)"><span style="font-weight:700">Mhero</span><span style="font-family:'Space Mono',monospace;color:#3F7D3B;font-size:13px">POSTED</span></div>
+      <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1.5px dotted rgba(34,25,15,.3)"><span style="font-weight:700">Tal</span><span style="font-family:'Space Mono',monospace;color:#3F7D3B;font-size:13px">POSTED</span></div>
+      <div style="display:flex;justify-content:space-between;padding:11px 0"><span style="font-weight:700">You</span><span style="font-family:'Space Mono',monospace;color:#DC4230;font-size:13px">WAITING</span></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:66px 0;background:#22190F;color:#FBF7EC;border-top:4px solid #DC4230;border-bottom:4px solid #DC4230">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px">
+    <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#F2CE45">Every Monday</div>
+    <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(30px,4vw,44px);margin-top:10px">One title.<br>One week.</h2>
+    <p style="font-size:17px;color:rgba(251,247,236,.7);max-width:520px;margin-bottom:36px">Whoever gets fried the most takes the crown.</p>
+    <div style="padding:26px 24px;border-radius:3px;border:2.5px solid #DC4230;background:#FBF7EC;max-width:440px">
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.04em;color:#DC4230;font-size:34px;margin-bottom:6px">Fry of the Week</div>
+      <p style="font-size:15.5px;line-height:1.5;color:#6B5B48;margin:0">Eat the worst, wear the crown. It’s a trophy for terrible choices — everyone starts even come Monday.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding:66px 0">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px">
+    <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Questions</div>
+    <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(30px,4vw,44px);margin:10px 0 26px">Fair enough</h2>
+    <div style="max-width:640px">
+      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5">
+        <div style="border-bottom:2px dotted rgba(34,25,15,.3);padding:18px 0">
+          <h3 style="font-size:17px;font-weight:700;margin:0 0 6px">{{ f.q }}</h3>
+          <p style="font-size:15px;line-height:1.55;color:#6B5B48;margin:0">{{ f.a }}</p>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section style="padding:66px 0;background:#22190F;color:#FBF7EC;border-top:4px solid #DC4230;border-bottom:4px solid #DC4230;text-align:center">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:1.2;font-size:clamp(24px,3.4vw,38px);max-width:760px;margin:0 auto">Nobody needs<br>another food app.<br>You need your<br>friends to see this.</div>
+    <div style="max-width:440px;margin:34px auto 0">
+      <sc-if value="{{ formVisible2 }}" hint-placeholder-val="{{ true }}">
+        <form style="display:flex;gap:9px;flex-wrap:wrap" onSubmit="{{ onSubscribe2 }}">
+          <input style="flex:1;min-width:200px;padding:14px;font-size:16px;font-family:inherit;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" style-focus="outline:3px solid #56284F;outline-offset:3px" type="email" required="true" placeholder="you@email.com" aria-label="Email address"></input>
+          <button style="padding:14px 22px;border-radius:3px;background:#F2CE45;color:#22190F;border:2.5px solid #F2CE45;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35);transition:transform .1s,box-shadow .1s" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none" type="submit">Join the list</button>
+        </form>
+      </sc-if>
+      <sc-if value="{{ subscribed2 }}" hint-placeholder-val="{{ false }}">
+        <p style="font-size:16px;font-weight:700;color:#F2CE45">You're on the list. We'll email you when it's your turn.</p>
+      </sc-if>
+      <p style="margin-top:18px;font-size:14px;color:rgba(251,247,236,.65)">Early access opens with the first hundred groups.</p>
+    </div>
+  </div>
+</section>
+
+<footer style="background:#22190F;color:rgba(251,247,236,.62);padding:34px 0;font-size:13.5px;line-height:1.6">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:1;color:#FBF7EC;margin-bottom:10px">Friends<span style="color:#F2CE45">Fried</span></div>
+    <p style="margin:0">Calorie numbers are eyeball estimates for fun, not nutrition advice. Friends Fried is not a diet, fitness, or medical product. If food or eating feels stressful, this app isn't the right tool — talk to someone you trust.</p>
+    <p style="margin-top:12px;opacity:.7">© 2026 Friends Fried · Privacy · Terms</p>
+  </div>
+</footer>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    phase: 'locked', pr: 0, ju: 0, says: [], stamped: false, scored: false,
+    clock: '00:00:00', stepIndex: 0, subscribed1: false, subscribed2: false
+  };
+
+  componentDidMount() {
+    this.tickClock();
+    this._clockTimer = setInterval(this.tickClock, 1000);
+    this.steps = [
+      [0,    () => this.setState({ pr: 0, ju: 0, says: [], stamped: false, scored: false, phase: 'locked' })],
+      [2400, () => this.setState({ phase: 'unlocked' })],
+      [1500, () => this.setState({ stamped: true, scored: true })],
+      [1600, () => this.setState({ ju: 1 })],
+      [700,  () => this.setState({ ju: 2 })],
+      [800,  () => this.setState({ pr: 1 })],
+      [800,  () => this.setState({ ju: 3, says: [{ emoji: '🍳', name: 'Henry', text: "it's 10pm. nine. p.m.", style: 'font-size:11.5px;line-height:1.35;padding:0 10px 7px' }] })],
+      [2600, () => this.setState(s => ({ ju: 4, says: [...s.says, { emoji: '🌶️', name: 'Ani', text: 'posted a gym story four hours ago', style: 'font-size:11.5px;line-height:1.35;padding:0 10px 7px' }] }))],
+      [2900, () => this.setState(s => ({ says: [...s.says, { emoji: '🥑', name: 'Natasha', text: 'the third one was free', style: 'font-size:11.5px;line-height:1.35;padding:0 10px 7px;padding-left:22px;border-left:2px solid #D9A81F;margin-left:10px' }] }))],
+      [2700, () => this.setState(s => ({ pr: 2, says: [...s.says, { emoji: '🍜', name: 'Tal', text: "that's somehow worse", style: 'font-size:11.5px;line-height:1.35;padding:0 10px 7px' }] }))],
+      [2800, () => this.setState(s => ({ says: [...s.says, { emoji: '🌮', name: 'Mhero', text: 'i ate a bunny two weeks ago', style: 'font-size:11.5px;line-height:1.35;padding:0 10px 7px' }] }))],
+      [4000, () => {}]
+    ];
+    this.runStep();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._clockTimer);
+    clearTimeout(this._stepTimer);
+  }
+
+  runStep = () => {
+    const [d, fn] = this.steps[this.state.stepIndex % this.steps.length];
+    this._stepTimer = setTimeout(() => {
+      fn();
+      this.setState(s => ({ stepIndex: s.stepIndex + 1 }));
+      this.runStep();
+    }, d);
+  };
+
+  tickClock = () => {
+    const now = new Date();
+    const d = new Date(now);
+    d.setHours(21, 0, 0, 0);
+    if (d < now) d.setDate(d.getDate() + 1);
+    let s = Math.floor((d - now) / 1000);
+    const p = n => String(n).padStart(2, '0');
+    this.setState({ clock: p(Math.floor(s / 3600)) + ':' + p(Math.floor((s % 3600) / 60)) + ':' + p(s % 60) });
+  };
+
+  plateImg() {
+    const PLATE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+<defs>
+<radialGradient id="wood" cx="35%" cy="25%" r="85%"><stop offset="0%" stop-color="#8A6647"/><stop offset="100%" stop-color="#5E4430"/></radialGradient>
+<linearGradient id="grain" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#000" stop-opacity=".10"/><stop offset="50%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".13"/></linearGradient>
+<radialGradient id="dough" cx="38%" cy="32%" r="72%"><stop offset="0%" stop-color="#E3B278"/><stop offset="70%" stop-color="#CE9354"/><stop offset="100%" stop-color="#A56E38"/></radialGradient>
+<radialGradient id="pink" cx="36%" cy="28%" r="75%"><stop offset="0%" stop-color="#F9A8C4"/><stop offset="65%" stop-color="#EE7BA4"/><stop offset="100%" stop-color="#CF5580"/></radialGradient>
+<radialGradient id="choc" cx="36%" cy="28%" r="75%"><stop offset="0%" stop-color="#6E4529"/><stop offset="65%" stop-color="#50301B"/><stop offset="100%" stop-color="#361E0F"/></radialGradient>
+<radialGradient id="lemon" cx="36%" cy="28%" r="75%"><stop offset="0%" stop-color="#FBDE86"/><stop offset="65%" stop-color="#F0C34A"/><stop offset="100%" stop-color="#CC9C24"/></radialGradient>
+<radialGradient id="brew" cx="42%" cy="30%" r="70%"><stop offset="0%" stop-color="#4A2C18"/><stop offset="100%" stop-color="#241209"/></radialGradient>
+<radialGradient id="vig" cx="50%" cy="42%" r="72%"><stop offset="55%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".38"/></radialGradient>
+</defs>
+<rect width="400" height="500" fill="url(#wood)"/>
+<g opacity=".5">
+<path d="M0 40h400M0 96h400M0 168h400M0 246h400M0 322h400M0 398h400M0 462h400" stroke="#3E2C1E" stroke-width="1.6" opacity=".45"/>
+<path d="M0 62h400M0 132h400M0 208h400M0 284h400M0 360h400M0 430h400" stroke="#9C7550" stroke-width="1" opacity=".3"/>
+</g>
+<rect width="400" height="500" fill="url(#grain)"/>
+<ellipse cx="200" cy="268" rx="152" ry="150" fill="#F4EFE6"/>
+<ellipse cx="200" cy="268" rx="152" ry="150" fill="none" stroke="#CFC5B4" stroke-width="2"/>
+<ellipse cx="200" cy="268" rx="131" ry="129" fill="none" stroke="#DED5C6" stroke-width="3"/>
+<ellipse cx="206" cy="278" rx="152" ry="150" fill="#2A1A0E" opacity=".16"/>
+<ellipse cx="200" cy="268" rx="152" ry="150" fill="#F6F1E9"/>
+<ellipse cx="200" cy="268" rx="131" ry="129" fill="none" stroke="#E2D9CB" stroke-width="2.5"/>
+<g>
+<ellipse cx="140" cy="212" rx="62" ry="60" fill="#2A1A0E" opacity=".22"/>
+<circle cx="136" cy="206" r="60" fill="url(#dough)"/>
+<circle cx="136" cy="206" r="53" fill="url(#pink)"/>
+<path d="M83 206a53 53 0 0 1 53-53 53 53 0 0 1 40 18c-14-6-30-4-44 6-16 11-24 30-20 47-16-2-28-11-29-18z" fill="#fff" opacity=".16"/>
+<circle cx="136" cy="206" r="19" fill="#B37C46"/>
+<circle cx="136" cy="206" r="19" fill="none" stroke="#8E5C2E" stroke-width="2"/>
+<circle cx="134" cy="204" r="15" fill="#7A4E27" opacity=".55"/>
+<g stroke-linecap="round" stroke-width="4">
+<path d="M108 176l10-5" stroke="#F7F2E4"/><path d="M160 172l4 10" stroke="#5FC4D6"/>
+<path d="M176 214l11 3" stroke="#F0D95E"/><path d="M148 246l6 10" stroke="#7ED07A"/>
+<path d="M104 234l-9 6" stroke="#F7F2E4"/><path d="M166 240l9 6" stroke="#C48BE0"/>
+<path d="M118 250l-4 10" stroke="#5FC4D6"/><path d="M182 190l10-3" stroke="#7ED07A"/>
+<path d="M96 200l-11 1" stroke="#F0D95E"/><path d="M150 160l7-8" stroke="#C48BE0"/>
+</g>
+</g>
+<g>
+<ellipse cx="284" cy="186" rx="55" ry="53" fill="#2A1A0E" opacity=".22"/>
+<circle cx="280" cy="180" r="53" fill="url(#dough)"/>
+<circle cx="280" cy="180" r="46" fill="url(#choc)"/>
+<path d="M234 180a46 46 0 0 1 46-46 46 46 0 0 1 34 15c-12-5-26-3-38 5-14 10-21 26-17 41-14-2-24-9-25-15z" fill="#fff" opacity=".10"/>
+<circle cx="280" cy="180" r="17" fill="#B37C46"/>
+<circle cx="280" cy="180" r="17" fill="none" stroke="#8E5C2E" stroke-width="2"/>
+<circle cx="278" cy="178" r="13" fill="#7A4E27" opacity=".55"/>
+<g fill="#F6F1E4" opacity=".9">
+<circle cx="258" cy="152" r="2.6"/><circle cx="302" cy="158" r="2.6"/><circle cx="312" cy="196" r="2.6"/>
+<circle cx="286" cy="220" r="2.6"/><circle cx="246" cy="204" r="2.6"/><circle cx="268" cy="140" r="2.2"/>
+</g>
+</g>
+<g>
+<ellipse cx="196" cy="342" rx="58" ry="56" fill="#2A1A0E" opacity=".22"/>
+<circle cx="192" cy="336" r="56" fill="url(#dough)"/>
+<circle cx="192" cy="336" r="49" fill="url(#lemon)"/>
+<path d="M143 336a49 49 0 0 1 49-49 49 49 0 0 1 37 17c-13-6-28-4-41 6-15 10-22 27-18 43-15-2-26-10-27-17z" fill="#fff" opacity=".18"/>
+<circle cx="192" cy="336" r="18" fill="#B37C46"/>
+<circle cx="192" cy="336" r="18" fill="none" stroke="#8E5C2E" stroke-width="2"/>
+<circle cx="190" cy="334" r="14" fill="#7A4E27" opacity=".55"/>
+<path d="M156 306q10 12 0 24M228 306q-10 12 0 24M172 380q12-9 24 0" stroke="#fff" stroke-width="3.5" fill="none" opacity=".55" stroke-linecap="round"/>
+</g>
+<g>
+<ellipse cx="330" cy="386" rx="60" ry="58" fill="#2A1A0E" opacity=".2"/>
+<circle cx="326" cy="380" r="58" fill="#EFE9DD"/>
+<circle cx="326" cy="380" r="58" fill="none" stroke="#C9BFAE" stroke-width="2.5"/>
+<circle cx="326" cy="380" r="48" fill="url(#brew)"/>
+<path d="M290 352a48 48 0 0 1 30-19c-16 8-27 22-29 39-2 15 4 29 16 38a48 48 0 0 1-17-58z" fill="#fff" opacity=".07"/>
+<ellipse cx="308" cy="358" rx="15" ry="9" fill="#fff" opacity=".13" transform="rotate(-28 308 358)"/>
+</g>
+<g opacity=".55">
+<circle cx="86" cy="300" r="2" fill="#F0D95E"/><circle cx="240" cy="266" r="2" fill="#5FC4D6"/>
+<circle cx="118" cy="330" r="1.8" fill="#C48BE0"/><circle cx="252" cy="300" r="1.8" fill="#7ED07A"/>
+<circle cx="214" cy="240" r="1.6" fill="#F7F2E4"/>
+</g>
+<rect width="400" height="500" fill="url(#vig)"/>
+</svg>`;
+    return "data:image/svg+xml;utf8," + encodeURIComponent(PLATE);
+  }
+
+  onSubscribe1 = (e) => { e.preventDefault(); this.setState({ subscribed1: true }); };
+  onSubscribe2 = (e) => { e.preventDefault(); this.setState({ subscribed2: true }); };
+
+  renderVals() {
+    const rules = [
+      { num: '01', title: 'Sit down with a code', body: 'A table seats five. Whoever sets it gets four letters to share \u2014 pick an open chair, add a name and mark, and it\u2019s yours.' },
+      { num: '02', title: 'Post one plate a day', body: 'Before 10pm. No calorie counts, no scores \u2014 just the plate.' },
+      { num: '03', title: 'Then the table reacts', body: 'Praise means you did well. Fry means you didn’t — plus comments either way.' },
+      { num: '04', title: 'Tap a chair for their history', body: 'Every plate they\u2019ve ever posted, plus whatever title they\u2019re stuck with this week.' }
+    ];
+    const faqs = [
+      { q: 'Is this a calorie tracker?', a: 'No. You post one plate a day, not every meal, and there are no goals, targets, or daily totals. The numbers are rough estimates that exist to make the scoring funny, not to manage your diet.' },
+      { q: 'How accurate are the calories?', a: 'Roughly. It\u2019s a photo, not a food scale. Treat every number as a ballpark \u2014 if you need real precision, this is the wrong app.' },
+      { q: 'Can strangers see my food?', a: 'No. Groups are private and invite-only, joined with a four-letter code you share yourself. There\u2019s no public feed, no discover tab, no followers.' },
+      { q: 'What if I don\u2019t want to post today?', a: 'Tap no plate today. No streak broken, no guilt notification, no passive-aggressive reminder at 8:55.' },
+      { q: 'Is it mean?', a: 'It\u2019s as mean as your friends are. The praise button gets pressed more than the roast button in most groups \u2014 but the roasts are funnier, so we kept them.' }
+    ];
+    return {
+      phase: this.state.phase,
+      locked: this.state.phase === 'locked',
+      unlocked: this.state.phase === 'unlocked',
+      pr: this.state.pr, ju: this.state.ju, says: this.state.says,
+      stamped: this.state.stamped, scored: this.state.scored,
+      clock: this.state.clock,
+      plateImg: this.plateImg(),
+      subscribed1: this.state.subscribed1, formVisible1: !this.state.subscribed1,
+      subscribed2: this.state.subscribed2, formVisible2: !this.state.subscribed2,
+      onSubscribe1: this.onSubscribe1, onSubscribe2: this.onSubscribe2,
+      rules, faqs
+    };
+  }
+}
+</script>
+</body>
+</html>
