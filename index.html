@@ -41,15 +41,7 @@ a:hover{color:inherit}
       <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Five friends · one table · 10pm deadline</div>
       <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(40px,5.6vw,64px);margin:14px 0 0">Your friends<br>judge what<br>you eat</h1>
       <p style="font-size:19px;line-height:1.5;margin:20px 0 26px;max-width:440px">Each meal you post gets attention — <b>praised</b>, <b>fried</b>, and commented on.</p>
-      <sc-if value="{{ formVisible1 }}" hint-placeholder-val="{{ true }}">
-        <form style="display:flex;gap:9px;max-width:440px;flex-wrap:wrap" onSubmit="{{ onSubscribe1 }}">
-          <input style="flex:1;min-width:200px;padding:14px;font-size:16px;font-family:inherit;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" style-focus="outline:3px solid #56284F;outline-offset:3px" type="email" required="true" placeholder="you@email.com" aria-label="Email address"></input>
-          <button style="padding:14px 22px;border-radius:3px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35);transition:transform .1s,box-shadow .1s" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none" type="submit">Get early access</button>
-        </form>
-      </sc-if>
-      <sc-if value="{{ subscribed1 }}" hint-placeholder-val="{{ false }}">
-        <p style="font-size:16px;font-weight:700;color:#3F7D3B">You're on the list. We'll email you when it's your turn.</p>
-      </sc-if>
+      <a href="Friends Fried Set a Table.dc.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:3px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35);transition:transform .1s,box-shadow .1s" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none">Start a table</a>
       <p style="font-size:13px;color:#6B5B48;margin-top:12px">Free. No calorie goals, no streak guilt, no fitness influencers.</p>
       <a href="Friends Fried Set a Table.dc.html?mode=join" style="display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:12px 18px;border-radius:3px;background:#FBF7EC;border:2.5px solid #22190F;color:#22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35)" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none">Already have a code? Enter here →</a>
     </div>
@@ -184,16 +176,8 @@ a:hover{color:inherit}
   <div style="max-width:1060px;margin:0 auto;padding:0 22px">
     <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:1.2;font-size:clamp(24px,3.4vw,38px);max-width:760px;margin:0 auto">Nobody needs<br>another food app.<br>You need your<br>friends to see this.</div>
     <div style="max-width:440px;margin:34px auto 0">
-      <sc-if value="{{ formVisible2 }}" hint-placeholder-val="{{ true }}">
-        <form style="display:flex;gap:9px;flex-wrap:wrap" onSubmit="{{ onSubscribe2 }}">
-          <input style="flex:1;min-width:200px;padding:14px;font-size:16px;font-family:inherit;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" style-focus="outline:3px solid #56284F;outline-offset:3px" type="email" required="true" placeholder="you@email.com" aria-label="Email address"></input>
-          <button style="padding:14px 22px;border-radius:3px;background:#F2CE45;color:#22190F;border:2.5px solid #F2CE45;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35);transition:transform .1s,box-shadow .1s" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none" type="submit">Join the list</button>
-        </form>
-      </sc-if>
-      <sc-if value="{{ subscribed2 }}" hint-placeholder-val="{{ false }}">
-        <p style="font-size:16px;font-weight:700;color:#F2CE45">You're on the list. We'll email you when it's your turn.</p>
-      </sc-if>
-      <p style="margin-top:18px;font-size:14px;color:rgba(251,247,236,.65)">Early access opens with the first hundred groups.</p>
+      <a href="Friends Fried Set a Table.dc.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:3px;background:#F2CE45;color:#22190F;border:2.5px solid #F2CE45;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35);transition:transform .1s,box-shadow .1s" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none">Start a table</a>
+      <p style="margin-top:18px;font-size:14px;color:rgba(251,247,236,.65)">Free to start, right now.</p>
     </div>
   </div>
 </section>
@@ -211,7 +195,7 @@ a:hover{color:inherit}
 class Component extends DCLogic {
   state = {
     phase: 'locked', pr: 0, ju: 0, says: [], stamped: false, scored: false,
-    clock: '00:00:00', stepIndex: 0, subscribed1: false, subscribed2: false
+    clock: '00:00:00', stepIndex: 0
   };
 
   componentDidMount() {
@@ -339,9 +323,6 @@ class Component extends DCLogic {
     return "data:image/svg+xml;utf8," + encodeURIComponent(PLATE);
   }
 
-  onSubscribe1 = (e) => { e.preventDefault(); this.setState({ subscribed1: true }); };
-  onSubscribe2 = (e) => { e.preventDefault(); this.setState({ subscribed2: true }); };
-
   renderVals() {
     const rules = [
       { num: '01', title: 'Sit down with a code', body: 'A table seats five. Whoever sets it gets four letters to share \u2014 pick an open chair, add a name and mark, and it\u2019s yours.' },
@@ -364,9 +345,6 @@ class Component extends DCLogic {
       stamped: this.state.stamped, scored: this.state.scored,
       clock: this.state.clock,
       plateImg: this.plateImg(),
-      subscribed1: this.state.subscribed1, formVisible1: !this.state.subscribed1,
-      subscribed2: this.state.subscribed2, formVisible2: !this.state.subscribed2,
-      onSubscribe1: this.onSubscribe1, onSubscribe2: this.onSubscribe2,
       rules, faqs
     };
   }
