@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const pool = require('../db');
+const pool = require('./db');
 
 // Today's posts for a table
 router.get('/table/:code', async (req, res) => {
