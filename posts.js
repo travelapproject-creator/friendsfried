@@ -1,24 +1,52 @@
 const router = require('express').Router();
 const pool = require('./db');
 
-// Today's posts for a table
+// Posts for a table on a given date (defaults to today); optional seat_id includes that seat's my_vote
 router.get('/table/:code', async (req, res) => {
   try {
     const tableResult = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
     if (!tableResult.rowCount) return res.status(404).json({ error: 'Table not found' });
+    const date = req.query.date || null;
+    const seatId = req.query.seat_id || null;
+    const dateClause = date ? 'p.post_date = $2' : 'p.post_date = current_date';
+    const params = date ? [tableResult.rows[0].id, date] : [tableResult.rows[0].id];
     const posts = await pool.query(
       `select p.*, s.name as seat_name, s.emoji as seat_emoji,
-        (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise') as praise_count,
-        (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry') as fry_count
+        (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')::int as praise_count,
+        (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')::int as fry_count
        from posts p join seats s on s.id = p.seat_id
-       where p.table_id=$1 and p.post_date = current_date
+       where p.table_id=$1 and ${dateClause}
        order by p.created_at`,
-      [tableResult.rows[0].id]
+      params
     );
-    res.json({ posts: posts.rows });
+    let rows = posts.rows;
+    if (seatId) {
+      const voteResult = await pool.query('select post_id, vote_type from votes where voter_seat_id=$1', [seatId]);
+      const voteMap = {};
+      voteResult.rows.forEach(v => { voteMap[v.post_id] = v.vote_type; });
+      rows = rows.map(p => ({ ...p, my_vote: voteMap[p.id] || null }));
+    }
+    res.json({ posts: rows });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch posts' });
+  }
+});
+
+// All posts for a single seat (history)
+router.get('/seat/:seatId', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `select p.*,
+        (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')::int as praise_count,
+        (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')::int as fry_count
+       from posts p where p.seat_id=$1 order by p.post_date desc`,
+      [req.params.seatId]
+    );
+    res.json({ posts: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch seat posts' });
   }
 });
 
@@ -85,6 +113,20 @@ router.get('/:id/comments', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch comments' });
+  }
+});
+
+// Edit a comment
+router.patch('/comments/:id', async (req, res) => {
+  const { text } = req.body;
+  if (!text) return res.status(400).json({ error: 'text required' });
+  try {
+    const result = await pool.query('update comments set text=$1, edited_at=now() where id=$2 returning *', [text, req.params.id]);
+    if (!result.rowCount) return res.status(404).json({ error: 'Not found' });
+    res.json({ comment: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to edit comment' });
   }
 });
 

@@ -69,4 +69,40 @@ router.post('/:code/seats', async (req, res) => {
   }
 });
 
+// Remove/free a seat
+router.delete('/:code/seats/:seatIndex', async (req, res) => {
+  try {
+    const tableResult = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
+    if (!tableResult.rowCount) return res.status(404).json({ error: 'Table not found' });
+    await pool.query('delete from seats where table_id=$1 and seat_index=$2', [tableResult.rows[0].id, req.params.seatIndex]);
+    res.status(204).end();
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to remove seat' });
+  }
+});
+
+// Scoreboard: praise minus fry across all of a seat's posts
+router.get('/:code/scores', async (req, res) => {
+  try {
+    const tableResult = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
+    if (!tableResult.rowCount) return res.status(404).json({ error: 'Table not found' });
+    const result = await pool.query(
+      `select s.id, s.seat_index, s.name, s.emoji,
+        coalesce(sum(case when v.vote_type='praise' then 1 when v.vote_type='fry' then -1 else 0 end),0)::int as score
+       from seats s
+       left join posts p on p.seat_id = s.id
+       left join votes v on v.post_id = p.id
+       where s.table_id = $1
+       group by s.id
+       order by score desc`,
+      [tableResult.rows[0].id]
+    );
+    res.json({ scores: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch scores' });
+  }
+});
+
 module.exports = router;
