@@ -144,9 +144,12 @@ a:hover{color:inherit}
           <sc-for list="{{ scoreboardRows }}" as="sb" hint-placeholder-count="5">
             <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 8px;margin:0 -8px;border-radius:3px;background:{{ sb.rowBg }}">
               <span style="font-size:13px;font-weight:700;color:{{ sb.textColor }};display:flex;align-items:center;gap:6px">
+                <sc-if value="{{ sb.isFryOfWeek }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:13px">🍟</span>
+                </sc-if>
                 <span>{{ sb.emoji }}</span>{{ sb.name }}
                 <sc-if value="{{ sb.isFryOfWeek }}" hint-placeholder-val="{{ false }}">
-                  <span style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.06em;background:#22190F;color:#F2CE45;padding:2px 6px;border-radius:2px;white-space:nowrap">🔥 FRY OF THE WEEK</span>
+                  <span style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.06em;background:#22190F;color:#F2CE45;padding:2px 6px;border-radius:2px;white-space:nowrap">🍟 FRY OF THE WEEK</span>
                 </sc-if>
               </span>
               <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:800;color:{{ sb.scoreBoxColor }};background:{{ sb.scoreBoxBg }};padding:3px 9px;border-radius:4px;box-shadow:2px 2px 0 rgba(34,25,15,.35)">{{ sb.score }}</span>

@@ -132,6 +132,7 @@ a:hover{color:inherit}
             </div>
           </div>
         </sc-for>
+        <a href="fine-print.html" style="display:inline-flex;align-items:center;gap:5px;padding:14px 0 16px;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.06em;color:#6B5B48">See Fine Print →</a>
       </div>
     </div>
   </div>
@@ -159,26 +160,11 @@ a:hover{color:inherit}
 <section style="padding:66px 0;background:#22190F;color:#FBF7EC;border-top:4px solid #DC4230;border-bottom:4px solid #DC4230">
   <div style="max-width:1060px;margin:0 auto;padding:0 22px">
     <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#F2CE45">Every Monday</div>
-    <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(30px,4vw,44px);margin-top:10px">One title.<br>One week.</h2>
-    <p style="font-size:17px;color:rgba(251,247,236,.7);max-width:520px;margin-bottom:36px">Whoever gets fried the most takes the crown.</p>
+    <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(30px,4vw,44px);margin-top:10px">Somebody wears<br>the crown</h2>
+    <p style="font-size:17px;color:rgba(251,247,236,.7);max-width:520px;margin-bottom:36px">Lowest average score by Sunday takes the crown — the AI's read plus whatever your friends thought of it.</p>
     <div style="padding:26px 24px;border-radius:3px;border:2.5px solid #DC4230;background:#FBF7EC;max-width:440px">
       <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.04em;color:#DC4230;font-size:34px;margin-bottom:6px">Fry of the Week</div>
-      <p style="font-size:15.5px;line-height:1.5;color:#6B5B48;margin:0">Eat the worst, wear the crown. It’s a trophy for terrible choices — everyone starts even come Monday.</p>
-    </div>
-  </div>
-</section>
-
-<section style="padding:66px 0">
-  <div style="max-width:1060px;margin:0 auto;padding:0 22px">
-    <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Questions</div>
-    <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(30px,4vw,44px);margin:10px 0 26px">Fair enough</h2>
-    <div style="max-width:640px">
-      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5">
-        <div style="border-bottom:2px dotted rgba(34,25,15,.3);padding:18px 0">
-          <h3 style="font-size:17px;font-weight:700;margin:0 0 6px">{{ f.q }}</h3>
-          <p style="font-size:15px;line-height:1.55;color:#6B5B48;margin:0">{{ f.a }}</p>
-        </div>
-      </sc-for>
+      <p style="font-size:15.5px;line-height:1.5;color:#6B5B48;margin:0">Not just what you ate — what your friends decided about it. A trophy for terrible choices, real or judged. Everyone starts even come Monday.</p>
     </div>
   </div>
 </section>
@@ -196,7 +182,7 @@ a:hover{color:inherit}
 <footer style="background:#22190F;color:rgba(251,247,236,.62);padding:34px 0;font-size:13.5px;line-height:1.6">
   <div style="max-width:1060px;margin:0 auto;padding:0 22px">
     <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:1;color:#FBF7EC;margin-bottom:10px">Friends<span style="color:#F2CE45">Fried</span></div>
-    <p style="margin:0">Calorie numbers are eyeball estimates for fun, not nutrition advice. Friends Fried is not a diet, fitness, or medical product. If food or eating feels stressful, this app isn't the right tool — talk to someone you trust.</p>
+    <p style="margin:0">The AI's health score is a rough, for-fun estimate, not nutrition advice. Friends Fried is not a diet, fitness, or medical product. If food or eating feels stressful, this app isn't the right tool — talk to someone you trust.</p>
     <p style="margin-top:12px;opacity:.7">© 2026 Friends Fried · Privacy · Terms</p>
   </div>
 </footer>
@@ -353,17 +339,10 @@ class Component extends DCLogic {
 
   renderVals() {
     const rules = [
-      { num: '01', title: 'Sit down with a code', body: 'A table seats five. Whoever sets it gets four letters to share \u2014 pick an open chair, add a name and mark, and it\u2019s yours.' },
-      { num: '02', title: 'Post one plate a day', body: 'Before 10pm. No calorie counts, no scores \u2014 just the plate.' },
-      { num: '03', title: 'Then the table reacts', body: 'Praise means you did well. Fry means you didn’t — plus comments either way.' },
-      { num: '04', title: 'Tap a chair for their history', body: 'Every plate they\u2019ve ever posted, plus whatever title they\u2019re stuck with this week.' }
-    ];
-    const faqs = [
-      { q: 'Is this a calorie tracker?', a: 'No. You post one plate a day, not every meal, and there are no goals, targets, or daily totals. The numbers are rough estimates that exist to make the scoring funny, not to manage your diet.' },
-      { q: 'How accurate are the calories?', a: 'Roughly. It\u2019s a photo, not a food scale. Treat every number as a ballpark \u2014 if you need real precision, this is the wrong app.' },
-      { q: 'Can strangers see my food?', a: 'No. Groups are private and invite-only, joined with a four-letter code you share yourself. There\u2019s no public feed, no discover tab, no followers.' },
-      { q: 'What if I don\u2019t want to post today?', a: 'Tap no plate today. No streak broken, no guilt notification, no passive-aggressive reminder at 8:55.' },
-      { q: 'Is it mean?', a: 'It\u2019s as mean as your friends are. The praise button gets pressed more than the roast button in most groups \u2014 but the roasts are funnier, so we kept them.' }
+      { num: '01', title: 'Sit down with a code', body: 'A table seats five. Whoever sets it gets four letters to share.' },
+      { num: '02', title: 'Post one plate a day (any plate)', body: 'Before 10pm. Just the photo.' },
+      { num: '03', title: 'The AI scores it, then friends decide', body: 'A score out of 100, then praise or fry adjusts it.' },
+      { num: '04', title: 'Lowest score wears the crown', body: 'Worst average by Sunday gets Fry of the Week.' }
     ];
     return {
       phase: this.state.phase,
@@ -380,7 +359,7 @@ class Component extends DCLogic {
         setRef: (el) => { this.codeRefs[i] = el; }
       })),
       enterCodeDisabled: !this.state.entryCode.every(c => c), enterTable: this.enterTable,
-      rules, faqs
+      rules
     };
   }
 }
