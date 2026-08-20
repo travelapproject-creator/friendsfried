@@ -46,7 +46,18 @@ a:hover{color:inherit}
     <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(32px,5vw,48px);margin:10px 0 20px">Dining Room</h1>
   </sc-if>
 
-  <sc-if value="{{ inRoom }}" hint-placeholder-val="{{ false }}"></sc-if>
+  <sc-if value="{{ showSecretGate }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 24px;max-width:440px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:8px">Private beta</div>
+      <p style="font-size:15px;color:#6B5B48;margin:0 0 18px">This table's testing with a small group right now. Enter the secret word to sit down.</p>
+      <input value="{{ secretInput }}" onChange="{{ onSecretInputChange }}" onKeyDown="{{ onSecretKeyDown }}" style="width:100%;padding:14px;font-size:16px;font-family:'Space Mono',monospace;text-transform:uppercase;letter-spacing:.12em;text-align:center;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" maxlength="24" placeholder="SECRET WORD" autocomplete="off"></input>
+      <div style="height:14px"></div>
+      <button style="width:100%;padding:14px;border-radius:3px;background:#22190F;color:#FBF7EC;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;cursor:pointer" onClick="{{ submitSecret }}">Enter</button>
+      <sc-if value="{{ hasSecretError }}" hint-placeholder-val="{{ false }}">
+        <p style="font-size:13.5px;color:#DC4230;margin-top:12px">That's not it.</p>
+      </sc-if>
+    </div>
+  </sc-if>
 
   <sc-if value="{{ showIntro }}" hint-placeholder-val="{{ true }}">
     <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Get started</div>
@@ -370,6 +381,7 @@ a:hover{color:inherit}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 const SEAT_POS = [[50,13],[85,38.8],[71.6,79.7],[28.4,79.7],[15,38.8]];
+const SECRET_WORD = 'JUDGIE';
 const AVA = ['🍜','🥑','🌮','🍕','🍓','🥐','🍣','🧋','🥟','🍩','🌶️','🍳'];
 const API_BASE = 'https://friendsfried-production.up.railway.app/api';
 
@@ -384,7 +396,20 @@ class Component extends DCLogic {
     addingSeatIndex: null, addSeatName: '', addSeatEmoji: '', removingSeatIndex: null, enteredDashboard: false,
     selectedDay: null, postsByKey: {}, commentsByPost: {}, personCommentDrafts: {}, joinEmoji: '',
     editingComment: null, editDraft: '', viewingHistorySeat: null, historyPosts: [], shareCopied: false,
-    showShareCard: false, scoreboard: [], uploadingKey: null, errorMsg: '', pendingFile: {}
+    showShareCard: false, scoreboard: [], uploadingKey: null, errorMsg: '', pendingFile: {},
+    secretInput: '', secretError: false,
+    secretGranted: (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('ff_secret_granted') === SECRET_WORD)
+  };
+
+  onSecretInputChange = (e) => this.setState({ secretInput: e.target.value, secretError: false });
+  onSecretKeyDown = (e) => { if (e.key === 'Enter') this.submitSecret(); };
+  submitSecret = () => {
+    if (this.state.secretInput.trim().toUpperCase() === SECRET_WORD) {
+      try { window.localStorage.setItem('ff_secret_granted', SECRET_WORD); } catch (e) {}
+      this.setState({ secretGranted: true, secretError: false });
+    } else {
+      this.setState({ secretError: true });
+    }
   };
 
   componentWillUnmount() { clearTimeout(this._copyTimer); clearTimeout(this._shareTimer); }
@@ -800,11 +825,14 @@ class Component extends DCLogic {
       tableCode: this.state.table ? this.state.table.code : '',
       showCreateForm: this.state.tableMode === 'create' && !this.state.table,
       showCodeReveal: this.state.tableMode === 'create' && !!this.state.table && !this.state.enteredDashboard,
-      showAdminDashboard: this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard,
+      showAdminDashboard: this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard && this.state.secretGranted,
       enterDashboard: this.enterDashboard,
       showJoinCodeForm: this.state.tableMode === 'join' && !this.state.joinFound,
       showJoinSeatPicker: this.state.tableMode === 'join' && this.state.joinFound && !this.state.joinConfirmed,
-      showJoinConfirmed: this.state.tableMode === 'join' && this.state.joinConfirmed,
+      showJoinConfirmed: this.state.tableMode === 'join' && this.state.joinConfirmed && this.state.secretGranted,
+      showSecretGate: ((this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard) || (this.state.tableMode === 'join' && this.state.joinConfirmed)) && !this.state.secretGranted,
+      secretInput: this.state.secretInput, onSecretInputChange: this.onSecretInputChange, onSecretKeyDown: this.onSecretKeyDown,
+      submitSecret: this.submitSecret, hasSecretError: this.state.secretError,
       inRoom: (this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard) || (this.state.tableMode === 'join' && this.state.joinConfirmed),
       showIntro: !((this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard) || (this.state.tableMode === 'join' && this.state.joinConfirmed)),
       tabs: [
