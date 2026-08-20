@@ -31,8 +31,9 @@ a:hover{color:inherit}
       <circle cx="14" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
       <circle cx="8" cy="18.5" r="4.5" fill="#DC4230" stroke="#FBF7EC" stroke-width="2.5"></circle>
     </svg>
-    <a href="index.html" style="display:flex;align-items:center"><div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.045em;text-transform:uppercase;line-height:1;color:#FBF7EC">Friends<span style="color:#F2CE45">Fried</span></div></a>
-    <a href="index.html" style="margin-left:auto;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:rgba(251,247,236,.75)">← Back home</a>
+    <a href="Friends Fried.dc.html" style="display:flex;align-items:center"><div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.045em;text-transform:uppercase;line-height:1;color:#FBF7EC">Friends<span style="color:#F2CE45">Fried</span></div></a>
+    <a href="Friends Fried Hub.dc.html" style="margin-left:auto;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:rgba(251,247,236,.75)">Hub</a>
+    <a href="Friends Fried.dc.html" style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.08em;color:rgba(251,247,236,.75)">← Back home</a>
   </div>
 </nav>
 
@@ -208,12 +209,27 @@ a:hover{color:inherit}
                       <input type="file" accept="image/*" onChange="{{ p.onFileChange }}" style="display:none"></input>
                     </label>
                   </sc-if>
+                  <sc-if value="{{ p.showPreview }}" hint-placeholder-val="{{ false }}">
+                    <img src="{{ p.previewUrl }}" style="width:100%;height:100%;object-fit:cover;display:block"></img>
+                  </sc-if>
                   <sc-if value="{{ p.showWaiting }}" hint-placeholder-val="{{ true }}">
                     <div style="width:100%;height:100%;border:2px dashed rgba(34,25,15,.25);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;color:#A2937E;text-transform:uppercase">Waiting for photo</div>
                   </sc-if>
                 </div>
+                <sc-if value="{{ p.showPreview }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;gap:9px;margin-top:12px">
+                    <button disabled="{{ p.isPosting }}" style="flex:1;padding:11px;border-radius:3px;border:2px solid rgba(34,25,15,.25);background:none;color:#6B5B48;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;cursor:pointer" onClick="{{ p.onCancelPending }}">Retake</button>
+                    <button disabled="{{ p.isPosting }}" style="flex:2;padding:11px;border-radius:3px;border:2px solid #22190F;background:#22190F;color:#FBF7EC;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;text-transform:uppercase;cursor:pointer" onClick="{{ p.onConfirmPost }}">{{ p.postingLabel }}</button>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ p.showEditTrigger }}" hint-placeholder-val="{{ false }}">
+                  <label style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:#6B5B48;text-transform:uppercase;cursor:pointer">
+                    <span>✏️ Edit photo</span>
+                    <input type="file" accept="image/*" onChange="{{ p.onFileChange }}" style="display:none"></input>
+                  </label>
+                </sc-if>
                 <sc-if value="{{ p.hasAiRating }}" hint-placeholder-val="{{ false }}">
-                  <div style="margin-top:10px;font-family:'Space Mono',monospace;font-size:11.5px;color:#6B5B48;background:rgba(34,25,15,.05);border-radius:3px;padding:6px 9px">🤖 {{ p.aiScore }}/100 health — {{ p.aiVerdict }}</div>
+                  <div style="margin-top:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;color:#22190F;background:rgba(34,25,15,.05);border-radius:4px;padding:9px 12px">🤖 {{ p.aiScore }}/100 health — {{ p.aiVerdict }}</div>
                 </sc-if>
                 <sc-if value="{{ p.canVote }}" hint-placeholder-val="{{ false }}">
                   <div style="display:flex;gap:9px;margin-top:12px">
@@ -368,7 +384,7 @@ class Component extends DCLogic {
     addingSeatIndex: null, addSeatName: '', addSeatEmoji: '', removingSeatIndex: null, enteredDashboard: false,
     selectedDay: null, postsByKey: {}, commentsByPost: {}, personCommentDrafts: {}, joinEmoji: '',
     editingComment: null, editDraft: '', viewingHistorySeat: null, historyPosts: [], shareCopied: false,
-    showShareCard: false, scoreboard: [], uploadingKey: null, errorMsg: ''
+    showShareCard: false, scoreboard: [], uploadingKey: null, errorMsg: '', pendingFile: {}
   };
 
   componentWillUnmount() { clearTimeout(this._copyTimer); clearTimeout(this._shareTimer); }
@@ -533,15 +549,35 @@ class Component extends DCLogic {
       this.setState({ postsByKey });
     } catch (e) {}
   };
-  onFileSelected = async (key, seatIndex, e) => {
+  onPickFile = (key, seatIndex, e) => {
     const file = e.target.files && e.target.files[0];
-    if (!file || !this.state.table) return;
+    if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
+    this.setState(s => ({ pendingFile: { ...s.pendingFile, [key]: { file, previewUrl, seatIndex } } }));
+  };
+  cancelPendingFile = (key) => this.setState(s => {
+    const pf = { ...s.pendingFile };
+    if (pf[key]) URL.revokeObjectURL(pf[key].previewUrl);
+    delete pf[key];
+    return { pendingFile: pf };
+  });
+  confirmPost = async (key) => {
+    const pending = this.state.pendingFile[key];
+    if (!pending || !this.state.table) return;
     this.setState({ uploadingKey: key, errorMsg: '' });
     try {
-      const url = await this.uploadImage(file);
-      const seat = this.state.seats[seatIndex];
-      const data = await this.api('/posts', { method: 'POST', body: JSON.stringify({ table_id: this.state.table.id, seat_id: seat.id, image_url: url }) });
-      this.setState(s => ({ postsByKey: { ...s.postsByKey, [key]: data.post }, uploadingKey: null }));
+      const url = await this.uploadImage(pending.file);
+      const seat = this.state.seats[pending.seatIndex];
+      const existing = this.state.postsByKey[key];
+      const data = existing
+        ? await this.api('/posts/' + existing.id, { method: 'PATCH', body: JSON.stringify({ image_url: url, seat_id: seat.id }) })
+        : await this.api('/posts', { method: 'POST', body: JSON.stringify({ table_id: this.state.table.id, seat_id: seat.id, image_url: url }) });
+      URL.revokeObjectURL(pending.previewUrl);
+      this.setState(s => {
+        const pf = { ...s.pendingFile };
+        delete pf[key];
+        return { postsByKey: { ...s.postsByKey, [key]: data.post }, uploadingKey: null, pendingFile: pf };
+      });
       this.refreshScoreboard(); this.loadTodayFeed();
     } catch (err) { this.setState({ uploadingKey: null }); this.fail(err); }
   };
@@ -658,14 +694,20 @@ class Component extends DCLogic {
       const myVote = post ? post.my_vote : undefined;
       const comments = post ? (this.state.commentsByPost[post.id] || []) : [];
       if (post && this.state.commentsByPost[post.id] === undefined) this.loadComments(post.id);
+      const pending = this.state.pendingFile[key];
+      const isPosting = this.state.uploadingKey === key;
       return {
         idx: i, emoji: occ.emoji || '🍽️', name: occ.name + (i === 0 ? ' (host)' : ''),
         score: this.getSeatScore(i),
         isMine, notMine: !isMine,
-        hasPhoto: isPosted, imageUrl: isPosted ? post.image_url : '',
-        showUploadArea: isMine && !isPosted, showWaiting: !isMine && !isPosted,
-        uploadLabel: this.state.uploadingKey === key ? 'Uploading…' : 'Drop your plate photo',
-        onFileChange: (e) => this.onFileSelected(key, i, e),
+        hasPhoto: isPosted && !pending, imageUrl: isPosted ? post.image_url : '',
+        showUploadArea: isMine && !isPosted && !pending, showPreview: isMine && !!pending,
+        showEditTrigger: isMine && isPosted && !pending,
+        showWaiting: !isMine && !isPosted,
+        previewUrl: pending ? pending.previewUrl : '', isPosting,
+        postingLabel: isPosting ? (isPosted ? 'Saving…' : 'Posting…') : (isPosted ? 'Save' : 'Post'),
+        onFileChange: (e) => this.onPickFile(key, i, e),
+        onConfirmPost: () => this.confirmPost(key), onCancelPending: () => this.cancelPendingFile(key),
         isPosted, canVote: isPosted,
         hasAiRating: isPosted && post && post.ai_score != null,
         aiScore: post ? post.ai_score : null, aiVerdict: post ? post.ai_verdict : '',

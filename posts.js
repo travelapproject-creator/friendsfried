@@ -1,7 +1,8 @@
 const router = require('express').Router();
-const pool = require('./db');
-const { rateImageWithClaude } = require('./ai');
+const pool = require('../db');
+const { rateImageWithClaude } = require('../ai');
 
+// Posts for a table on a given date (defaults to today); optional seat_id includes that seat's my_vote
 router.get('/table/:code', async (req, res) => {
   try {
     const tableResult = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
@@ -33,6 +34,7 @@ router.get('/table/:code', async (req, res) => {
   }
 });
 
+// All posts for a single seat (history)
 router.get('/seat/:seatId', async (req, res) => {
   try {
     const result = await pool.query(
@@ -49,6 +51,7 @@ router.get('/seat/:seatId', async (req, res) => {
   }
 });
 
+// Create a post
 router.post('/', async (req, res) => {
   const { table_id, seat_id, image_url, caption } = req.body;
   if (!table_id || !seat_id || !image_url) return res.status(400).json({ error: 'table_id, seat_id, image_url required' });
@@ -78,6 +81,33 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Edit today's post (replace the photo; re-runs AI rating) — only the seat that posted it can edit
+router.patch('/:id', async (req, res) => {
+  const { image_url, seat_id } = req.body;
+  if (!image_url || !seat_id) return res.status(400).json({ error: 'image_url and seat_id required' });
+  try {
+    const existing = await pool.query('select * from posts where id=$1', [req.params.id]);
+    if (!existing.rowCount) return res.status(404).json({ error: 'Not found' });
+    if (existing.rows[0].seat_id !== seat_id) return res.status(403).json({ error: 'Only the original poster can edit this' });
+    const result = await pool.query('update posts set image_url=$1 where id=$2 returning *', [image_url, req.params.id]);
+    let post = result.rows[0];
+    try {
+      const rating = await rateImageWithClaude(image_url);
+      if (rating) {
+        const upd = await pool.query('update posts set ai_score=$1, ai_verdict=$2 where id=$3 returning *', [rating.score, rating.verdict, post.id]);
+        post = upd.rows[0];
+      }
+    } catch (aiErr) {
+      console.error('AI rating failed:', aiErr.message);
+    }
+    res.json({ post });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update post' });
+  }
+});
+
+// Praise/fry a post
 router.post('/:id/votes', async (req, res) => {
   const { voter_seat_id, vote_type } = req.body;
   if (!voter_seat_id || !['praise', 'fry'].includes(vote_type)) return res.status(400).json({ error: 'voter_seat_id and valid vote_type required' });
@@ -95,6 +125,7 @@ router.post('/:id/votes', async (req, res) => {
   }
 });
 
+// Comment on a post
 router.post('/:id/comments', async (req, res) => {
   const { seat_id, text } = req.body;
   if (!seat_id || !text) return res.status(400).json({ error: 'seat_id and text required' });
@@ -110,6 +141,7 @@ router.post('/:id/comments', async (req, res) => {
   }
 });
 
+// Comments on a post
 router.get('/:id/comments', async (req, res) => {
   try {
     const result = await pool.query(
@@ -124,6 +156,7 @@ router.get('/:id/comments', async (req, res) => {
   }
 });
 
+// Edit a comment
 router.patch('/comments/:id', async (req, res) => {
   const { text } = req.body;
   if (!text) return res.status(400).json({ error: 'text required' });

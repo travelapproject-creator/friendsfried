@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const pool = require('./db');
+const pool = require('../db');
 
 function genCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -8,6 +8,7 @@ function genCode() {
   return code;
 }
 
+// Create a table + host seat
 router.post('/', async (req, res) => {
   const { group_name, host_name, host_emoji } = req.body;
   if (!group_name || !host_name) return res.status(400).json({ error: 'group_name and host_name required' });
@@ -34,6 +35,7 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Find table by code
 router.get('/:code', async (req, res) => {
   try {
     const tableResult = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
@@ -47,6 +49,7 @@ router.get('/:code', async (req, res) => {
   }
 });
 
+// Join/claim a seat
 router.post('/:code/seats', async (req, res) => {
   const { name, emoji, seat_index } = req.body;
   if (!name || seat_index == null) return res.status(400).json({ error: 'name and seat_index required' });
@@ -66,6 +69,7 @@ router.post('/:code/seats', async (req, res) => {
   }
 });
 
+// Remove/free a seat
 router.delete('/:code/seats/:seatIndex', async (req, res) => {
   try {
     const tableResult = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
@@ -95,7 +99,7 @@ router.get('/:code/scores', async (req, res) => {
          from posts p
          left join (
            select post_id, vote_type,
-             (case when rn=1 then 1 when rn=2 then 1 else power(2, rn-2) end) *
+             (case when rn=1 then 1 when rn=2 then 1 else power(2::numeric, (rn-2)::numeric) end) *
              (case when vote_type='fry' then -1 else 1 end) as signed_pts
            from (
              select post_id, vote_type,
