@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const pool = require('../db');
-const { rateImageWithClaude } = require('../ai');
+const pool = require('./db');
+const { rateImageWithClaude } = require('./ai');
 
 // Posts for a table on a given date (defaults to today); optional seat_id includes that seat's my_vote
 router.get('/table/:code', async (req, res) => {
