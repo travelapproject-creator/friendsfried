@@ -14,7 +14,17 @@ router.get('/table/:code', async (req, res) => {
     const posts = await pool.query(
       `select p.*, s.name as seat_name, s.emoji as seat_emoji,
         (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')::int as praise_count,
-        (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')::int as fry_count
+        (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')::int as fry_count,
+        greatest(1, least(100, coalesce(p.ai_score,50) + coalesce((
+          select sum(
+            (case when rn=1 then 1 when rn=2 then 2 when rn=3 then 4 else 6 end) *
+            (case when vote_type='fry' then -1 else 1 end)
+          )
+          from (
+            select vote_type, row_number() over (partition by vote_type order by created_at) as rn
+            from votes where post_id = p.id
+          ) ranked
+        ),0)))::int as adjusted_score
        from posts p join seats s on s.id = p.seat_id
        where p.table_id=$1 and ${dateClause}
        order by p.created_at`,

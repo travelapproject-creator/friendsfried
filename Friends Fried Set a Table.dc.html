@@ -101,6 +101,21 @@ a:hover{color:inherit}
     </div>
   </sc-if>
 
+  <sc-if value="{{ showRulesGate }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 24px;max-width:480px">
+      <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:8px">House rules</div>
+      <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.03em;font-size:22px;margin:0 0 16px">Before you sit down</h2>
+      <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:22px;font-size:14.5px;line-height:1.5;color:#22190F">
+        <div>🍽️ Post one plate a day.</div>
+        <div>👏🔥 Praise it or judge it.</div>
+        <div>📈 The longer you wait to react, the more it counts.</div>
+        <div>🤖 The AI gives a health score — your praise or judgment pushes it up or down.</div>
+        <div>👑 Lowest score wins (loses?) — that's Fry of the Week. Praise someone to save them.</div>
+      </div>
+      <button style="width:100%;padding:14px;border-radius:3px;background:#22190F;color:#FBF7EC;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;cursor:pointer" onClick="{{ acknowledgeRules }}">Got it, let's eat</button>
+    </div>
+  </sc-if>
+
   <sc-if value="{{ showAdminDashboard }}" hint-placeholder-val="{{ false }}">
     <div style="max-width:520px">
       <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:4px">
@@ -126,10 +141,15 @@ a:hover{color:inherit}
         </div>
         <div style="flex:1 1 160px;max-width:200px;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:4px 5px 0 rgba(34,25,15,.75);padding:14px">
           <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#6B5B48;margin-bottom:8px">Scoreboard</div>
-          <sc-for list="{{ scoreboard }}" as="sb" hint-placeholder-count="5">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dotted rgba(34,25,15,.25)">
-              <span style="font-size:13px;font-weight:700"><span style="margin-right:5px">{{ sb.emoji }}</span>{{ sb.name }}</span>
-              <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700">{{ sb.score }}</span>
+          <sc-for list="{{ scoreboardRows }}" as="sb" hint-placeholder-count="5">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 8px;margin:0 -8px;border-radius:3px;background:{{ sb.rowBg }}">
+              <span style="font-size:13px;font-weight:700;color:{{ sb.textColor }};display:flex;align-items:center;gap:6px">
+                <span>{{ sb.emoji }}</span>{{ sb.name }}
+                <sc-if value="{{ sb.isFryOfWeek }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.06em;background:#22190F;color:#F2CE45;padding:2px 6px;border-radius:2px;white-space:nowrap">🔥 FRY OF THE WEEK</span>
+                </sc-if>
+              </span>
+              <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:{{ sb.textColor }}">{{ sb.score }}</span>
             </div>
           </sc-for>
         </div>
@@ -245,7 +265,7 @@ a:hover{color:inherit}
                 <sc-if value="{{ p.canVote }}" hint-placeholder-val="{{ false }}">
                   <div style="display:flex;gap:9px;margin-top:12px">
                     <button style="flex:1;padding:11px;border-radius:3px;border:2px solid #3F7D3B;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;cursor:pointer;background:{{ p.prBg }};color:{{ p.prColor }}" onClick="{{ p.onVotePr }}">👏 {{ p.prLabel }}</button>
-                    <button style="flex:1;padding:11px;border-radius:3px;border:2px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;cursor:pointer;background:{{ p.fryBg }};color:{{ p.fryColor }}" onClick="{{ p.onVoteFry }}">🔥 {{ p.fryLabel }}</button>
+                    <button style="flex:1;padding:11px;border-radius:3px;border:2px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;cursor:pointer;background:{{ p.fryBg }};color:{{ p.fryColor }}" onClick="{{ p.onVoteFry }}">🔥 {{ p.judgeLabel }}</button>
                   </div>
                 </sc-if>
                 <sc-if value="{{ p.isPosted }}" hint-placeholder-val="{{ false }}">
@@ -398,7 +418,8 @@ class Component extends DCLogic {
     editingComment: null, editDraft: '', viewingHistorySeat: null, historyPosts: [], shareCopied: false,
     showShareCard: false, scoreboard: [], uploadingKey: null, errorMsg: '', pendingFile: {},
     secretInput: '', secretError: false,
-    secretGranted: (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('ff_secret_granted') === SECRET_WORD)
+    secretGranted: (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('ff_secret_granted') === SECRET_WORD),
+    rulesAcknowledged: (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('ff_rules_seen') === '1')
   };
 
   onSecretInputChange = (e) => this.setState({ secretInput: e.target.value, secretError: false });
@@ -410,6 +431,10 @@ class Component extends DCLogic {
     } else {
       this.setState({ secretError: true });
     }
+  };
+  acknowledgeRules = () => {
+    try { window.localStorage.setItem('ff_rules_seen', '1'); } catch (e) {}
+    this.setState({ rulesAcknowledged: true });
   };
 
   componentWillUnmount() { clearTimeout(this._copyTimer); clearTimeout(this._shareTimer); }
@@ -735,8 +760,9 @@ class Component extends DCLogic {
         onConfirmPost: () => this.confirmPost(key), onCancelPending: () => this.cancelPendingFile(key),
         isPosted, canVote: isPosted,
         hasAiRating: isPosted && post && post.ai_score != null,
-        aiScore: post ? post.ai_score : null, aiVerdict: post ? post.ai_verdict : '',
+        aiScore: post ? (post.adjusted_score != null ? post.adjusted_score : post.ai_score) : null, aiVerdict: post ? post.ai_verdict : '',
         prLabel: 'Praise' + (prCount ? ' ' + prCount : ''), fryLabel: 'Fry' + (fryCount ? ' ' + fryCount : ''),
+        judgeLabel: 'Judge' + (fryCount ? ' ' + fryCount : ''),
         prBg: myVote === 'praise' ? '#3F7D3B' : 'transparent', prColor: myVote === 'praise' ? '#fff' : '#22190F',
         fryBg: myVote === 'fry' ? '#DC4230' : 'transparent', fryColor: myVote === 'fry' ? '#fff' : '#22190F',
         onVotePr: () => this.votePost(key, post && post.id, 'praise'), onVoteFry: () => this.votePost(key, post && post.id, 'fry'),
@@ -794,6 +820,17 @@ class Component extends DCLogic {
       };
     });
   }
+  buildScoreboardRows() {
+    const rows = this.state.scoreboard || [];
+    if (!rows.length) return [];
+    const minScore = Math.min(...rows.map(r => Number(r.score)));
+    return rows.map(r => ({
+      emoji: r.emoji, name: r.name, score: r.score,
+      isFryOfWeek: Number(r.score) === minScore,
+      rowBg: Number(r.score) === minScore ? '#DC4230' : 'transparent',
+      textColor: Number(r.score) === minScore ? '#fff' : '#22190F'
+    }));
+  }
   buildJoinSeatOptions() {
     return this.state.seats.map((occ, i) => ({
       idx: i, cursor: occ ? 'default' : 'pointer',
@@ -825,12 +862,14 @@ class Component extends DCLogic {
       tableCode: this.state.table ? this.state.table.code : '',
       showCreateForm: this.state.tableMode === 'create' && !this.state.table,
       showCodeReveal: this.state.tableMode === 'create' && !!this.state.table && !this.state.enteredDashboard,
-      showAdminDashboard: this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard && this.state.secretGranted,
+      showAdminDashboard: !!this.state.table && ((this.state.tableMode === 'create' && this.state.enteredDashboard) || (this.state.tableMode === 'join' && this.state.joinConfirmed)) && this.state.secretGranted && this.state.rulesAcknowledged,
       enterDashboard: this.enterDashboard,
       showJoinCodeForm: this.state.tableMode === 'join' && !this.state.joinFound,
       showJoinSeatPicker: this.state.tableMode === 'join' && this.state.joinFound && !this.state.joinConfirmed,
-      showJoinConfirmed: this.state.tableMode === 'join' && this.state.joinConfirmed && this.state.secretGranted,
+      showJoinConfirmed: false,
       showSecretGate: ((this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard) || (this.state.tableMode === 'join' && this.state.joinConfirmed)) && !this.state.secretGranted,
+      showRulesGate: ((this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard) || (this.state.tableMode === 'join' && this.state.joinConfirmed)) && this.state.secretGranted && !this.state.rulesAcknowledged,
+      acknowledgeRules: this.acknowledgeRules,
       secretInput: this.state.secretInput, onSecretInputChange: this.onSecretInputChange, onSecretKeyDown: this.onSecretKeyDown,
       submitSecret: this.submitSecret, hasSecretError: this.state.secretError,
       inRoom: (this.state.tableMode === 'create' && !!this.state.table && this.state.enteredDashboard) || (this.state.tableMode === 'join' && this.state.joinConfirmed),
@@ -861,6 +900,7 @@ class Component extends DCLogic {
       hasSelectedDay: this.state.selectedDay != null,
       selectedDayLabel: (this.buildCalendar().chips.find(c => c.key === this.state.selectedDay) || {}).label || '',
       dayPeople: this.buildDayPeople(this.state.mySeatIndex), scoreboard: this.state.scoreboard, todayFeed: this.buildTodayFeed(),
+      scoreboardRows: this.buildScoreboardRows(),
       hasTodayFeed: this.buildTodayFeed().length > 0,
       feedBrandText: this.buildTodayFeed().length >= this.state.seats.filter(s => s).length ? 'TABLE\u2019S FRIED' : 'STILL COOKING',
       isViewingHistory: this.state.viewingHistorySeat != null,

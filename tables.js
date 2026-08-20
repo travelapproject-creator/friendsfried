@@ -82,35 +82,38 @@ router.delete('/:code/seats/:seatIndex', async (req, res) => {
   }
 });
 
-// Scoreboard: escalating praise/fry points (1st vote=1, 2nd=1, 3rd=2, 4th=4 — doubles from the 3rd vote on,
-// same scale for Fry as negative points) plus each seat's average health score / 10.
+// Scoreboard: each seat's score is the average of their posts' friend-adjusted health scores — the AI's base
+// score, nudged up or down by escalating praise/judge points (1st vote=1, 2nd=2, 3rd=4, 4th and later=6;
+// judge counts as negative), clamped 1-100. Sorted lowest first — whoever's at the top (lowest score) is
+// this week's Fry of the Week; friends can save someone from it by praising instead of judging.
 router.get('/:code/scores', async (req, res) => {
   try {
     const tableResult = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
     if (!tableResult.rowCount) return res.status(404).json({ error: 'Table not found' });
     const result = await pool.query(
-      `select s.id, s.seat_index, s.name, s.emoji,
-        round(coalesce(pv.vote_score,0) + coalesce(pv.avg_health,0)/10.0, 1)::float as score
-       from seats s
-       left join (
-         select p.seat_id,
-           sum(vs.signed_pts) as vote_score,
-           avg(p.ai_score) as avg_health
-         from posts p
-         left join (
-           select post_id, vote_type,
-             (case when rn=1 then 1 when rn=2 then 1 else power(2::numeric, (rn-2)::numeric) end) *
-             (case when vote_type='fry' then -1 else 1 end) as signed_pts
-           from (
-             select post_id, vote_type,
-               row_number() over (partition by post_id, vote_type order by created_at) as rn
-             from votes
-           ) ranked
-         ) vs on vs.post_id = p.id
-         group by p.seat_id
-       ) pv on pv.seat_id = s.id
-       where s.table_id = $1
-       order by score desc`,
+      `with vote_pts as (
+        select post_id, vote_type,
+          (case when rn=1 then 1 when rn=2 then 2 when rn=3 then 4 else 6 end) *
+          (case when vote_type='fry' then -1 else 1 end) as signed_pts
+        from (
+          select post_id, vote_type, row_number() over (partition by post_id, vote_type order by created_at) as rn
+          from votes
+        ) ranked
+      ),
+      post_adjusted as (
+        select p.id, p.seat_id,
+          greatest(1, least(100, coalesce(p.ai_score,50) + coalesce(sum(vp.signed_pts),0))) as adjusted_score
+        from posts p
+        left join vote_pts vp on vp.post_id = p.id
+        group by p.id, p.seat_id
+      )
+      select s.id, s.seat_index, s.name, s.emoji,
+        round(coalesce(avg(pa.adjusted_score),50),1)::float as score
+      from seats s
+      left join post_adjusted pa on pa.seat_id = s.id
+      where s.table_id = $1
+      group by s.id
+      order by score asc`,
       [tableResult.rows[0].id]
     );
     res.json({ scores: result.rows });
