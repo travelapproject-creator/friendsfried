@@ -9,6 +9,10 @@
 <x-dc>
 <helmet>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Karla:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#22190F">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});}</script>
 <style>
 body{margin:0;font-family:'Karla',system-ui,sans-serif;color:#22190F;background:#F2CE45;
   background-image:radial-gradient(circle at 1px 1px,rgba(34,25,15,.13) 1px,transparent 0);
