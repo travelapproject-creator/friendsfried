@@ -108,7 +108,7 @@ a:hover{color:inherit}
       <div style="display:flex;flex-direction:column;gap:13px;margin-bottom:22px;font-size:14.5px;line-height:1.5;color:#22190F">
         <div>🍽️ Post one plate a day.</div>
         <div>👏🔥 Praise it or judge it.</div>
-        <div>📈 The longer you wait to react, the more it counts.</div>
+        <div>📈 The sooner you react, the more it counts.</div>
         <div>🤖 The AI gives a health score — your praise or judgment pushes it up or down.</div>
         <div>👑 Lowest score wins (loses?) — that's Fry of the Week. Praise someone to save them.</div>
       </div>
@@ -149,7 +149,7 @@ a:hover{color:inherit}
                   <span style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.06em;background:#22190F;color:#F2CE45;padding:2px 6px;border-radius:2px;white-space:nowrap">🔥 FRY OF THE WEEK</span>
                 </sc-if>
               </span>
-              <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:{{ sb.textColor }}">{{ sb.score }}</span>
+              <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:800;color:{{ sb.scoreBoxColor }};background:{{ sb.scoreBoxBg }};padding:3px 9px;border-radius:4px;box-shadow:2px 2px 0 rgba(34,25,15,.35)">{{ sb.score }}</span>
             </div>
           </sc-for>
         </div>
@@ -761,8 +761,9 @@ class Component extends DCLogic {
         isPosted, canVote: isPosted,
         hasAiRating: isPosted && post && post.ai_score != null,
         aiScore: post ? (post.adjusted_score != null ? post.adjusted_score : post.ai_score) : null, aiVerdict: post ? post.ai_verdict : '',
-        prLabel: 'Praise' + (prCount ? ' ' + prCount : ''), fryLabel: 'Fry' + (fryCount ? ' ' + fryCount : ''),
-        judgeLabel: 'Judge' + (fryCount ? ' ' + fryCount : ''),
+        prLabel: 'Praise (+' + [6,4,2,1][Math.min(prCount,3)] + ')',
+        fryLabel: 'Fry (-' + [6,4,2,1][Math.min(fryCount,3)] + ')',
+        judgeLabel: 'Judge (-' + [6,4,2,1][Math.min(fryCount,3)] + ')',
         prBg: myVote === 'praise' ? '#3F7D3B' : 'transparent', prColor: myVote === 'praise' ? '#fff' : '#22190F',
         fryBg: myVote === 'fry' ? '#DC4230' : 'transparent', fryColor: myVote === 'fry' ? '#fff' : '#22190F',
         onVotePr: () => this.votePost(key, post && post.id, 'praise'), onVoteFry: () => this.votePost(key, post && post.id, 'fry'),
@@ -824,12 +825,17 @@ class Component extends DCLogic {
     const rows = this.state.scoreboard || [];
     if (!rows.length) return [];
     const minScore = Math.min(...rows.map(r => Number(r.score)));
-    return rows.map(r => ({
-      emoji: r.emoji, name: r.name, score: r.score,
-      isFryOfWeek: Number(r.score) === minScore,
-      rowBg: Number(r.score) === minScore ? '#DC4230' : 'transparent',
-      textColor: Number(r.score) === minScore ? '#fff' : '#22190F'
-    }));
+    return rows.map(r => {
+      const isFry = Number(r.score) === minScore;
+      return {
+        emoji: r.emoji, name: r.name, score: r.score,
+        isFryOfWeek: isFry,
+        rowBg: isFry ? '#DC4230' : 'transparent',
+        textColor: isFry ? '#fff' : '#22190F',
+        scoreBoxBg: isFry ? '#FBF7EC' : '#DC4230',
+        scoreBoxColor: isFry ? '#DC4230' : '#fff'
+      };
+    });
   }
   buildJoinSeatOptions() {
     return this.state.seats.map((occ, i) => ({
