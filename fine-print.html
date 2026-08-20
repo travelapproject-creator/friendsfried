@@ -58,7 +58,7 @@ a:hover{color:inherit}
 <footer style="background:#22190F;color:rgba(251,247,236,.62);padding:34px 0;font-size:13.5px;line-height:1.6">
   <div style="max-width:1060px;margin:0 auto;padding:0 22px">
     <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:1;color:#FBF7EC;margin-bottom:10px">Friends<span style="color:#F2CE45">Fried</span></div>
-    <p style="margin:0">The AI's health score is a rough, for-fun estimate, not nutrition advice. Friends Fried is not a diet, fitness, or medical product. If food or eating feels stressful, this app isn't the right tool — talk to someone you trust.</p>
+    <p style="margin:0">The health score is a rough, for-fun estimate, not nutrition advice. Friends Fried is not a diet, fitness, or medical product. If food or eating feels stressful, this app isn't the right tool — talk to someone you trust.</p>
     <p style="margin-top:12px;opacity:.7">© 2026 Friends Fried · Privacy · Terms</p>
   </div>
 </footer>
@@ -69,7 +69,7 @@ class Component extends DCLogic {
   renderVals() {
     const faqs = [
       { q: 'Is this a calorie tracker?', a: 'No. You post one plate a day, not every meal, and there are no goals, targets, or daily totals. It\u2019s a score, not a food log \u2014 nothing here is meant to manage your diet.' },
-      { q: 'How are scores assigned?', a: 'The AI gives every plate a score out of 100 based on how healthy it looks \u2014 it\u2019s a rough read from a photo, not a lab result. Then friends adjust it: praise or fry moves the score up or down, and whoever reacts first carries the most weight \u2014 6 points for the 1st reaction, 4 for the 2nd, 2 for the 3rd, 1 for the 4th. Score stays clamped between 1 and 100.' },
+      { q: 'How are scores assigned?', a: 'Every plate automatically gets ranked and given a score out of 100 based on how healthy it looks \u2014 it\u2019s a rough read from a photo, not a lab result. Then friends adjust it: praise or fry moves the score up or down, and whoever reacts first carries the most weight \u2014 6 points for the 1st reaction, 4 for the 2nd, 2 for the 3rd, 1 for the 4th. Score stays clamped between 1 and 100.' },
       { q: 'What is Fry of the Week?', a: 'A running tally, not a one-time score. Whoever ends the week (Sunday night) with the lowest average across their posted plates wears the title until Monday, when everyone starts even again.' },
       { q: 'How many people can join a table?', a: 'Exactly five. Not four, not six \u2014 the game is built around five seats, and a table won\u2019t start until all five are filled.' },
       { q: 'Can strangers see my food?', a: 'No. Groups are private and invite-only, joined with a four-letter code you share yourself. There\u2019s no public feed, no discover tab, no followers.' },

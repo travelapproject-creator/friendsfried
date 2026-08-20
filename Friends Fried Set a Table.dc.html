@@ -108,7 +108,7 @@ a:hover{color:inherit}
         <div>🍽️ Post one plate a day.</div>
         <div>👏🔥 Praise it or judge it.</div>
         <div>📈 The sooner you react, the more it counts.</div>
-        <div>🤖 The AI gives a health score — your praise or judgment pushes it up or down.</div>
+        <div>📊 Your meal automatically gets ranked and given a health score — praise or judgment pushes it up or down.</div>
         <div>👑 Lowest score wins (loses?) — that's Fry of the Week. Praise someone to save them.</div>
       </div>
       <button style="width:100%;padding:14px;border-radius:3px;background:#22190F;color:#FBF7EC;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;cursor:pointer" onClick="{{ acknowledgeRules }}">Got it, let's eat</button>
@@ -262,7 +262,7 @@ a:hover{color:inherit}
                   </label>
                 </sc-if>
                 <sc-if value="{{ p.hasAiRating }}" hint-placeholder-val="{{ false }}">
-                  <div style="margin-top:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;color:#22190F;background:rgba(34,25,15,.05);border-radius:4px;padding:9px 12px">🤖 {{ p.aiScore }}/100 health — {{ p.aiVerdict }}</div>
+                  <div style="margin-top:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;color:#22190F;background:rgba(34,25,15,.05);border-radius:4px;padding:9px 12px">📊 {{ p.aiScore }}/100 health — {{ p.aiVerdict }}</div>
                 </sc-if>
                 <sc-if value="{{ p.canVote }}" hint-placeholder-val="{{ false }}">
                   <div style="display:flex;gap:9px;margin-top:12px">

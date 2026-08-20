@@ -163,7 +163,7 @@ a:hover{color:inherit}
   <div style="max-width:1060px;margin:0 auto;padding:0 22px">
     <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Every Monday</div>
     <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(30px,4vw,44px);margin-top:10px">Somebody wears<br>the crown</h2>
-    <p style="font-size:17px;color:#6B5B48;max-width:520px;margin-bottom:36px">Lowest average score by Sunday takes the crown — the AI's read plus whatever your friends thought of it.</p>
+    <p style="font-size:17px;color:#6B5B48;max-width:520px;margin-bottom:36px">Lowest average score by Sunday takes the crown — the automatic health score plus whatever your friends thought of it.</p>
     <div style="padding:26px 24px;border-radius:3px;border:2.5px solid #DC4230;background:#F2CE45;max-width:440px">
       <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.04em;color:#DC4230;font-size:34px;margin-bottom:6px">Fry of the Week</div>
       <p style="font-size:15.5px;line-height:1.5;color:#6B5B48;margin:0">Not just what you ate — what your friends decided about it. A trophy for terrible choices, real or judged. Everyone starts even come Monday.</p>
@@ -184,7 +184,7 @@ a:hover{color:inherit}
 <footer style="background:#22190F;color:rgba(251,247,236,.62);padding:34px 0;font-size:13.5px;line-height:1.6">
   <div style="max-width:1060px;margin:0 auto;padding:0 22px">
     <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:1;color:#FBF7EC;margin-bottom:10px">Friends<span style="color:#F2CE45">Fried</span></div>
-    <p style="margin:0">The AI's health score is a rough, for-fun estimate, not nutrition advice. Friends Fried is not a diet, fitness, or medical product. If food or eating feels stressful, this app isn't the right tool — talk to someone you trust.</p>
+    <p style="margin:0">The health score is a rough, for-fun estimate, not nutrition advice. Friends Fried is not a diet, fitness, or medical product. If food or eating feels stressful, this app isn't the right tool — talk to someone you trust.</p>
     <p style="margin-top:12px;opacity:.7">© 2026 Friends Fried · Privacy · Terms</p>
   </div>
 </footer>
@@ -343,7 +343,7 @@ class Component extends DCLogic {
     const rules = [
       { num: '01', title: 'Sit down with a code', body: 'A table seats five. Whoever sets it gets four letters to share.' },
       { num: '02', title: 'Post one plate a day (any plate)', body: 'Before 10pm. Just the photo.' },
-      { num: '03', title: 'The AI scores it, then friends decide', body: 'A score out of 100, then praise or fry adjusts it.' },
+      { num: '03', title: 'It receives a health score automatically', body: 'Our system ranks it out of 100, then praise or fry adjusts it.' },
       { num: '04', title: 'Lowest score wears the crown', body: 'Worst average by Sunday gets Fry of the Week.' }
     ];
     return {
