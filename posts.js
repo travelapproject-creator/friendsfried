@@ -68,7 +68,11 @@ router.get('/table/:code', async (req, res) => {
       `select p.*, s.name as seat_name, s.emoji as seat_emoji,
         (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')::int as praise_count,
         (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')::int as fry_count,
-        greatest(0, least(10, coalesce(p.ai_health,6) + coalesce(praise_count,0) - coalesce(fry_count,0)))::numeric(3,1) as adjusted_score
+        greatest(0, least(10,
+          coalesce(p.ai_health,6)
+          + (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')
+          - (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')
+        ))::numeric(3,1) as adjusted_score
        from posts p join seats s on s.id = p.seat_id
        where p.table_id=$1 and ${dateClause}
        order by p.created_at`,
