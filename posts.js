@@ -2,6 +2,32 @@ const router = require('express').Router();
 const pool = require('./db');
 const { rateImageWithClaude } = require('./ai');
 
+// Diagnostic: open /api/posts/ai-status in a browser to see why rating is or isn't working.
+// Pass ?image_url=<absolute url of a posted plate> to run a real end-to-end rating attempt.
+router.get('/ai-status', async (req, res) => {
+  const out = {
+    api_key_present: !!process.env.ANTHROPIC_API_KEY,
+    public_url: process.env.PUBLIC_URL || '(not set - uploads fall back to the request host)'
+  };
+  if (!out.api_key_present) {
+    out.problem = 'ANTHROPIC_API_KEY is not set in the server environment. Set it and restart the server.';
+    return res.json(out);
+  }
+  if (!req.query.image_url) {
+    out.next_step = 'Add ?image_url=<absolute URL of an already-posted plate photo> to test a real rating.';
+    return res.json(out);
+  }
+  try {
+    const rating = await rateImageWithClaude(req.query.image_url);
+    out.rating = rating;
+    out.result = rating ? 'Rating succeeded.' : 'Call returned no parsable rating.';
+  } catch (e) {
+    out.result = 'Rating threw an error.';
+    out.error = e.message;
+  }
+  res.json(out);
+});
+
 // Posts for a table on a given date (defaults to today); optional seat_id includes that seat's my_vote
 router.get('/table/:code', async (req, res) => {
   try {
