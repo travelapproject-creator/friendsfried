@@ -82,27 +82,22 @@ router.delete('/:code/seats/:seatIndex', async (req, res) => {
   }
 });
 
-// Scoreboard: each seat's score is the average of their posts' friend-adjusted health scores — the AI's base
-// score, nudged up or down by escalating praise/judge points (1st vote=1, 2nd=2, 3rd=4, 4th and later=6;
-// judge counts as negative), clamped 1-100. Sorted lowest first — whoever's at the top (lowest score) is
-// this week's Fry of the Week; friends can save someone from it by praising instead of judging.
+// Scoreboard: each seat's score is the average of their posts' friend-adjusted scores — starts neutral at
+// 50, moves 1 point per praise (up) or judge (down), clamped 0-100. Sorted lowest first — whoever's at the
+// top (lowest score) is this week's Fry of the Week; friends can save someone from it by praising instead
+// of judging.
 router.get('/:code/scores', async (req, res) => {
   try {
     const tableResult = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
     if (!tableResult.rowCount) return res.status(404).json({ error: 'Table not found' });
     const result = await pool.query(
       `with vote_pts as (
-        select post_id, vote_type,
-          (case when rn=1 then 1 when rn=2 then 2 when rn=3 then 4 else 6 end) *
-          (case when vote_type='fry' then -1 else 1 end) as signed_pts
-        from (
-          select post_id, vote_type, row_number() over (partition by post_id, vote_type order by created_at) as rn
-          from votes
-        ) ranked
+        select post_id, (case when vote_type='fry' then -1 else 1 end) as signed_pts
+        from votes
       ),
       post_adjusted as (
         select p.id, p.seat_id,
-          greatest(1, least(100, coalesce(p.ai_score,50) + coalesce(sum(vp.signed_pts),0))) as adjusted_score
+          greatest(0, least(10, coalesce(p.ai_health,5) + coalesce(sum(vp.signed_pts),0))) as adjusted_score
         from posts p
         left join vote_pts vp on vp.post_id = p.id
         group by p.id, p.seat_id

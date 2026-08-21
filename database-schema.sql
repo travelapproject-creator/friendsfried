@@ -1,8 +1,8 @@
 -- Friends Fried — Postgres schema
 -- Matches the prototype: tables seat 5, seat lock-in, daily posts, escalating praise/fry, comments, history.
--- Scoring (computed at read time, see GET /tables/:code/scores): per post, votes of each type are ordered by
--- created_at and scored 1, 1, 2, 4 (doubling from the 3rd vote), Fry counting the same scale as negative points.
--- Leaderboard score = sum of those points + (seat's average ai_score / 10).
+-- Scoring (computed at read time, see GET /tables/:code/scores): each post's score starts at the AI's
+-- 0-10 health read; each praise vote is +1, each fry vote is -1, clamped 0-10.
+-- Leaderboard score = average of a seat's post scores for the week; lowest average is Fry of the Week.
 
 create extension if not exists "pgcrypto";
 
@@ -33,6 +33,8 @@ create table posts (
   caption       text,
   ai_score      int check (ai_score between 1 and 100),  -- Claude's 1-100 health-score rating of the plate
   ai_verdict    text,                                    -- Claude's one-line verdict
+  poster_note   text,                                    -- poster's correction if the AI misread the plate; re-rates using this context
+  ai_health     int check (ai_health between 0 and 10),   -- Claude's healthiness read, 0-10 (informational only, doesn't affect the leaderboard)
   created_at    timestamptz not null default now(),
   unique (seat_id, post_date)
 );
@@ -40,6 +42,8 @@ create table posts (
 -- Migration: run if the posts table already exists without these columns
 -- alter table posts add column if not exists ai_score int check (ai_score between 1 and 100);
 -- alter table posts add column if not exists ai_verdict text;
+-- alter table posts add column if not exists poster_note text;
+-- alter table posts add column if not exists ai_health int check (ai_health between 0 and 10);
 
 create table votes (
   id            uuid primary key default gen_random_uuid(),

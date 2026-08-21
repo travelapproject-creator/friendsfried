@@ -15,16 +15,7 @@ router.get('/table/:code', async (req, res) => {
       `select p.*, s.name as seat_name, s.emoji as seat_emoji,
         (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')::int as praise_count,
         (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')::int as fry_count,
-        greatest(1, least(100, coalesce(p.ai_score,50) + coalesce((
-          select sum(
-            (case when rn=1 then 1 when rn=2 then 2 when rn=3 then 4 else 6 end) *
-            (case when vote_type='fry' then -1 else 1 end)
-          )
-          from (
-            select vote_type, row_number() over (partition by vote_type order by created_at) as rn
-            from votes where post_id = p.id
-          ) ranked
-        ),0)))::int as adjusted_score
+        greatest(0, least(10, coalesce(p.ai_health,5) + coalesce(praise_count,0) - coalesce(fry_count,0)))::numeric(3,1) as adjusted_score
        from posts p join seats s on s.id = p.seat_id
        where p.table_id=$1 and ${dateClause}
        order by p.created_at`,
@@ -75,8 +66,8 @@ router.post('/', async (req, res) => {
       const rating = await rateImageWithClaude(image_url);
       if (rating) {
         const upd = await pool.query(
-          'update posts set ai_score=$1, ai_verdict=$2 where id=$3 returning *',
-          [rating.score, rating.verdict, post.id]
+          'update posts set ai_health=$1, ai_verdict=$2 where id=$3 returning *',
+          [rating.health, rating.verdict, post.id]
         );
         post = upd.rows[0];
       }
@@ -104,7 +95,7 @@ router.patch('/:id', async (req, res) => {
     try {
       const rating = await rateImageWithClaude(image_url);
       if (rating) {
-        const upd = await pool.query('update posts set ai_score=$1, ai_verdict=$2 where id=$3 returning *', [rating.score, rating.verdict, post.id]);
+        const upd = await pool.query('update posts set ai_health=$1, ai_verdict=$2 where id=$3 returning *', [rating.health, rating.verdict, post.id]);
         post = upd.rows[0];
       }
     } catch (aiErr) {
@@ -114,6 +105,28 @@ router.patch('/:id', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to update post' });
+  }
+});
+
+// Poster flags the AI got it wrong and describes what's actually on the plate — re-rates using that context
+router.post('/:id/recheck', async (req, res) => {
+  const { seat_id, note } = req.body;
+  if (!seat_id || !note) return res.status(400).json({ error: 'seat_id and note required' });
+  try {
+    const postResult = await pool.query('select * from posts where id=$1', [req.params.id]);
+    if (!postResult.rowCount) return res.status(404).json({ error: 'Post not found' });
+    const post = postResult.rows[0];
+    if (post.seat_id !== seat_id) return res.status(403).json({ error: 'Only the poster can correct this' });
+    const rating = await rateImageWithClaude(post.image_url, note.slice(0, 300));
+    if (!rating) return res.status(502).json({ error: 'Re-rating unavailable right now' });
+    const upd = await pool.query(
+      'update posts set ai_health=$1, ai_verdict=$2, poster_note=$3 where id=$4 returning *',
+      [rating.health, rating.verdict, note.slice(0, 300), req.params.id]
+    );
+    res.json({ post: upd.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to re-check post' });
   }
 });
 
