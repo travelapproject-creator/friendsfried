@@ -275,7 +275,7 @@ a:hover{color:inherit}
         <p style="font-size:12px;color:#5F6B2A;margin:0 0 4px;text-align:right">Copied.</p>
       </sc-if>
       <sc-if value="{{ showMainViews }}" hint-placeholder-val="{{ true }}">
-      <div style="position:sticky;top:0;z-index:20;height:98px">
+      <div style="position:{{ tableBarPosition }};top:0;z-index:20;height:{{ tableBarH }}">
         <div style="position:absolute;left:0;right:0;top:0;background:{{ tableBg }};border:2.5px solid {{ tableBorder }};border-radius:18px;box-shadow:{{ tableShadow }};height:{{ tableCardH }}px;padding:16px 12px;box-sizing:border-box;overflow:hidden">
           <div style="position:relative;width:100%;max-width:318px;margin:0 auto;height:{{ tableInnerH }}px">
             <div style="position:absolute;left:50%;top:{{ discTop }}px;transform:translate(-50%,-50%) scale({{ discScale }});width:108px;height:108px;border-radius:50%;background:#FFFDF7;border:2.5px solid #22190F;box-shadow:3px 4px 0 rgba(34,25,15,.65);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1px;padding:8px;box-sizing:border-box;opacity:{{ discOpacity }}">
@@ -305,7 +305,7 @@ a:hover{color:inherit}
           </div>
         </div>
       </div>
-      <div ref="{{ setTableSpacer }}" style="height:252px"></div>
+      <div ref="{{ setTableSpacer }}" style="height:{{ tableSpacerH }}"></div>
 
       <sc-if value="{{ hasTodayFeed }}" hint-placeholder-val="{{ false }}">
         <div style="border-top:1px solid rgba(34,25,15,.12);padding:16px 2px 0;margin-top:18px">
@@ -1561,7 +1561,10 @@ class Component extends DCLogic {
 
   renderVals() {
     const fry = this.fryOfWeek();
-    const tp = this.state.tableP || 0;
+    // On desktop the table lives in its own sticky column and never leaves, so the collapse morph is
+    // both pointless and harmful there — it fought the sticky column and left a phantom spacer gap.
+    const deskWide = this.state.winW >= 1100;
+    const tp = deskWide ? 0 : (this.state.tableP || 0);
     const tEase = tp < 0.5 ? 2 * tp * tp : 1 - Math.pow(-2 * tp + 2, 2) / 2;
     const tLerp = (a, b) => a + (b - a) * tEase;
     return {
@@ -1659,6 +1662,11 @@ class Component extends DCLogic {
       ],
       joinSeatOptions: this.buildJoinSeatOptions(), roomSeats: this.buildRoomSeats(),
       setTableSpacer: this.setTableSpacer,
+      tableSpacerH: deskWide ? '0px' : '252px',
+      tableBarPosition: deskWide ? 'static' : 'sticky',
+      // The bar is a 98px sticky window on mobile with the taller card overflowing it into the spacer.
+      // With no spacer on desktop it has to be the card's own height or the card overlaps the feed.
+      tableBarH: deskWide ? '366px' : '98px',
       tableCardH: tLerp(350, 98).toFixed(0),
       tableInnerH: tLerp(318, 66).toFixed(0),
       // The butter panel fades out entirely by the time the chairs reach the rail, so the collapsed
