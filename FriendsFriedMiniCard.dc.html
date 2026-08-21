@@ -16,13 +16,13 @@
   <div style="position:relative;border-top:2px solid #22190F;border-bottom:2px solid #22190F">
     <img src="{{ plateImg }}" alt="Three donuts and a decaf cold brew" style="display:block;width:100%;aspect-ratio:4/5;object-fit:cover"></img>
     <sc-if value="{{ stamped }}" hint-placeholder-val="{{ false }}">
-      <div style="position:absolute;right:-6px;bottom:-13px;border:2px solid #22190F;border-radius:3px;padding:4px 9px;color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;line-height:1;box-shadow:3px 4px 0 rgba(34,25,15,.85);transform:rotate(-5deg);background:#DC4230;animation:ffStampIn .4s cubic-bezier(.2,1.6,.5,1) both">24</div>
+      <div style="position:absolute;right:-6px;bottom:-13px;border:2px solid #22190F;border-radius:3px;padding:4px 9px;color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;line-height:1;box-shadow:3px 4px 0 rgba(34,25,15,.85);transform:rotate(-5deg);background:#DC4230;animation:ffStampIn .4s cubic-bezier(.2,1.6,.5,1) both">3<span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;opacity:.8">/10</span></div>
     </sc-if>
   </div>
   <div style="padding:17px 10px 9px">
     <sc-if value="{{ scored }}" hint-placeholder-val="{{ false }}">
       <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13.5px;letter-spacing:-.02em;animation:ffFadeIn .35s ease both">Three donuts, decaf cold brew</div>
-      <div style="font-size:11.5px;line-height:1.4;color:#6B5B48;margin-top:4px;animation:ffFadeIn .35s ease both">Three is not a snack, it is a decision. The decaf changes nothing.</div>
+      <div style="font-size:11.5px;line-height:1.4;color:#6B5B48;margin-top:4px;animation:ffFadeIn .35s ease both">Fried dough with sugar glaze and chocolate, plus an iced coffee. No vegetables or protein on the plate.</div>
     </sc-if>
     <sc-if value="{{ notScored }}" hint-placeholder-val="{{ true }}">
       <div style="font-size:11.5px;line-height:1.4;color:#6B5B48;text-align:center;padding:6px 0">Analyzing…</div>
@@ -32,7 +32,7 @@
     <div style="display:flex;border-top:2px dashed rgba(34,25,15,.3)">
       <div style="flex:1;padding:8px 4px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;background:{{ praiseBg }};color:{{ praiseColor }}">👏 Praise{{ praiseSuffix }}</div>
       <div style="width:2px;background:rgba(34,25,15,.3)"></div>
-      <div style="flex:1;padding:8px 4px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;background:{{ judgeBg }};color:{{ judgeColor }}">💩 Fry{{ judgeSuffix }}</div>
+      <div style="flex:1;padding:8px 4px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;background:{{ judgeBg }};color:{{ judgeColor }}">🔥 Judge{{ judgeSuffix }}</div>
     </div>
   </sc-if>
   <sc-for list="{{ says }}" as="s" hint-placeholder-count="0">
