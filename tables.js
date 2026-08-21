@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const pool = require('./db');
+const pool = require('../db');
 
 function genCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -97,7 +97,7 @@ router.get('/:code/scores', async (req, res) => {
       ),
       post_adjusted as (
         select p.id, p.seat_id,
-          greatest(0, least(10, coalesce(p.ai_health,5) + coalesce(sum(vp.signed_pts),0))) as adjusted_score
+          greatest(0, least(10, coalesce(p.ai_health,6) + coalesce(sum(vp.signed_pts),0))) as adjusted_score
         from posts p
         left join vote_pts vp on vp.post_id = p.id
         group by p.id, p.seat_id

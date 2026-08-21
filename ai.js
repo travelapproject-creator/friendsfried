@@ -1,9 +1,9 @@
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-5-20250929';
 
-// Downloads the posted image and asks Claude for a 0-10 healthiness read. That score is the plate's
-// BASE score; each praise/fry vote then moves it by 1 (clamped 0-10). Returns null if no API key is set
-// or the response can't be parsed — callers treat this as best-effort, never blocking a post.
+// Downloads the posted image and asks Claude to name the dish and give a 0-10 healthiness read. That score
+// is the plate's BASE score; each praise/fry vote then moves it by 1 (clamped 0-10). Returns null if no API
+// key is set or the response can't be parsed — callers treat this as best-effort, never blocking a post.
 async function rateImageWithClaude(imageUrl, note) {
   if (!process.env.ANTHROPIC_API_KEY) {
     console.error('[ai] ANTHROPIC_API_KEY is not set — plates will post with no health score.');
@@ -40,7 +40,7 @@ async function rateImageWithClaude(imageUrl, note) {
         role: 'user',
         content: [
           { type: 'image', source: { type: 'base64', media_type: mediaType, data: buf.toString('base64') } },
-          { type: 'text', text: 'Give this plate of food a 0-10 score for how healthy/nutritious/balanced it looks. Then write a short, plain, factual one-line reason describing what you actually see on the plate. No jokes, no wordplay, no addressing the eater directly. Max 20 words.' + (note ? ' The poster says the photo shows: "' + note + '" \u2014 trust this description of what the food actually is over your own visual read.' : '') + ' Respond with ONLY JSON: {"health": <integer 0-10>, "verdict": "<text>"}' }
+          { type: 'text', text: 'Look at this plate of food. Name the dish in 5 words or fewer, based on what you actually see. Then give it a 0-10 score for how healthy/nutritious/balanced it looks. Then write a short, plain, factual one-line reason describing what you see on the plate. No jokes, no wordplay, no addressing the eater directly. Max 20 words for the reason.' + (note ? ' The poster says the photo shows: "' + note + '" \u2014 trust this description of what the food actually is over your own visual read, for both the name and the score.' : '') + ' Respond with ONLY JSON: {"name": "<dish name>", "health": <integer 0-10>, "verdict": "<text>"}' }
         ]
       }]
     })
@@ -56,7 +56,8 @@ async function rateImageWithClaude(imageUrl, note) {
   const parsed = JSON.parse(match[0]);
   const health = Math.max(0, Math.min(10, Math.round(Number(parsed.health))));
   const verdict = String(parsed.verdict || '').slice(0, 180);
-  return { health, verdict };
+  const name = String(parsed.name || '').slice(0, 60);
+  return { name, health, verdict };
 }
 
 module.exports = { rateImageWithClaude };

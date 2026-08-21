@@ -1,12 +1,13 @@
 const router = require('express').Router();
-const pool = require('./db');
-const { rateImageWithClaude } = require('./ai');
+const pool = require('../db');
+const { rateImageWithClaude } = require('../ai');
 
 // Idempotent migration on boot: older databases predate these columns, and without them every
 // rating write fails silently. Safe to run on every start.
 (async () => {
   const cols = [
     "alter table posts add column if not exists ai_verdict text",
+    "alter table posts add column if not exists ai_name text",
     "alter table posts add column if not exists poster_note text",
     "alter table posts add column if not exists ai_health int",
     "alter table posts add column if not exists ai_score int"
@@ -123,8 +124,8 @@ router.post('/', async (req, res) => {
       const rating = await rateImageWithClaude(image_url);
       if (rating) {
         const upd = await pool.query(
-          'update posts set ai_health=$1, ai_verdict=$2 where id=$3 returning *',
-          [rating.health, rating.verdict, post.id]
+          'update posts set ai_health=$1, ai_verdict=$2, ai_name=$3 where id=$4 returning *',
+          [rating.health, rating.verdict, rating.name, post.id]
         );
         post = upd.rows[0];
       }
@@ -152,7 +153,7 @@ router.patch('/:id', async (req, res) => {
     try {
       const rating = await rateImageWithClaude(image_url);
       if (rating) {
-        const upd = await pool.query('update posts set ai_health=$1, ai_verdict=$2 where id=$3 returning *', [rating.health, rating.verdict, post.id]);
+        const upd = await pool.query('update posts set ai_health=$1, ai_verdict=$2, ai_name=$3 where id=$4 returning *', [rating.health, rating.verdict, rating.name, post.id]);
         post = upd.rows[0];
       }
     } catch (aiErr) {
@@ -177,8 +178,8 @@ router.post('/:id/recheck', async (req, res) => {
     const rating = await rateImageWithClaude(post.image_url, note.slice(0, 300));
     if (!rating) return res.status(502).json({ error: 'Re-rating unavailable right now' });
     const upd = await pool.query(
-      'update posts set ai_health=$1, ai_verdict=$2, poster_note=$3 where id=$4 returning *',
-      [rating.health, rating.verdict, note.slice(0, 300), req.params.id]
+      'update posts set ai_health=$1, ai_verdict=$2, ai_name=$3, poster_note=$4 where id=$5 returning *',
+      [rating.health, rating.verdict, rating.name, note.slice(0, 300), req.params.id]
     );
     res.json({ post: upd.rows[0] });
   } catch (err) {
