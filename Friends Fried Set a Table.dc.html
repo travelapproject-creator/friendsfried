@@ -115,12 +115,29 @@ a:hover{color:inherit}
   </sc-if>
 
   <sc-if value="{{ showAdminDashboard }}" hint-placeholder-val="{{ false }}">
-    <div style="display:flex;gap:18px;align-items:flex-start;justify-content:center;flex-wrap:wrap">
-    <div style="flex:1 1 440px;max-width:520px;min-width:0">
+    <div style="max-width:520px;margin:0 auto">
       <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:4px">
         <button style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:#6B5B48;background:none;border:none;cursor:pointer;padding:0" onClick="{{ copyCode }}">CODE {{ tableCode }} · COPY</button>
         <button style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#DC4230;background:none;border:none;cursor:pointer;padding:0" onClick="{{ startExit }}">EXIT ↩</button>
       </div>
+      <sc-if value="{{ isHost }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:6px">
+          <button style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;color:#6B5B48;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline" onClick="{{ startReset }}">↻ RESET THE GAME (HOST)</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ resetDone }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#3F7D3B;color:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:4px 5px 0 rgba(34,25,15,.8);padding:12px 15px;margin-bottom:14px;font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;letter-spacing:.04em">✓ SCORES RESET — NEW GAME STARTS NOW</div>
+      </sc-if>
+      <sc-if value="{{ resetConfirm }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#DC4230;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);padding:18px 20px;margin-bottom:14px">
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.03em;font-size:18px;color:#FBF7EC">Reset the game?</div>
+          <p style="font-size:13.5px;color:#FBF7EC;margin:6px 0 14px;line-height:1.5">Everyone's score goes back to a clean slate and a new game starts from now. Plates already posted stay in each chair's history — they just stop counting.</p>
+          <div style="display:flex;gap:9px">
+            <button style="flex:1;padding:11px;border-radius:2px;background:none;color:#FBF7EC;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;border:2px solid rgba(251,247,236,.5);cursor:pointer" onClick="{{ cancelReset }}">KEEP PLAYING</button>
+            <button disabled="{{ resetDisabled }}" style="flex:1;padding:11px;border-radius:2px;background:#22190F;color:#FBF7EC;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.08em;border:2px solid #22190F;cursor:pointer" onClick="{{ confirmReset }}">{{ resetLabel }}</button>
+          </div>
+        </div>
+      </sc-if>
       <sc-if value="{{ exitConfirm }}" hint-placeholder-val="{{ false }}">
         <div style="background:#F2CE45;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);padding:18px 20px;margin-bottom:14px">
           <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.03em;font-size:18px;color:#22190F">Leave the table?</div>
@@ -137,15 +154,27 @@ a:hover{color:inherit}
       <sc-if value="{{ showMainViews }}" hint-placeholder-val="{{ true }}">
       <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;justify-content:center">
         <div style="position:relative;width:100%;max-width:330px;flex:1 1 280px;aspect-ratio:1">
-          <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44%;aspect-ratio:1;border-radius:50%;background:#F2CE45;border:2.5px solid #22190F;box-shadow:4px 5px 0 rgba(34,25,15,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px">
-            <div style="font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#6B5B48">{{ groupName }}</div>
-            <div style="font-family:'Space Mono',monospace;font-size:16px;font-weight:700">{{ tableCode }}</div>
+          <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:44%;aspect-ratio:1;border-radius:50%;background:#F2CE45;border:2.5px solid #22190F;box-shadow:4px 5px 0 rgba(34,25,15,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:3px;padding:10px">
+            <sc-if value="{{ hasFry }}" hint-placeholder-val="{{ false }}">
+              <div style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#6B5B48">This week</div>
+              <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:-.03em;line-height:1.05">{{ fryName }} is frying</div>
+              <div style="font-size:17px">🍟</div>
+            </sc-if>
+            <sc-if value="{{ noFryYet }}" hint-placeholder-val="{{ true }}">
+              <div style="font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#6B5B48">{{ groupName }}</div>
+              <div style="font-family:'Space Mono',monospace;font-size:16px;font-weight:700">{{ tableCode }}</div>
+            </sc-if>
           </div>
           <sc-for list="{{ roomSeats }}" as="s" hint-placeholder-count="5">
             <div onClick="{{ s.onClick }}" style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:{{ s.x }}%;top:{{ s.y }}%;cursor:{{ s.cursor }}">
-              <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;border-style:{{ s.chairBorderStyle }};display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;background:{{ s.chairBg }};box-shadow:3px 4px 0 rgba(34,25,15,.75)">{{ s.initial }}</div>
-              <div style="font-size:12.5px;font-weight:700;margin-top:7px">{{ s.label }}</div>
-              <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid {{ s.chipColor }};color:{{ s.chipColor }}">{{ s.chipText }}</div>
+              <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid {{ s.chairRing }};border-style:{{ s.chairBorderStyle }};display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;background:{{ s.chairBg }};box-shadow:3px 4px 0 rgba(34,25,15,.75)">{{ s.initial }}</div>
+              <div style="font-size:12.5px;font-weight:700;margin-top:7px">{{ s.label }} {{ s.crown }}</div>
+              <sc-if value="{{ s.hasScore }}" hint-placeholder-val="{{ false }}">
+                <div style="display:inline-block;margin-top:4px;font-family:'Space Mono',monospace;font-size:11px;font-weight:800;color:{{ s.scoreColor }};background:{{ s.scoreBg }};border:1.5px solid #22190F;border-radius:3px;padding:1.5px 8px;box-shadow:1.5px 2px 0 rgba(34,25,15,.5)">{{ s.score }}</div>
+              </sc-if>
+              <sc-if value="{{ s.showChip }}" hint-placeholder-val="{{ true }}">
+                <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid {{ s.chipColor }};color:{{ s.chipColor }}">{{ s.chipText }}</div>
+              </sc-if>
             </div>
           </sc-for>
         </div>
@@ -206,12 +235,16 @@ a:hover{color:inherit}
       </div>
 
       <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 24px;margin-top:20px">
-        <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:10px">Last 14 days</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
+          <button onClick="{{ prevWeek }}" style="width:30px;height:30px;flex-shrink:0;border:2px solid #22190F;border-radius:3px;background:#FBF7EC;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;cursor:pointer;box-shadow:2px 2px 0 rgba(34,25,15,.6)">◀</button>
+          <div style="flex:1;text-align:center;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#22190F">{{ weekLabel }}</div>
+          <button onClick="{{ nextWeek }}" disabled="{{ nextWeekDisabled }}" style="width:30px;height:30px;flex-shrink:0;border:2px solid #22190F;border-radius:3px;background:#FBF7EC;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;cursor:{{ nextWeekCursor }};opacity:{{ nextWeekOpacity }};box-shadow:2px 2px 0 rgba(34,25,15,.6)">▶</button>
+        </div>
         <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px">
-          <sc-for list="{{ calChips }}" as="c" hint-placeholder-count="14">
-            <button onClick="{{ c.onClick }}" style="flex-shrink:0;min-width:56px;padding:9px 6px;border-radius:4px;font-family:'Space Mono',monospace;cursor:pointer;background:{{ c.bg }};border:{{ c.border }};text-align:center">
+          <sc-for list="{{ calChips }}" as="c" hint-placeholder-count="7">
+            <button onClick="{{ c.onClick }}" style="flex:1;min-width:0;padding:9px 4px;border-radius:4px;font-family:'Space Mono',monospace;cursor:{{ c.cursor }};opacity:{{ c.opacity }};background:{{ c.bg }};border:{{ c.border }};text-align:center">
               <div style="font-size:8.5px;letter-spacing:.06em;color:#6B5B48">{{ c.dow }}</div>
-              <div style="font-size:12px;font-weight:700;color:#22190F;margin-top:2px">{{ c.label }}</div>
+              <div style="font-size:11.5px;font-weight:700;color:#22190F;margin-top:2px">{{ c.label }}</div>
             </button>
           </sc-for>
         </div>
@@ -346,6 +379,13 @@ a:hover{color:inherit}
             <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.04em;font-size:22px">{{ history.name }}</span>
             <span style="font-family:'Space Mono',monospace;font-size:13px;color:#6B5B48;margin-left:auto">{{ history.score }}</span>
           </div>
+          <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:10px">
+            <span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:#22190F;color:#FBF7EC;padding:4px 9px;border-radius:2px">{{ history.score }} all-time avg</span>
+            <span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:none;color:#6B5B48;border:1.5px solid rgba(34,25,15,.3);padding:4px 9px;border-radius:2px">{{ history.plateCountLabel }}</span>
+            <sc-if value="{{ history.hasFryWeeks }}" hint-placeholder-val="{{ false }}">
+              <span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:#DC4230;color:#FBF7EC;padding:4px 9px;border-radius:2px">🍟 {{ history.fryWeeksLabel }}</span>
+            </sc-if>
+          </div>
           <button style="margin-top:12px;padding:10px 16px;border-radius:3px;background:#22190F;color:#FBF7EC;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;text-transform:uppercase;border:none;cursor:pointer" onClick="{{ toggleShareCard }}">📤 Share</button>
           <sc-if value="{{ showShareCard }}" hint-placeholder-val="{{ false }}">
             <div style="margin-top:16px;background:#F2CE45;border:3px solid #22190F;border-radius:4px;box-shadow:7px 8px 0 rgba(34,25,15,.85);padding:26px 22px;text-align:center">
@@ -391,24 +431,6 @@ a:hover{color:inherit}
           </sc-if>
         </div>
       </sc-if>
-    </div>
-    <div style="flex:0 1 208px;min-width:184px;position:sticky;top:14px;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.8);padding:15px 14px">
-      <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#6B5B48;margin-bottom:9px">Scoreboard</div>
-      <sc-for list="{{ scoreboardRows }}" as="sb" hint-placeholder-count="5">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:7px;padding:7px 8px;margin:0 -8px;border-radius:3px;background:{{ sb.rowBg }}">
-          <span style="font-size:13px;font-weight:700;color:{{ sb.textColor }};display:flex;align-items:center;gap:5px;min-width:0">
-            <span style="font-family:'Space Mono',monospace;font-size:10px;color:#A2937E;flex-shrink:0">{{ sb.rank }}</span>
-            <span style="flex-shrink:0">{{ sb.emoji }}</span>
-            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ sb.name }}</span>
-            <sc-if value="{{ sb.isFryOfWeek }}" hint-placeholder-val="{{ false }}">
-              <span style="font-size:12px;flex-shrink:0">🍟</span>
-            </sc-if>
-          </span>
-          <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:800;color:{{ sb.scoreBoxColor }};background:{{ sb.scoreBoxBg }};padding:3px 8px;border-radius:4px;box-shadow:2px 2px 0 rgba(34,25,15,.35);flex-shrink:0">{{ sb.score }}</span>
-        </div>
-      </sc-for>
-      <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.06em;color:#A2937E;margin-top:10px;line-height:1.5">Lowest average is 🍟 Fry of the Week</div>
-    </div>
     </div>
   </sc-if>
 
@@ -477,8 +499,29 @@ class Component extends DCLogic {
     showShareCard: false, scoreboard: [], uploadingKey: null, errorMsg: '', pendingFile: {}, votingKey: null,
     recheckOpenKey: null, recheckDraft: '', recheckingKey: null, voteFlash: null,
     secretInput: '', secretError: false, exitConfirm: false,
+    resetConfirm: false, resetting: false, resetDone: false,
+    weekOffset: 0, fryCounts: {},
     secretGranted: (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('ff_secret_granted') === SECRET_WORD),
     rulesAcknowledged: (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('ff_rules_seen') === '1')
+  };
+
+  startReset = () => this.setState({ resetConfirm: true });
+  cancelReset = () => this.setState({ resetConfirm: false });
+  confirmReset = async () => {
+    const seatId = this.currentSeatId();
+    if (!seatId) return;
+    this.setState({ resetting: true });
+    try {
+      await this.api('/tables/' + this.state.table.code + '/reset-scores', {
+        method: 'POST', body: JSON.stringify({ seat_id: seatId })
+      });
+      this.setState({ resetConfirm: false, resetDone: true });
+      await this.selectDay(this.state.selectedDay);
+      this.refreshScoreboard();
+      clearTimeout(this._resetTimer);
+      this._resetTimer = setTimeout(() => this.setState({ resetDone: false }), 4000);
+    } catch (e) { this.fail(e); }
+    finally { this.setState({ resetting: false }); }
   };
 
   startExit = () => this.setState({ exitConfirm: true });
@@ -565,8 +608,15 @@ class Component extends DCLogic {
   refreshScoreboard = async () => {
     if (!this.state.table) return;
     try {
-      const data = await this.api('/tables/' + this.state.table.code + '/scores');
+      const { from, to } = this.weekRange(this.state.weekOffset);
+      const data = await this.api('/tables/' + this.state.table.code + '/scores?from=' + from + '&to=' + to);
       this.setState({ scoreboard: data.scores || [] });
+    } catch (e) {}
+    try {
+      const fc = await this.api('/tables/' + this.state.table.code + '/fry-counts');
+      const map = {};
+      (fc.counts || []).forEach(r => { map[r.seat_id] = r.fry_weeks; });
+      this.setState({ fryCounts: map });
     } catch (e) {}
   };
   loadTodayFeed = async () => {
@@ -814,10 +864,23 @@ class Component extends DCLogic {
       day: this.formatDay(p.post_date), imageUrl: p.image_url,
       score: p.adjusted_score != null ? Number(p.adjusted_score) : 6
     }));
+    // All-time average, computed from this seat's own plates so it is independent of the week filter
+    // on the scoreboard. Falls back to the week score only when history hasn't loaded yet.
+    const scored = posts.filter(p => p.score != null);
+    const allTime = scored.length
+      ? (scored.reduce((sum, p) => sum + p.score, 0) / scored.length)
+      : null;
+    const fryWeeks = this.state.fryCounts[occ.id] || 0;
     return {
       name: occ.name, emoji: occ.emoji, isHost: i === 0, notHost: i !== 0,
       hasPosts: posts.length > 0, noPosts: posts.length === 0, posts,
-      score: this.getSeatScore(i), onRemove: () => { this.removeMember(i); this.closeHistory(); }
+      plateCount: posts.length,
+      plateCountLabel: posts.length === 1 ? '1 plate' : posts.length + ' plates',
+      score: allTime != null ? allTime.toFixed(1) : this.getSeatScore(i),
+      fryWeeks,
+      hasFryWeeks: fryWeeks > 0,
+      fryWeeksLabel: fryWeeks === 1 ? 'Fry of the Week once' : 'Fry of the Week ' + fryWeeks + ' times',
+      onRemove: () => { this.removeMember(i); this.closeHistory(); }
     };
   }
   buildTodayFeed() {
@@ -924,57 +987,109 @@ class Component extends DCLogic {
       };
     }).filter(Boolean);
   }
+  // Monday of the week `offset` weeks from this one (0 = current, -1 = last week).
+  weekStart(offset) {
+    const d = new Date();
+    const dow = (d.getDay() + 6) % 7; // 0 = Monday
+    d.setDate(d.getDate() - dow + offset * 7);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  iso(d) {
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  }
+  weekRange(offset) {
+    const start = this.weekStart(offset);
+    const end = new Date(start); end.setDate(start.getDate() + 6);
+    return { from: this.iso(start), to: this.iso(end), start, end };
+  }
+  goWeek = async (delta) => {
+    const next = Math.min(0, this.state.weekOffset + delta);
+    if (next === this.state.weekOffset) return;
+    const { from, to } = this.weekRange(next);
+    // Land on today in the current week, otherwise the last day of that week.
+    const today = this.todayISO();
+    const day = next === 0 ? (today <= to ? today : to) : to;
+    this.setState({ weekOffset: next });
+    await this.selectDay(day);
+    this.refreshScoreboard();
+  };
   buildCalendar() {
-    const now = new Date();
+    const { start, to } = this.weekRange(this.state.weekOffset);
+    const today = this.todayISO();
     const chips = [];
-    for (let back = 13; back >= 0; back--) {
-      const d = new Date(now); d.setDate(now.getDate() - back);
-      const key = d.toISOString().slice(0, 10);
-      const isToday = back === 0;
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start); d.setDate(start.getDate() + i);
+      const key = this.iso(d);
+      const isToday = key === today;
+      const isFuture = key > today;
       const selected = this.state.selectedDay === key;
       chips.push({
         key, dow: d.toLocaleString('en-US', { weekday: 'short' }).toUpperCase(),
         label: d.toLocaleString('en-US', { month: 'short' }) + ' ' + d.getDate(),
-        isToday, bg: selected ? '#F2CE45' : (isToday ? '#FBF7EC' : 'transparent'),
+        isToday,
+        bg: selected ? '#F2CE45' : (isToday ? '#FBF7EC' : 'transparent'),
         border: isToday ? '2px solid #22190F' : '1.5px solid rgba(34,25,15,.25)',
-        onClick: () => this.selectDay(key)
+        opacity: isFuture ? .35 : 1,
+        cursor: isFuture ? 'default' : 'pointer',
+        onClick: isFuture ? (() => {}) : (() => this.selectDay(key))
       });
     }
     return { chips };
   }
+  buildWeekLabel() {
+    const { start, end } = this.weekRange(this.state.weekOffset);
+    const mon = start.toLocaleString('en-US', { month: 'short' });
+    const endMon = end.toLocaleString('en-US', { month: 'short' });
+    const range = mon === endMon
+      ? mon + ' ' + start.getDate() + '–' + end.getDate()
+      : mon + ' ' + start.getDate() + ' – ' + endMon + ' ' + end.getDate();
+    if (this.state.weekOffset === 0) return 'This week · ' + range;
+    if (this.state.weekOffset === -1) return 'Last week · ' + range;
+    return 'Week of ' + range;
+  }
+  // The chair badge colour follows the same 0-10 bands as a plate's score badge.
+  scoreBands(v) {
+    const n = Number(v);
+    if (n >= 7) return { bg: '#3F7D3B', fg: '#FBF7EC' };
+    if (n >= 4) return { bg: '#F2CE45', fg: '#22190F' };
+    return { bg: '#DC4230', fg: '#FBF7EC' };
+  }
+  // Lowest weekly average is Fry of the Week. Returns null until at least one plate is scored.
+  fryOfWeek() {
+    const rows = (this.state.scoreboard || []).filter(r => r.score != null);
+    if (!rows.length) return null;
+    const min = Math.min(...rows.map(r => Number(r.score)));
+    const row = rows.find(r => Number(r.score) === min);
+    return row ? { name: row.name, seatId: row.id, score: min } : null;
+  }
   buildRoomSeats() {
+    const board = this.state.scoreboard || [];
+    const fry = this.fryOfWeek();
     return this.state.seats.map((occ, i) => {
       const [x, y] = SEAT_POS[i];
       const isAdding = this.state.addingSeatIndex === i;
+      const row = occ ? board.find(r => r.id === occ.id) : null;
+      const hasScore = row && row.score != null;
+      const bands = hasScore ? this.scoreBands(row.score) : null;
+      const isFry = !!(fry && occ && occ.id === fry.seatId);
       return {
         idx: i, x, y,
         initial: occ ? (occ.emoji || occ.name.trim()[0].toUpperCase()) : (isAdding ? '−' : '+'),
         label: occ ? occ.name + (i === 0 ? ' (you)' : '') : (isAdding ? 'Adding…' : 'Open'),
-        chairBg: occ ? '#F2CE45' : (isAdding ? '#F2CE45' : 'transparent'),
+        chairBg: occ ? (isFry ? '#DC4230' : '#F2CE45') : (isAdding ? '#F2CE45' : 'transparent'),
         chairBorderStyle: occ ? 'solid' : 'dashed',
-        chipText: i === 0 ? 'TAP FOR HISTORY' : occ ? 'TAP FOR HISTORY' : (isAdding ? 'TAP TO CLOSE' : 'TAP TO ADD'),
-        chipColor: i === 0 ? '#D9A81F' : occ ? '#3F7D3B' : '#3F7D3B',
+        chairRing: isFry ? '#DC4230' : '#22190F',
+        crown: isFry ? '🍟' : '',
+        hasScore: hasScore,
+        score: hasScore ? Number(row.score).toFixed(1) : '',
+        scoreBg: bands ? bands.bg : 'transparent',
+        scoreColor: bands ? bands.fg : '#6B5B48',
+        showChip: !occ || !hasScore,
+        chipText: occ ? 'TAP FOR HISTORY' : (isAdding ? 'TAP TO CLOSE' : 'TAP TO ADD'),
+        chipColor: i === 0 ? '#D9A81F' : '#3F7D3B',
         cursor: 'pointer',
         onClick: occ ? (() => this.openHistory(i)) : (() => isAdding ? this.cancelAddSeat() : this.startAddSeat(i))
-      };
-    });
-  }
-  buildScoreboardRows() {
-    const rows = this.state.scoreboard || [];
-    if (!rows.length) return [];
-    // rank: 1 = highest score. The server sorts lowest-first (Fry of the Week at the top), so rank
-    // counts back from the end of the list.
-    const minScore = Math.min(...rows.map(r => Number(r.score)));
-    const ranked = rows.slice().sort((a, b) => Number(b.score) - Number(a.score));
-    return ranked.map((r, i) => {
-      const isFry = Number(r.score) === minScore;
-      return {
-        emoji: r.emoji, name: r.name, score: r.score, rank: i + 1,
-        isFryOfWeek: isFry,
-        rowBg: isFry ? '#DC4230' : 'transparent',
-        textColor: isFry ? '#fff' : '#22190F',
-        scoreBoxBg: isFry ? '#FBF7EC' : '#DC4230',
-        scoreBoxColor: isFry ? '#DC4230' : '#fff'
       };
     });
   }
@@ -998,6 +1113,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
+    const fry = this.fryOfWeek();
     return {
       hasError: !!this.state.errorMsg, errorMsg: this.state.errorMsg,
       hostName: this.state.hostName, groupName: this.state.table ? this.state.table.group_name : this.state.groupName,
@@ -1028,6 +1144,12 @@ class Component extends DCLogic {
         { key: 'join', label: 'Already have a code? Enter here', weight: this.state.tableMode === 'join' ? 800 : 400, color: this.state.tableMode === 'join' ? '#22190F' : '#6B5B48', decoration: this.state.tableMode === 'join' ? 'underline' : 'none', onClick: () => this.setMode('join') }
       ],
       joinSeatOptions: this.buildJoinSeatOptions(), roomSeats: this.buildRoomSeats(),
+      fryName: fry ? fry.name : '', hasFry: !!fry, noFryYet: !fry,
+      isHost: this.state.mySeatIndex === 0,
+      resetConfirm: this.state.resetConfirm, resetDone: this.state.resetDone,
+      resetLabel: this.state.resetting ? 'RESETTING…' : 'RESET THE GAME',
+      resetDisabled: this.state.resetting,
+      startReset: this.startReset, cancelReset: this.cancelReset, confirmReset: this.confirmReset,
       isAdding: this.state.addingSeatIndex != null, addSeatName: this.state.addSeatName,
       onAddSeatNameChange: this.onAddSeatNameChange, cancelAddSeat: this.cancelAddSeat,
       confirmAddSeat: () => this.confirmAddSeat(this.state.addingSeatIndex),
@@ -1046,10 +1168,14 @@ class Component extends DCLogic {
       joinName: this.state.joinName, onJoinNameChange: this.onJoinNameChange,
       leaveSeat: this.leaveSeat,
       calChips: this.buildCalendar().chips,
+      weekLabel: this.buildWeekLabel(),
+      prevWeek: () => this.goWeek(-1), nextWeek: () => this.goWeek(1),
+      nextWeekDisabled: this.state.weekOffset >= 0,
+      nextWeekCursor: this.state.weekOffset >= 0 ? 'default' : 'pointer',
+      nextWeekOpacity: this.state.weekOffset >= 0 ? .3 : 1,
       hasSelectedDay: this.state.selectedDay != null,
       selectedDayLabel: (this.buildCalendar().chips.find(c => c.key === this.state.selectedDay) || {}).label || '',
       dayPeople: this.buildDayPeople(this.state.mySeatIndex), scoreboard: this.state.scoreboard, todayFeed: this.buildTodayFeed(),
-      scoreboardRows: this.buildScoreboardRows(),
       hasTodayFeed: this.buildTodayFeed().length > 0,
       feedBrandText: this.buildTodayFeed().length >= this.state.seats.filter(s => s).length ? 'TABLE\u2019S FRIED' : 'STILL COOKING',
       isViewingHistory: this.state.viewingHistorySeat != null,
