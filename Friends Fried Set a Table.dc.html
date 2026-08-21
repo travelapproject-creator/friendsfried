@@ -225,11 +225,11 @@ a:hover{color:inherit}
             <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.03em;font-size:19px">{{ selectedDayLabel }}</div>
             <p style="font-size:13px;color:#6B5B48;margin:0 0 12px">You can only post under your own name.</p>
             <sc-for list="{{ dayPeople }}" as="p" hint-placeholder-count="5">
-              <div style="padding:0 0 24px;border-bottom:2px solid rgba(34,25,15,.15);margin-bottom:24px">
+              <div style="padding:0 0 24px;border-bottom:2px solid rgba(34,25,15,.15);margin-bottom:24px;background:{{ p.flashBg }};box-shadow:{{ p.flashGlow }};border-radius:6px;transition:background .25s ease,box-shadow .25s ease">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
                   <span style="font-size:20px">{{ p.emoji }}</span>
                   <span style="font-weight:700;font-size:15.5px">{{ p.name }}</span>
-                  <span style="font-family:'Space Mono',monospace;font-size:12px;color:#6B5B48;margin-left:auto">{{ p.score }}</span>
+                  <span style="font-family:'Space Mono',monospace;font-size:12px;color:{{ p.scoreColor }};font-weight:{{ p.scoreWeight }};margin-left:auto;transition:color .25s ease">{{ p.score }}</span>
                 </div>
                 <div style="width:100%;aspect-ratio:1;border-radius:6px;overflow:hidden">
                   <sc-if value="{{ p.hasPhoto }}" hint-placeholder-val="{{ false }}">
@@ -280,6 +280,13 @@ a:hover{color:inherit}
                       </div>
                     </div>
                   </sc-if>
+                </sc-if>
+                <sc-if value="{{ p.showFlash }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:12px;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:4px;background:{{ p.flashBannerBg }};border:2.5px solid {{ p.flashBannerBorder }}">
+                    <span style="font-size:22px">{{ p.flashIcon }}</span>
+                    <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.03em;color:#FBF7EC">{{ p.flashDelta }}</span>
+                    <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:14px;color:#FBF7EC;margin-left:auto;text-align:right">{{ p.flashMessage }}</span>
+                  </div>
                 </sc-if>
                 <sc-if value="{{ p.canVote }}" hint-placeholder-val="{{ false }}">
                   <div style="display:flex;gap:9px;margin-top:12px">
@@ -436,7 +443,7 @@ class Component extends DCLogic {
     selectedDay: null, postsByKey: {}, commentsByPost: {}, personCommentDrafts: {}, joinEmoji: '',
     editingComment: null, editDraft: '', viewingHistorySeat: null, historyPosts: [], shareCopied: false,
     showShareCard: false, scoreboard: [], uploadingKey: null, errorMsg: '', pendingFile: {}, votingKey: null,
-    recheckOpenKey: null, recheckDraft: '', recheckingKey: null,
+    recheckOpenKey: null, recheckDraft: '', recheckingKey: null, voteFlash: null,
     secretInput: '', secretError: false,
     secretGranted: (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('ff_secret_granted') === SECRET_WORD),
     rulesAcknowledged: (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('ff_rules_seen') === '1')
@@ -668,11 +675,22 @@ class Component extends DCLogic {
     const seatId = this.currentSeatId();
     if (!seatId || !postId) return;
     const voteKey = key + '|' + type;
+    const before = this.state.postsByKey[key];
+    const beforeScore = before && before.adjusted_score != null ? Number(before.adjusted_score) : null;
     this.setState({ votingKey: voteKey });
     try {
       await this.api('/posts/' + postId + '/votes', { method: 'POST', body: JSON.stringify({ voter_seat_id: seatId, vote_type: type }) });
       await this.selectDay(this.state.selectedDay);
       this.refreshScoreboard();
+      const after = this.state.postsByKey[key];
+      const afterScore = after && after.adjusted_score != null ? Number(after.adjusted_score) : null;
+      let delta = null;
+      if (beforeScore != null && afterScore != null) delta = afterScore - beforeScore;
+      clearTimeout(this._flashTimer);
+      this.setState({ voteFlash: { key, type, delta, score: afterScore } });
+      this._flashTimer = setTimeout(() => {
+        this.setState(s => (s.voteFlash && s.voteFlash.key === key ? { voteFlash: null } : null));
+      }, 3200);
     } catch (e) { this.fail(e); }
     finally { this.setState(s => s.votingKey === voteKey ? { votingKey: null } : null); }
   };
@@ -749,7 +767,7 @@ class Component extends DCLogic {
     if (!occ) return null;
     const posts = this.state.historyPosts.map(p => ({
       day: this.formatDay(p.post_date), imageUrl: p.image_url,
-      score: Number(p.praise_count || 0) - Number(p.fry_count || 0)
+      score: p.adjusted_score != null ? Number(p.adjusted_score) : 6
     }));
     return {
       name: occ.name, emoji: occ.emoji, isHost: i === 0, notHost: i !== 0,
@@ -782,6 +800,8 @@ class Component extends DCLogic {
       if (post && this.state.commentsByPost[post.id] === undefined) this.loadComments(post.id);
       const pending = this.state.pendingFile[key];
       const isPosting = this.state.uploadingKey === key;
+      const vf = this.state.voteFlash;
+      const flash = vf && vf.key === key ? vf : null;
       return {
         idx: i, emoji: occ.emoji || '🍽️', name: occ.name + (i === 0 ? ' (host)' : ''),
         score: this.getSeatScore(i),
@@ -805,10 +825,18 @@ class Component extends DCLogic {
         onOpenRecheck: () => this.openRecheck(key), onCancelRecheck: this.cancelRecheck,
         onSubmitRecheck: () => this.submitRecheck(key, post && post.id),
         recheckDisabled: this.state.recheckingKey === key || !this.state.recheckDraft.trim(),
-        recheckOpacity: this.state.recheckingKey === key ? .6 : 1,
-        recheckButtonLabel: this.state.recheckingKey === key ? 'Re-checking…' : 'Re-check score',
+        recheckOpacity: this.state.recheckingKey === key ? .6 : 1,        recheckButtonLabel: this.state.recheckingKey === key ? 'Re-checking…' : 'Re-check score',
         prVoting: this.state.votingKey === (key + '|praise'), fryVoting: this.state.votingKey === (key + '|fry'),
-        voteDisabled: !!this.state.votingKey, voteOpacity: this.state.votingKey ? .6 : 1,
+        showFlash: flash != null,
+        flashIcon: flash ? (flash.type === 'praise' ? '👏' : '🔥') : '',
+        flashDelta: flash ? (flash.delta == null ? '' : (flash.delta > 0 ? '+' + flash.delta : String(flash.delta))) : '',
+        flashMessage: flash ? (flash.delta === 0 ? 'Vote counted — already at the limit' : 'Score now ' + flash.score + '/10') : '',
+        flashBannerBg: flash ? (flash.type === 'praise' ? '#3F7D3B' : '#DC4230') : 'transparent',
+        flashBannerBorder: flash ? (flash.type === 'praise' ? '#2E5C2B' : '#A82D1F') : 'transparent',
+        flashBg: flash ? (flash.type === 'praise' ? 'rgba(63,125,59,.14)' : 'rgba(220,66,48,.14)') : 'transparent',
+        flashGlow: flash ? '0 0 0 3px ' + (flash.type === 'praise' ? '#3F7D3B' : '#DC4230') : 'none',
+        scoreColor: flash ? (flash.type === 'praise' ? '#3F7D3B' : '#DC4230') : '#6B5B48',
+        scoreWeight: flash ? 700 : 400,        voteDisabled: !!this.state.votingKey, voteOpacity: this.state.votingKey ? .6 : 1,
         prLabel: this.state.votingKey === (key + '|praise') ? 'Saving…' : (myVote === 'praise' ? '✓ Praised' : 'Praise (+1)'),
         judgeLabel: this.state.votingKey === (key + '|fry') ? 'Saving…' : (myVote === 'fry' ? '✓ Judged' : 'Judge (-1)'),
         prBg: myVote === 'praise' ? '#3F7D3B' : 'transparent', prColor: myVote === 'praise' ? '#fff' : '#22190F',

@@ -17,7 +17,8 @@ const upload = multer({ storage, limits: { fileSize: 8 * 1024 * 1024 } });
 
 router.post('/', upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-  const base = process.env.PUBLIC_URL || '';
+  // Must be absolute: the AI rater fetches this URL server-side, and Node's fetch rejects relative paths.
+  const base = process.env.PUBLIC_URL || `${req.protocol}://${req.get('host')}`;
   res.status(201).json({ url: `${base}/uploads/${req.file.filename}` });
 });
 
