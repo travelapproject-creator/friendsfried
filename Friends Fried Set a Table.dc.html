@@ -137,12 +137,36 @@ a:hover{color:inherit}
   </sc-if>
 
   <sc-if value="{{ showAdminDashboard }}" hint-placeholder-val="{{ false }}">
-    <div style="max-width:520px;margin:0 auto">
+    <div style="max-width:{{ dashMaxWidth }};margin:0 auto;display:{{ dashDisplay }};gap:{{ dashGap }};align-items:flex-start">
+      <sc-if value="{{ showDeskNav }}" hint-placeholder-val="{{ false }}">
+        <div style="width:232px;flex-shrink:0;position:sticky;top:20px;padding:4px 0 0">
+          <div style="display:flex;align-items:center;gap:10px;padding:0 13px">
+            <svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true" style="display:block;flex-shrink:0"><circle cx="24" cy="24" r="10" fill="#E8CE9B" stroke="#22190F" stroke-width="2.5"></circle><circle cx="24" cy="7" r="4.5" fill="#22190F" stroke="#22190F" stroke-width="2.5"></circle><circle cx="40" cy="18.5" r="4.5" fill="#22190F" stroke="#22190F" stroke-width="2.5"></circle><circle cx="34" cy="38" r="4.5" fill="#22190F" stroke="#22190F" stroke-width="2.5"></circle><circle cx="14" cy="38" r="4.5" fill="#22190F" stroke="#22190F" stroke-width="2.5"></circle><circle cx="8" cy="18.5" r="4.5" fill="#DC4230" stroke="#22190F" stroke-width="2.5"></circle></svg>
+            <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;letter-spacing:-.045em;text-transform:uppercase">Friends<span style="color:#DC4230">Fried</span></div>
+          </div>
+          <div style="margin-top:24px;display:flex;flex-direction:column;gap:4px">
+            <sc-for list="{{ deskNavItems }}" as="n" hint-placeholder-count="4">
+              <button onClick="{{ n.onClick }}" style="display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:12px;border:none;cursor:pointer;text-align:left;background:{{ n.bg }};color:{{ n.color }}">
+                <span style="font-size:17px">{{ n.icon }}</span>
+                <span style="font-family:'Karla',sans-serif;font-size:14.5px;font-weight:{{ n.weight }}">{{ n.label }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="margin-top:26px;display:flex;flex-direction:column;gap:10px;padding:0 13px">
+            <button style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:#6B5B48;background:none;border:none;cursor:pointer;padding:0;text-align:left" onClick="{{ copyCode }}">CODE {{ tableCode }} · COPY</button>
+            <button disabled="{{ exportBusy }}" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#22190F;background:none;border:none;cursor:pointer;padding:0;text-align:left" onClick="{{ onShareContext }}">{{ shareLabel }}</button>
+            <button style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#DC4230;background:none;border:none;cursor:pointer;padding:0;text-align:left" onClick="{{ startExit }}">EXIT ↩</button>
+          </div>
+        </div>
+      </sc-if>
+      <div style="flex:1;min-width:0;max-width:520px;margin:0 auto">
+      <sc-if value="{{ showMobileHeader }}" hint-placeholder-val="{{ true }}">
       <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:4px">
         <button style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:#6B5B48;background:none;border:none;cursor:pointer;padding:0" onClick="{{ copyCode }}">CODE {{ tableCode }} · COPY</button>
         <button disabled="{{ exportBusy }}" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#22190F;background:none;border:none;cursor:pointer;padding:0" onClick="{{ onShareContext }}">{{ shareLabel }}</button>
         <button style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#DC4230;background:none;border:none;cursor:pointer;padding:0" onClick="{{ startExit }}">EXIT ↩</button>
       </div>
+      </sc-if>
       <sc-if value="{{ exitConfirm }}" hint-placeholder-val="{{ false }}">
         <div style="background:#F2CE45;border:2.5px solid #22190F;border-radius:14px;box-shadow:5px 6px 0 rgba(34,25,15,.85);padding:18px 20px;margin-bottom:14px">
           <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.03em;font-size:18px;color:#22190F">Step away?</div>
@@ -574,6 +598,7 @@ a:hover{color:inherit}
           </sc-if>
         </div>
       </sc-if>
+      </div>
     </div>
   </sc-if>
 
@@ -648,6 +673,7 @@ class Component extends DCLogic {
     leaveConfirm: false, leaving: false,
     exporting: null, exportError: '', exportDone: null, exportWeek: null, exportRun: null,
     shareSheetOpen: false,
+    winW: typeof window !== 'undefined' ? window.innerWidth : 1200,
     secretGranted: (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('ff_secret_granted') === SECRET_WORD),
     rulesAcknowledged: (typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('ff_rules_seen') === '1')
   };
@@ -667,6 +693,14 @@ class Component extends DCLogic {
       this.setState({ leaving: false, leaveConfirm: false });
       this.confirmExit();
     } catch (e) { this.setState({ leaving: false }); this.fail(e); }
+  };
+
+  // One page, two layouts. Width is read from the window rather than a media query, because the
+  // template is inline-styled — and it re-reads on resize so dragging a window switches live.
+  onResize = () => {
+    const w = window.innerWidth;
+    if ((w >= 1100) !== (this.state.winW >= 1100)) this.setState({ winW: w });
+    else if (Math.abs(w - this.state.winW) > 40) this.setState({ winW: w });
   };
 
   openShareSheet = () => this.setState({ shareSheetOpen: true, exportError: '' });
@@ -1423,6 +1457,7 @@ class Component extends DCLogic {
   // exact seat it left when you scroll back. Progress is read off the spacer's position each frame
   // rather than played as an animation, which is what makes it reverse at whatever speed you drag.
   componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
     if (this._onWinScroll) window.removeEventListener('scroll', this._onWinScroll);
     if (this._tRaf) cancelAnimationFrame(this._tRaf);
     clearTimeout(this._flashTimer);
@@ -1430,7 +1465,14 @@ class Component extends DCLogic {
     clearTimeout(this._shareTimer);
   }
 
+  attachResize = () => {
+    if (this._resizeBound) return;
+    this._resizeBound = true;
+    window.addEventListener('resize', this.onResize, { passive: true });
+  };
+
   setTableSpacer = (el) => {
+    this.attachResize();
     if (!el || el === this._spacer) return;
     this._spacer = el;
     if (this._onWinScroll) return;
@@ -1542,6 +1584,24 @@ class Component extends DCLogic {
       shareLabel: this.state.exporting ? 'PLATING…' : 'SHARE ↑',
       onShareContext: this.openShareSheet,
       shareSheetOpen: this.state.shareSheetOpen,
+      isDesktop: this.state.winW >= 1100,
+      showDeskNav: this.state.winW >= 1100,
+      showMobileHeader: this.state.winW < 1100,
+      dashDisplay: this.state.winW >= 1100 ? 'flex' : 'block',
+      dashMaxWidth: this.state.winW >= 1100 ? '1180px' : '520px',
+      dashGap: this.state.winW >= 1100 ? '30px' : '0',
+      deskNavItems: [
+        { icon: '🍽️', label: 'The table', active: true },
+        { icon: '📅', label: 'Weeks', active: false },
+        { icon: '🍟', label: 'All time', active: false },
+        { icon: '👤', label: (this.state.mySeatIndex != null && this.state.seats[this.state.mySeatIndex]) ? this.state.seats[this.state.mySeatIndex].name : 'You', active: false }
+      ].map(n => ({
+        icon: n.icon, label: n.label,
+        bg: n.active ? '#22190F' : 'transparent',
+        color: n.active ? '#FBF7EC' : '#22190F',
+        weight: n.active ? 700 : 500,
+        onClick: n.active ? (() => {}) : (() => this.openHistory(this.state.mySeatIndex))
+      })),
       closeShareSheet: this.closeShareSheet,
       shareWeekRange: this.buildWeekLabel(),
       shareRunName: (this.state.mySeatIndex != null && this.state.seats[this.state.mySeatIndex])
