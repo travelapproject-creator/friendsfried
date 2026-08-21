@@ -41,8 +41,8 @@ a:hover{color:inherit}
   <div style="background:#DC4230;color:#fff;padding:10px 14px;border-radius:3px;font-size:13px;margin-bottom:14px">{{ errorMsg }}</div>
 </sc-if>
 <sc-if value="{{ inRoom }}" hint-placeholder-val="{{ false }}">
-    <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">{{ groupName }}</div>
-    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(32px,5vw,48px);margin:10px 0 20px">Dining Room</h1>
+    <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Dining Room</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.88;font-size:clamp(38px,7vw,62px);margin:8px 0 20px;color:#22190F;text-shadow:3px 4px 0 #DC4230;text-wrap:balance">{{ groupName }}</h1>
   </sc-if>
 
   <sc-if value="{{ showSecretGate }}" hint-placeholder-val="{{ false }}">
@@ -115,7 +115,8 @@ a:hover{color:inherit}
   </sc-if>
 
   <sc-if value="{{ showAdminDashboard }}" hint-placeholder-val="{{ false }}">
-    <div style="max-width:520px">
+    <div style="display:flex;gap:18px;align-items:flex-start;justify-content:center;flex-wrap:wrap">
+    <div style="flex:1 1 440px;max-width:520px;min-width:0">
       <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:4px">
         <button style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:#6B5B48;background:none;border:none;cursor:pointer;padding:0" onClick="{{ copyCode }}">CODE {{ tableCode }} · COPY</button>
         <button style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#DC4230;background:none;border:none;cursor:pointer;padding:0" onClick="{{ startExit }}">EXIT ↩</button>
@@ -145,23 +146,6 @@ a:hover{color:inherit}
               <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;border-style:{{ s.chairBorderStyle }};display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;background:{{ s.chairBg }};box-shadow:3px 4px 0 rgba(34,25,15,.75)">{{ s.initial }}</div>
               <div style="font-size:12.5px;font-weight:700;margin-top:7px">{{ s.label }}</div>
               <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid {{ s.chipColor }};color:{{ s.chipColor }}">{{ s.chipText }}</div>
-            </div>
-          </sc-for>
-        </div>
-        <div style="flex:1 1 160px;max-width:200px;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:4px 5px 0 rgba(34,25,15,.75);padding:14px">
-          <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#6B5B48;margin-bottom:8px">Scoreboard</div>
-          <sc-for list="{{ scoreboardRows }}" as="sb" hint-placeholder-count="5">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 8px;margin:0 -8px;border-radius:3px;background:{{ sb.rowBg }}">
-              <span style="font-size:13px;font-weight:700;color:{{ sb.textColor }};display:flex;align-items:center;gap:6px">
-                <sc-if value="{{ sb.isFryOfWeek }}" hint-placeholder-val="{{ false }}">
-                  <span style="font-size:13px">🍟</span>
-                </sc-if>
-                <span>{{ sb.emoji }}</span>{{ sb.name }}
-                <sc-if value="{{ sb.isFryOfWeek }}" hint-placeholder-val="{{ false }}">
-                  <span style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.06em;background:#22190F;color:#F2CE45;padding:2px 6px;border-radius:2px;white-space:nowrap">🍟 FRY OF THE WEEK</span>
-                </sc-if>
-              </span>
-              <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:800;color:{{ sb.scoreBoxColor }};background:{{ sb.scoreBoxBg }};padding:3px 9px;border-radius:4px;box-shadow:2px 2px 0 rgba(34,25,15,.35)">{{ sb.score }}</span>
             </div>
           </sc-for>
         </div>
@@ -240,18 +224,20 @@ a:hover{color:inherit}
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
                   <span style="font-size:20px">{{ p.emoji }}</span>
                   <span style="font-weight:700;font-size:15.5px">{{ p.name }}</span>
-                  <div style="margin-left:auto;display:flex;align-items:center;gap:9px">
-                    <div style="display:flex;align-items:center;gap:7px;font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;color:#6B5B48">
-                      <span>👏 {{ p.praiseTally }}</span>
-                      <span>🔥 {{ p.fryTally }}</span>
-                    </div>
-                    <div style="display:flex;align-items:baseline;gap:2px;background:{{ p.plateScoreBg }};color:{{ p.plateScoreColor }};border:2.5px solid #22190F;border-radius:4px;padding:4px 10px 5px;box-shadow:3px 3px 0 rgba(34,25,15,.7);transition:background .25s ease">
-                      <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;letter-spacing:-.04em;line-height:1">{{ p.plateScore }}</span>
-                      <span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;opacity:.75">/10</span>
-                    </div>
-                  </div>
                 </div>
-                <div style="width:100%;aspect-ratio:1;border-radius:6px;overflow:hidden">
+                <div style="width:100%;aspect-ratio:1;border-radius:6px;overflow:hidden;position:relative">
+                  <sc-if value="{{ p.showPlateScore }}" hint-placeholder-val="{{ false }}">
+                    <div style="position:absolute;top:10px;right:10px;z-index:2;display:flex;align-items:center;gap:7px">
+                      <div style="display:flex;align-items:center;gap:7px;background:rgba(34,25,15,.82);border-radius:3px;padding:5px 9px;font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;color:#FBF7EC;white-space:nowrap">
+                        <span>👏 {{ p.praiseTally }}</span>
+                        <span>🔥 {{ p.fryTally }}</span>
+                      </div>
+                      <div style="display:flex;align-items:baseline;gap:2px;background:{{ p.plateScoreBg }};color:{{ p.plateScoreColor }};border:2.5px solid #22190F;border-radius:4px;padding:4px 9px 5px;box-shadow:2px 3px 0 rgba(34,25,15,.55);transition:background .25s ease">
+                        <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.04em;line-height:1">{{ p.plateScore }}</span>
+                        <span style="font-family:'Space Mono',monospace;font-size:9.5px;font-weight:700;opacity:.75">/10</span>
+                      </div>
+                    </div>
+                  </sc-if>
                   <sc-if value="{{ p.hasPhoto }}" hint-placeholder-val="{{ false }}">
                     <img src="{{ p.imageUrl }}" style="width:100%;height:100%;object-fit:cover;display:block"></img>
                   </sc-if>
@@ -405,6 +391,24 @@ a:hover{color:inherit}
           </sc-if>
         </div>
       </sc-if>
+    </div>
+    <div style="flex:0 1 208px;min-width:184px;position:sticky;top:14px;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.8);padding:15px 14px">
+      <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#6B5B48;margin-bottom:9px">Scoreboard</div>
+      <sc-for list="{{ scoreboardRows }}" as="sb" hint-placeholder-count="5">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:7px;padding:7px 8px;margin:0 -8px;border-radius:3px;background:{{ sb.rowBg }}">
+          <span style="font-size:13px;font-weight:700;color:{{ sb.textColor }};display:flex;align-items:center;gap:5px;min-width:0">
+            <span style="font-family:'Space Mono',monospace;font-size:10px;color:#A2937E;flex-shrink:0">{{ sb.rank }}</span>
+            <span style="flex-shrink:0">{{ sb.emoji }}</span>
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ sb.name }}</span>
+            <sc-if value="{{ sb.isFryOfWeek }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:12px;flex-shrink:0">🍟</span>
+            </sc-if>
+          </span>
+          <span style="font-family:'Space Mono',monospace;font-size:13px;font-weight:800;color:{{ sb.scoreBoxColor }};background:{{ sb.scoreBoxBg }};padding:3px 8px;border-radius:4px;box-shadow:2px 2px 0 rgba(34,25,15,.35);flex-shrink:0">{{ sb.score }}</span>
+        </div>
+      </sc-for>
+      <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.06em;color:#A2937E;margin-top:10px;line-height:1.5">Lowest average is 🍟 Fry of the Week</div>
+    </div>
     </div>
   </sc-if>
 
@@ -836,6 +840,16 @@ class Component extends DCLogic {
       const isPosted = !!post;
       const prCount = post ? Number(post.praise_count || 0) : 0;
       const fryCount = post ? Number(post.fry_count || 0) : 0;
+      // Prefer the server's computed score; if the response was a raw insert row (no adjusted_score),
+      // derive it the same way the server would so the badge is never blank. Null only before posting.
+      let plateScore = null;
+      if (post) {
+        if (post.adjusted_score != null) plateScore = Number(post.adjusted_score);
+        else {
+          const base = post.ai_health != null ? Number(post.ai_health) : 6;
+          plateScore = Math.max(0, Math.min(10, base + prCount - fryCount));
+        }
+      }
       const myVote = post ? post.my_vote : undefined;
       const comments = post ? (this.state.commentsByPost[post.id] || []) : [];
       if (post && this.state.commentsByPost[post.id] === undefined) this.loadComments(post.id);
@@ -857,11 +871,12 @@ class Component extends DCLogic {
         onFileChange: (e) => this.onPickFile(key, i, e),
         onConfirmPost: () => this.confirmPost(key), onCancelPending: () => this.cancelPendingFile(key),
         isPosted, canVote: isPosted,
-        plateScore: isPosted && post && post.adjusted_score != null ? Number(post.adjusted_score).toFixed(0) : '—',
-        plateScoreBg: isPosted && post && post.adjusted_score != null ? (Number(post.adjusted_score) >= 7 ? '#3F7D3B' : Number(post.adjusted_score) >= 4 ? '#F2CE45' : '#DC4230') : 'rgba(34,25,15,.08)',
-        plateScoreColor: isPosted && post && post.adjusted_score != null ? (Number(post.adjusted_score) >= 4 && Number(post.adjusted_score) < 7 ? '#22190F' : '#FBF7EC') : '#A2937E',
-        praiseTally: post ? (post.praise_count || 0) : 0,
-        fryTally: post ? (post.fry_count || 0) : 0,
+        plateScore: plateScore == null ? '·' : plateScore.toFixed(0),
+        plateScoreBg: plateScore == null ? 'rgba(34,25,15,.08)' : (plateScore >= 7 ? '#3F7D3B' : plateScore >= 4 ? '#F2CE45' : '#DC4230'),
+        plateScoreColor: plateScore == null ? '#A2937E' : (plateScore >= 4 && plateScore < 7 ? '#22190F' : '#FBF7EC'),
+        showPlateScore: isPosted,
+        praiseTally: prCount,
+        fryTally: fryCount,
         hasAiRating: isPosted && post && post.ai_health != null,
         aiHealth: post ? post.ai_health : null, aiVerdict: post ? post.ai_verdict : '',
         aiName: post ? (post.ai_name || '') : '',
@@ -947,11 +962,14 @@ class Component extends DCLogic {
   buildScoreboardRows() {
     const rows = this.state.scoreboard || [];
     if (!rows.length) return [];
+    // rank: 1 = highest score. The server sorts lowest-first (Fry of the Week at the top), so rank
+    // counts back from the end of the list.
     const minScore = Math.min(...rows.map(r => Number(r.score)));
-    return rows.map(r => {
+    const ranked = rows.slice().sort((a, b) => Number(b.score) - Number(a.score));
+    return ranked.map((r, i) => {
       const isFry = Number(r.score) === minScore;
       return {
-        emoji: r.emoji, name: r.name, score: r.score,
+        emoji: r.emoji, name: r.name, score: r.score, rank: i + 1,
         isFryOfWeek: isFry,
         rowBg: isFry ? '#DC4230' : 'transparent',
         textColor: isFry ? '#fff' : '#22190F',

@@ -110,6 +110,25 @@ router.get('/seat/:seatId', async (req, res) => {
   }
 });
 
+// Re-reads one post with its vote tallies and live score. The write endpoints (create, edit, recheck)
+// use this for their response: `returning *` alone gives the raw row, with no praise_count/fry_count/
+// adjusted_score, so a freshly posted plate would render an empty score badge until the next refresh.
+async function readPostWithScore(id) {
+  const r = await pool.query(
+    `select p.*, s.name as seat_name, s.emoji as seat_emoji,
+      (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')::int as praise_count,
+      (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')::int as fry_count,
+      greatest(0, least(10,
+        coalesce(p.ai_health,6)
+        + (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')
+        - (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')
+      ))::numeric(3,1) as adjusted_score
+     from posts p join seats s on s.id = p.seat_id where p.id=$1`,
+    [id]
+  );
+  return r.rows[0];
+}
+
 // Create a post
 router.post('/', async (req, res) => {
   const { table_id, seat_id, image_url, caption } = req.body;
@@ -132,7 +151,7 @@ router.post('/', async (req, res) => {
     } catch (aiErr) {
       console.error('AI rating failed:', aiErr.message);
     }
-    res.status(201).json({ post });
+    res.status(201).json({ post: (await readPostWithScore(post.id)) || post });
   } catch (err) {
     console.error(err);
     if (err.code === '23505') return res.status(409).json({ error: 'Already posted today' });
@@ -159,7 +178,7 @@ router.patch('/:id', async (req, res) => {
     } catch (aiErr) {
       console.error('AI rating failed:', aiErr.message);
     }
-    res.json({ post });
+    res.json({ post: (await readPostWithScore(post.id)) || post });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to update post' });
@@ -181,7 +200,7 @@ router.post('/:id/recheck', async (req, res) => {
       'update posts set ai_health=$1, ai_verdict=$2, ai_name=$3, poster_note=$4 where id=$5 returning *',
       [rating.health, rating.verdict, rating.name, note.slice(0, 300), req.params.id]
     );
-    res.json({ post: upd.rows[0] });
+    res.json({ post: (await readPostWithScore(req.params.id)) || upd.rows[0] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to re-check post' });
