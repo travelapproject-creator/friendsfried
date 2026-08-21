@@ -146,7 +146,7 @@ a:hover{color:inherit}
           </div>
           <div style="margin-top:24px;display:flex;flex-direction:column;gap:4px">
             <sc-for list="{{ deskNavItems }}" as="n" hint-placeholder-count="4">
-              <button onClick="{{ n.onClick }}" style="display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:12px;border:none;cursor:pointer;text-align:left;background:{{ n.bg }};color:{{ n.color }}">
+              <button onClick="{{ n.onClick }}" style="display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:12px;border:none;cursor:{{ n.cursor }};text-align:left;background:{{ n.bg }};color:{{ n.color }}">
                 <span style="font-size:17px">{{ n.icon }}</span>
                 <span style="font-family:'Karla',sans-serif;font-size:14.5px;font-weight:{{ n.weight }}">{{ n.label }}</span>
               </button>
@@ -159,7 +159,8 @@ a:hover{color:inherit}
           </div>
         </div>
       </sc-if>
-      <div style="flex:1;min-width:0;max-width:520px;margin:0 auto">
+      <div style="flex:1;min-width:0;max-width:{{ contentMax }};margin:0 auto;display:{{ contentDisplay }};gap:{{ contentGap }};align-items:flex-start">
+      <div style="flex:{{ tableColFlex }};width:{{ tableColWidth }};min-width:0;max-width:520px;margin:0 auto;position:{{ tableColPosition }};top:20px">
       <sc-if value="{{ showMobileHeader }}" hint-placeholder-val="{{ true }}">
       <div style="display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:4px">
         <button style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;color:#6B5B48;background:none;border:none;cursor:pointer;padding:0" onClick="{{ copyCode }}">CODE {{ tableCode }} · COPY</button>
@@ -362,6 +363,8 @@ a:hover{color:inherit}
         </sc-if>
       </div>
 
+      </div>
+      <div style="flex:1;min-width:0;max-width:520px;margin:0 auto;border-left:{{ feedColBorder }};padding:{{ feedColPad }}">
       <div style="background:transparent;padding:18px 16px 20px;margin-top:4px">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
           <button onClick="{{ prevWeek }}" style="width:28px;height:28px;flex-shrink:0;border:none;border-radius:50%;background:rgba(34,25,15,.08);font-family:'Space Mono',monospace;font-size:12px;font-weight:700;cursor:pointer">◀</button>
@@ -598,6 +601,7 @@ a:hover{color:inherit}
           </sc-if>
         </div>
       </sc-if>
+      </div>
       </div>
     </div>
   </sc-if>
@@ -1456,6 +1460,11 @@ class Component extends DCLogic {
   // The table collapses into a rail as you scroll toward the plates, and every chair returns to the
   // exact seat it left when you scroll back. Progress is read off the spacer's position each frame
   // rather than played as an animation, which is what makes it reverse at whatever speed you drag.
+  // Bound on mount rather than off a ref that only exists on the dashboard, so width-dependent values
+  // respond on every screen.
+  componentDidMount() {
+    window.addEventListener('resize', this.onResize, { passive: true });
+  }
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
     if (this._onWinScroll) window.removeEventListener('scroll', this._onWinScroll);
@@ -1465,14 +1474,7 @@ class Component extends DCLogic {
     clearTimeout(this._shareTimer);
   }
 
-  attachResize = () => {
-    if (this._resizeBound) return;
-    this._resizeBound = true;
-    window.addEventListener('resize', this.onResize, { passive: true });
-  };
-
   setTableSpacer = (el) => {
-    this.attachResize();
     if (!el || el === this._spacer) return;
     this._spacer = el;
     if (this._onWinScroll) return;
@@ -1590,18 +1592,36 @@ class Component extends DCLogic {
       dashDisplay: this.state.winW >= 1100 ? 'flex' : 'block',
       dashMaxWidth: this.state.winW >= 1100 ? '1180px' : '520px',
       dashGap: this.state.winW >= 1100 ? '30px' : '0',
-      deskNavItems: [
-        { icon: '🍽️', label: 'The table', active: true },
-        { icon: '📅', label: 'Weeks', active: false },
-        { icon: '🍟', label: 'All time', active: false },
-        { icon: '👤', label: (this.state.mySeatIndex != null && this.state.seats[this.state.mySeatIndex]) ? this.state.seats[this.state.mySeatIndex].name : 'You', active: false }
-      ].map(n => ({
-        icon: n.icon, label: n.label,
-        bg: n.active ? '#22190F' : 'transparent',
-        color: n.active ? '#FBF7EC' : '#22190F',
-        weight: n.active ? 700 : 500,
-        onClick: n.active ? (() => {}) : (() => this.openHistory(this.state.mySeatIndex))
-      })),
+      // 11a proper: the table and the feed are two columns, and the table column sticks so the
+      // scoreboard never leaves the screen while you scroll plates.
+      contentMax: this.state.winW >= 1100 ? 'none' : '520px',
+      contentDisplay: this.state.winW >= 1100 ? 'flex' : 'block',
+      contentGap: this.state.winW >= 1100 ? '28px' : '0',
+      tableColWidth: this.state.winW >= 1100 ? '372px' : 'auto',
+      tableColFlex: this.state.winW >= 1100 ? '0 0 372px' : '0 1 auto',
+      tableColPosition: this.state.winW >= 1100 ? 'sticky' : 'static',
+      feedColBorder: this.state.winW >= 1100 ? '1px solid rgba(34,25,15,.12)' : 'none',
+      feedColPad: this.state.winW >= 1100 ? '0 0 0 28px' : '0',
+      // Every item does something real. "All time" has no screen built yet, so it reads as unavailable
+      // instead of looking broken when tapped.
+      deskNavItems: (() => {
+        const onProfile = this.state.viewingHistorySeat != null;
+        const mine = this.state.mySeatIndex;
+        const myName = (mine != null && this.state.seats[mine]) ? this.state.seats[mine].name : 'You';
+        return [
+          { icon: '🍽️', label: 'The table', active: !onProfile, on: () => this.closeHistory() },
+          { icon: '👤', label: myName, active: onProfile, on: () => mine != null && this.openHistory(mine) },
+          { icon: '🍟', label: 'All time', active: false, soon: true, on: () => {} }
+        ].map(n => ({
+          icon: n.icon,
+          label: n.soon ? n.label + ' · soon' : n.label,
+          bg: n.active ? '#22190F' : 'transparent',
+          color: n.active ? '#FBF7EC' : (n.soon ? '#A2937E' : '#22190F'),
+          weight: n.active ? 700 : 500,
+          cursor: n.soon ? 'default' : 'pointer',
+          onClick: n.on
+        }));
+      })(),
       closeShareSheet: this.closeShareSheet,
       shareWeekRange: this.buildWeekLabel(),
       shareRunName: (this.state.mySeatIndex != null && this.state.seats[this.state.mySeatIndex])
