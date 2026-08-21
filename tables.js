@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const pool = require('../db');
+const pool = require('./db');
 
 function genCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -103,7 +103,7 @@ router.get('/:code/scores', async (req, res) => {
         group by p.id, p.seat_id
       )
       select s.id, s.seat_index, s.name, s.emoji,
-        round(coalesce(avg(pa.adjusted_score),50),1)::float as score
+        round(coalesce(avg(pa.adjusted_score),6),1)::float as score
       from seats s
       left join post_adjusted pa on pa.seat_id = s.id
       where s.table_id = $1

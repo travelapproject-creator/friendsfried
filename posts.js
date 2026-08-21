@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const pool = require('../db');
-const { rateImageWithClaude } = require('../ai');
+const pool = require('./db');
+const { rateImageWithClaude } = require('./ai');
 
 // Idempotent migration on boot: older databases predate these columns, and without them every
 // rating write fails silently. Safe to run on every start.
