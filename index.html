@@ -44,40 +44,27 @@ a:hover{color:inherit}
       <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Five friends · one table · 10pm deadline</div>
       <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(40px,5.6vw,64px);margin:14px 0 0">Your friends<br>judge what<br>you eat</h1>
       <p style="font-size:19px;line-height:1.5;margin:20px 0 26px;max-width:440px">Each meal you post gets attention — <b>praised</b>, <b>judged</b>, and commented on.</p>
-      <a href="Friends Fried Set a Table.dc.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:3px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35);transition:transform .1s,box-shadow .1s" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none">Start a table</a>
+      <a href="Friends Fried Set a Table.dc.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:13px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35);transition:transform .1s,box-shadow .1s" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none">Start a table</a>
       <p style="font-size:13px;color:#6B5B48;margin-top:12px">Free. No calorie goals, no streak guilt, no fitness influencers.</p>
       <div style="margin-top:18px">
         <p style="font-size:14px;color:#6B5B48;margin:0 0 8px">Already have a table?</p>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <sc-for list="{{ codeBoxes }}" as="cb" hint-placeholder-count="4">
-            <input value="{{ cb.value }}" onChange="{{ cb.onChange }}" onKeyDown="{{ cb.onKeyDown }}" ref="{{ cb.setRef }}" maxlength="1" style="width:44px;height:52px;text-align:center;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;text-transform:uppercase;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;color:#22190F" style-focus="outline:3px solid #56284F;outline-offset:2px" autocomplete="off"></input>
+            <input value="{{ cb.value }}" onChange="{{ cb.onChange }}" onKeyDown="{{ cb.onKeyDown }}" ref="{{ cb.setRef }}" maxlength="1" style="width:44px;height:52px;text-align:center;font-family:'Space Mono',monospace;font-size:22px;font-weight:700;text-transform:uppercase;background:#FBF7EC;border:2.5px solid #22190F;border-radius:11px;color:#22190F" style-focus="outline:3px solid #56284F;outline-offset:2px" autocomplete="off"></input>
           </sc-for>
-          <button disabled="{{ enterCodeDisabled }}" style="padding:14px 18px;border-radius:3px;background:#22190F;color:#FBF7EC;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;text-transform:uppercase;cursor:pointer" onClick="{{ enterTable }}">Take a seat →</button>
+          <button disabled="{{ enterCodeDisabled }}" style="padding:14px 18px;border-radius:13px;background:#22190F;color:#FBF7EC;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;text-transform:uppercase;cursor:pointer" onClick="{{ enterTable }}">Take a seat →</button>
         </div>
       </div>
     </div>
     <div style="flex:1 1 260px;max-width:290px;margin:0 auto;width:100%">
       <div style="background:#22190F;border:2.5px solid #22190F;border-radius:26px;padding:11px;box-shadow:6px 7px 0 rgba(34,25,15,.55)">
-        <div style="background:#F2CE45;border-radius:17px;overflow:hidden;position:relative">
-          <div style="background:#22190F;color:#FBF7EC;padding:11px 12px;display:flex;align-items:center;gap:8px;border-bottom:3px solid #DC4230">
+        <div style="background:#FFFDF7;background-image:radial-gradient(circle at 1px 1px,rgba(34,25,15,.08) 1px,transparent 0);background-size:18px 18px;border-radius:17px;overflow:hidden;position:relative;aspect-ratio:9/19;display:flex;flex-direction:column">
+          <div style="background:#22190F;color:#FBF7EC;padding:11px 12px;display:flex;align-items:center;gap:8px;border-bottom:3px solid #DC4230;flex-shrink:0">
             <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;letter-spacing:-.045em;text-transform:uppercase;line-height:1">Friends<span style="color:#F2CE45">Fried</span></div>
             <span style="font-family:'Space Mono',monospace;margin-left:auto;font-size:9px;letter-spacing:.14em;opacity:.75">K7QM</span>
           </div>
-          <div style="padding:11px;min-height:392px">
-            <sc-if value="{{ locked }}" hint-placeholder-val="{{ true }}">
-              <div style="background:#22190F;color:#FBF7EC;border-radius:3px;padding:15px 13px;text-align:center;box-shadow:3px 4px 0 rgba(34,25,15,.45)">
-                <div style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#F2CE45">4 plates in</div>
-                <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;font-size:18px;margin:7px 0 6px;line-height:1.1">Post to see<br>everyone else</div>
-                <div style="font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:#F2CE45">{{ clock }}</div>
-              </div>
-              <div style="height:10px"></div>
-              <div style="filter:blur(8px);opacity:.55">
-                <dc-import name="FriendsFriedMiniCard" pr="{{ pr }}" ju="{{ ju }}" says="{{ says }}" stamped="{{ stamped }}" scored="{{ scored }}" plate-img="{{ plateImg }}" hint-size="100%,220px"></dc-import>
-              </div>
-            </sc-if>
-            <sc-if value="{{ unlocked }}" hint-placeholder-val="{{ false }}">
-              <dc-import name="FriendsFriedMiniCard" pr="{{ pr }}" ju="{{ ju }}" says="{{ says }}" stamped="{{ stamped }}" scored="{{ scored }}" plate-img="{{ plateImg }}" hint-size="100%,220px"></dc-import>
-            </sc-if>
+          <div style="padding:12px 11px 13px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch">
+            <dc-import name="FriendsFriedMiniCard" pr="{{ pr }}" ju="{{ ju }}" says="{{ says }}" stamped="{{ stamped }}" scored="{{ scored }}" plate-img="{{ plateImg }}" hint-size="100%,220px"></dc-import>
           </div>
         </div>
       </div>
@@ -91,42 +78,44 @@ a:hover{color:inherit}
     <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(30px,4vw,44px);margin:10px 0 12px">Five seats.<br>That's the app.</h2>
     <p style="font-size:17px;color:#6B5B48;max-width:520px;margin-bottom:36px">You don't follow anyone on Friends Fried. You sit down.</p>
     <div style="display:flex;flex-wrap:wrap;gap:44px;align-items:center">
-      <div style="flex:1 1 320px;position:relative;width:100%;max-width:330px;margin:0 auto;aspect-ratio:1">
-        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:33%;aspect-ratio:1;border-radius:50%;background:#F2CE45;border:2.5px solid #22190F;box-shadow:4px 5px 0 rgba(34,25,15,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1px;padding:6px">
+      <div style="flex:1 1 320px;background:#F2CE45;border:2.5px solid #22190F;border-radius:18px;box-shadow:6px 8px 0 rgba(34,25,15,.85);padding:16px 12px 20px;align-self:flex-start">
+      <div style="position:relative;width:100%;max-width:300px;margin:0 auto;aspect-ratio:1">
+        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34%;aspect-ratio:1;border-radius:50%;background:#FFFDF7;border:2.5px solid #22190F;box-shadow:3px 4px 0 rgba(34,25,15,.65);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1px;padding:8px;box-sizing:border-box">
           <div style="font-family:'Space Mono',monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:#6B5B48">This week</div>
           <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:12.5px;text-transform:uppercase;letter-spacing:-.03em;line-height:1.02;margin-top:1px">Tal is frying</div>
           <div style="font-size:14px">🍟</div>
         </div>
         <div style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:50%;top:13%">
-          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:24px;background:#FBF7EC;box-shadow:3px 4px 0 rgba(34,25,15,.75)">🌮</div>
+          <div style="width:52px;height:52px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:22px;background:#FFFDF7;box-shadow:2px 3px 0 rgba(34,25,15,.7);box-sizing:border-box">🌮</div>
           <div style="font-size:12.5px;font-weight:700;margin-top:7px">Ani</div>
-          <div style="display:inline-block;margin-top:4px;font-family:'Space Mono',monospace;font-size:11px;font-weight:800;color:#FBF7EC;background:#5F6B2A;border:1.5px solid #22190F;border-radius:3px;padding:1.5px 8px;box-shadow:1.5px 2px 0 rgba(34,25,15,.5)">8.2</div>
+          <div style="margin-top:2px;font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;color:#5F6B2A">8.2</div>
         </div>
         <div style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:85%;top:38.8%">
-          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:24px;background:#FBF7EC;box-shadow:3px 4px 0 rgba(34,25,15,.75)">🥑</div>
+          <div style="width:52px;height:52px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:22px;background:#FFFDF7;box-shadow:2px 3px 0 rgba(34,25,15,.7);box-sizing:border-box">🥑</div>
           <div style="font-size:12.5px;font-weight:700;margin-top:7px">Natasha</div>
-          <div style="display:inline-block;margin-top:4px;font-family:'Space Mono',monospace;font-size:11px;font-weight:800;color:#FBF7EC;background:#5F6B2A;border:1.5px solid #22190F;border-radius:3px;padding:1.5px 8px;box-shadow:1.5px 2px 0 rgba(34,25,15,.5)">7.4</div>
+          <div style="margin-top:2px;font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;color:#5F6B2A">7.4</div>
         </div>
         <div style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:71.6%;top:79.7%">
-          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:24px;background:#FBF7EC;box-shadow:3px 4px 0 rgba(34,25,15,.75)">🍩</div>
+          <div style="width:52px;height:52px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:22px;background:#FFFDF7;box-shadow:2px 3px 0 rgba(34,25,15,.7);box-sizing:border-box">🍩</div>
           <div style="font-size:12.5px;font-weight:700;margin-top:7px">Mhero</div>
-          <div style="display:inline-block;margin-top:4px;font-family:'Space Mono',monospace;font-size:11px;font-weight:800;color:#FBF7EC;background:#8F5D13;border:1.5px solid #22190F;border-radius:3px;padding:1.5px 8px;box-shadow:1.5px 2px 0 rgba(34,25,15,.5)">5.6</div>
+          <div style="margin-top:2px;font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;color:#8F5D13">5.6</div>
         </div>
         <div style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:28.4%;top:79.7%">
-          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px solid #DC4230;display:flex;align-items:center;justify-content:center;font-size:24px;background:#DC4230;box-shadow:3px 4px 0 rgba(34,25,15,.75)">🌶️</div>
+          <div style="width:52px;height:52px;margin:0 auto;border-radius:50%;border:2.5px solid #22190F;display:flex;align-items:center;justify-content:center;font-size:22px;background:#DC4230;box-shadow:2px 3px 0 rgba(34,25,15,.7);box-sizing:border-box">🌶️</div>
           <div style="font-size:12.5px;font-weight:700;margin-top:7px">Tal 🍟</div>
-          <div style="display:inline-block;margin-top:4px;font-family:'Space Mono',monospace;font-size:11px;font-weight:800;color:#FBF7EC;background:#A8321F;border:1.5px solid #22190F;border-radius:3px;padding:1.5px 8px;box-shadow:1.5px 2px 0 rgba(34,25,15,.5)">3.1</div>
+          <div style="margin-top:2px;font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;color:#A8321F">3.1</div>
         </div>
         <div style="position:absolute;transform:translate(-50%,-50%);width:80px;text-align:center;left:15%;top:38.8%">
-          <div style="width:56px;height:56px;margin:0 auto;border-radius:50%;border:2.5px dashed #22190F;display:flex;align-items:center;justify-content:center;font-size:24px;background:transparent;color:#6B5B48">+</div>
+          <div style="width:52px;height:52px;margin:0 auto;border-radius:50%;border:2.5px dashed #22190F;display:flex;align-items:center;justify-content:center;font-size:22px;background:transparent;color:#6B5B48;box-sizing:border-box">+</div>
           <div style="font-size:12.5px;font-weight:700;margin-top:7px">Empty</div>
-          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;display:inline-block;padding:2px 6px;border-radius:2px;border:1.5px solid rgba(34,25,15,.3);color:#6B5B48">Sit here</div>
+          <div style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.09em;text-transform:uppercase;margin-top:3px;color:#6B5B48">Sit here</div>
         </div>
       </div>
-      <div style="flex:2 1 420px;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:8px 20px">
+      </div>
+      <div style="flex:2 1 420px;background:#FBF7EC;border:2.5px solid #22190F;border-radius:14px;box-shadow:5px 6px 0 rgba(34,25,15,.8);padding:8px 20px;align-self:flex-start">
         <sc-for list="{{ rules }}" as="r" hint-placeholder-count="7">
           <div style="display:flex;gap:13px;padding:15px 0;border-bottom:1.5px dotted rgba(34,25,15,.3)">
-            <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#D9A81F;letter-spacing:.1em;padding-top:2px;flex-shrink:0">{{ r.num }}</div>
+            <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:#8A6410;letter-spacing:.1em;padding-top:2px;flex-shrink:0">{{ r.num }}</div>
             <div>
               <h4 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16.5px;letter-spacing:-.02em;margin:0 0 4px">{{ r.title }}</h4>
               <p style="font-size:14.5px;line-height:1.55;color:#6B5B48;margin:0">{{ r.body }}</p>
@@ -149,7 +138,7 @@ a:hover{color:inherit}
       <p style="font-size:17px;color:#6B5B48;max-width:520px;margin-top:18px">The feed stays blurred until your plate is in. No lurking, no judging from the sidelines. Everyone eats, everyone posts, everyone gets looked at.</p>
       <p style="font-size:15.5px;line-height:1.6;color:#6B5B48">Deadline is 10pm. Miss it and you're marked absent — or tap <b style="color:#22190F">no plate today</b> and skip without a streak lecture.</p>
     </div>
-    <div style="flex:1 1 320px;background:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:26px 22px">
+    <div style="flex:1 1 320px;background:#FBF7EC;border:2.5px solid #22190F;border-radius:14px;box-shadow:5px 6px 0 rgba(34,25,15,.8);padding:26px 22px">
       <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-bottom:14px">Tonight · 10:00 pm</div>
       <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1.5px dotted rgba(34,25,15,.3)"><span style="font-weight:700">Natasha</span><span style="font-family:'Space Mono',monospace;color:#5F6B2A;font-size:13px">POSTED</span></div>
       <div style="display:flex;justify-content:space-between;padding:11px 0;border-bottom:1.5px dotted rgba(34,25,15,.3)"><span style="font-weight:700">Ani</span><span style="font-family:'Space Mono',monospace;color:#5F6B2A;font-size:13px">POSTED</span></div>
@@ -165,7 +154,7 @@ a:hover{color:inherit}
     <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">Every Monday</div>
     <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(30px,4vw,44px);margin-top:10px">Somebody wears<br>the crown</h2>
     <p style="font-size:17px;color:#6B5B48;max-width:520px;margin-bottom:36px">Lowest average score by Sunday takes the crown — the automatic health score plus whatever your friends thought of it.</p>
-    <div style="padding:26px 24px;border-radius:3px;border:2.5px solid #DC4230;background:#F2CE45;max-width:440px">
+    <div style="padding:26px 24px;border-radius:14px;border:2.5px solid #DC4230;background:#F2CE45;max-width:440px">
       <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.04em;color:#DC4230;font-size:34px;margin-bottom:6px">Fry of the Week</div>
       <p style="font-size:15.5px;line-height:1.5;color:#6B5B48;margin:0">Not just what you ate — what your friends decided about it. A trophy for terrible choices, real or judged. Everyone starts even come Monday.</p>
     </div>
@@ -176,7 +165,7 @@ a:hover{color:inherit}
   <div style="max-width:1060px;margin:0 auto;padding:0 22px">
     <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:1.2;font-size:clamp(24px,3.4vw,38px);max-width:760px;margin:0 auto">Nobody needs<br>another food app.<br>You need your<br>friends to see this.</div>
     <div style="max-width:440px;margin:34px auto 0">
-      <a href="Friends Fried Set a Table.dc.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:3px;background:#F2CE45;color:#22190F;border:2.5px solid #F2CE45;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35);transition:transform .1s,box-shadow .1s" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none">Start a table</a>
+      <a href="Friends Fried Set a Table.dc.html" style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:13px;background:#F2CE45;color:#22190F;border:2.5px solid #F2CE45;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.35);transition:transform .1s,box-shadow .1s" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.35)" style-active="transform:translate(2px,2px);box-shadow:none">Start a table</a>
       <p style="margin-top:18px;font-size:14px;color:rgba(251,247,236,.65)">Free to start, right now.</p>
     </div>
   </div>
@@ -362,6 +351,25 @@ class Component extends DCLogic {
         setRef: (el) => { this.codeRefs[i] = el; }
       })),
       enterCodeDisabled: !this.state.entryCode.every(c => c), enterTable: this.enterTable,
+      // Mini table in the phone mock — same five diners and score ramp as the hero table below.
+      mockSeats: [
+        { emoji: '🌮', name: 'Ani', score: '8.2', color: '#5F6B2A' },
+        { emoji: '🥑', name: 'Natasha', score: '7.4', color: '#5F6B2A' },
+        { emoji: '🍩', name: 'Mhero', score: '5.6', color: '#8F5D13' },
+        { emoji: '🌶️', name: 'Tal', score: '3.1', color: '#A8321F', fry: true },
+        { emoji: '+', name: 'Open', score: '', empty: true }
+      ].map((d, i) => {
+        const a = (-90 + i * 72) * Math.PI / 180;
+        return {
+          emoji: d.emoji, name: d.name, score: d.score,
+          x: (50 + 37 * Math.cos(a)).toFixed(1),
+          y: (50 + 37 * Math.sin(a)).toFixed(1),
+          bg: d.empty ? 'transparent' : (d.fry ? '#DC4230' : '#FFFDF7'),
+          borderStyle: d.empty ? 'dashed' : 'solid',
+          crown: d.fry ? '🍟' : '',
+          scoreTextColor: d.color || '#6B5B48'
+        };
+      }),
       rules
     };
   }

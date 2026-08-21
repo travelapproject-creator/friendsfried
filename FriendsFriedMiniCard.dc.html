@@ -7,39 +7,50 @@
 </head>
 <body>
 <x-dc>
-<div style="background:#FBF7EC;border:2px solid #22190F;border-radius:3px;overflow:hidden;box-shadow:3px 4px 0 rgba(34,25,15,.8)">
-  <div style="display:flex;align-items:center;gap:7px;padding:8px 9px">
-    <span style="font-size:16px">🥑</span>
-    <span style="font-weight:700;font-size:12.5px">Natasha</span>
-    <span style="font-family:'Space Mono',monospace;margin-left:auto;font-size:8.5px;letter-spacing:.1em;color:#6B5B48">SEAT 1</span>
+<div style="background:#FBF7EC;border:2px solid #22190F;border-radius:14px;overflow:hidden;box-shadow:4px 5px 0 rgba(34,25,15,.8)">
+  <div style="display:flex;align-items:center;gap:9px;padding:11px 12px">
+    <span style="width:30px;height:30px;border-radius:50%;background:#F0E7D5;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">🥑</span>
+    <span style="font-weight:700;font-size:13.5px">Natasha</span>
   </div>
-  <div style="position:relative;border-top:2px solid #22190F;border-bottom:2px solid #22190F">
-    <img src="{{ plateImg }}" alt="Three donuts and a decaf cold brew" style="display:block;width:100%;aspect-ratio:4/5;object-fit:cover"></img>
+  <div style="position:relative">
+    <img src="{{ plateImg }}" alt="Three donuts and a decaf cold brew" style="display:block;width:100%;aspect-ratio:1;object-fit:cover"></img>
     <sc-if value="{{ stamped }}" hint-placeholder-val="{{ false }}">
-      <div style="position:absolute;right:-6px;bottom:-13px;border:2px solid #22190F;border-radius:3px;padding:4px 9px;color:#fff;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px;line-height:1;box-shadow:3px 4px 0 rgba(34,25,15,.85);transform:rotate(-5deg);background:#DC4230;animation:ffStampIn .4s cubic-bezier(.2,1.6,.5,1) both">3<span style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;opacity:.8">/10</span></div>
+      <div style="position:absolute;top:9px;right:9px;display:flex;align-items:center;gap:6px;animation:ffStampIn .4s cubic-bezier(.2,1.6,.5,1) both">
+        <div style="background:rgba(34,25,15,.7);border-radius:999px;padding:4px 9px;font-family:'Space Mono',monospace;font-size:9.5px;font-weight:700;color:#FBF7EC;white-space:nowrap">👏 {{ pr }} 🔥 {{ ju }}</div>
+        <div style="display:flex;align-items:baseline;gap:2px;background:#A8321F;color:#FBF7EC;border:2.5px solid #22190F;border-radius:999px;padding:3px 10px 4px;box-shadow:2px 3px 0 rgba(34,25,15,.5)">
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17px;letter-spacing:-.04em;line-height:1">3</span>
+          <span style="font-family:'Space Mono',monospace;font-size:8px;font-weight:700;opacity:.75">/10</span>
+        </div>
+      </div>
     </sc-if>
   </div>
-  <div style="padding:17px 10px 9px">
+  <div style="padding:11px 12px 0">
     <sc-if value="{{ scored }}" hint-placeholder-val="{{ false }}">
-      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13.5px;letter-spacing:-.02em;animation:ffFadeIn .35s ease both">Three donuts, decaf cold brew</div>
-      <div style="font-size:11.5px;line-height:1.4;color:#6B5B48;margin-top:4px;animation:ffFadeIn .35s ease both">Fried dough with sugar glaze and chocolate, plus an iced coffee. No vegetables or protein on the plate.</div>
+      <div style="background:rgba(34,25,15,.05);border-radius:8px;padding:10px 11px;animation:ffFadeIn .35s ease both">
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;letter-spacing:-.03em;text-transform:uppercase;line-height:1.1">Three donuts, decaf cold brew</div>
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:6px">
+          <span style="font-family:'Space Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;background:#22190F;color:#F2CE45;padding:3px 7px;border-radius:2px;white-space:nowrap">Health 3/10</span>
+          <span style="font-size:11px;line-height:1.4;color:#6B5B48">Fried dough with sugar glaze and chocolate, plus an iced coffee. No vegetables or protein.</span>
+        </div>
+      </div>
     </sc-if>
     <sc-if value="{{ notScored }}" hint-placeholder-val="{{ true }}">
-      <div style="font-size:11.5px;line-height:1.4;color:#6B5B48;text-align:center;padding:6px 0">Analyzing…</div>
+      <div style="font-size:11.5px;line-height:1.4;color:#6B5B48;text-align:center;padding:8px 0">Analyzing…</div>
     </sc-if>
   </div>
   <sc-if value="{{ scored }}" hint-placeholder-val="{{ false }}">
-    <div style="display:flex;border-top:2px dashed rgba(34,25,15,.3)">
-      <div style="flex:1;padding:8px 4px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;background:{{ praiseBg }};color:{{ praiseColor }}">👏 Praise{{ praiseSuffix }}</div>
-      <div style="width:2px;background:rgba(34,25,15,.3)"></div>
-      <div style="flex:1;padding:8px 4px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;background:{{ judgeBg }};color:{{ judgeColor }}">🔥 Judge{{ judgeSuffix }}</div>
+    <div style="display:flex;gap:8px;padding:11px 12px 0">
+      <div style="flex:1;padding:11px 4px;text-align:center;border-radius:13px;border:2px solid #5F6B2A;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:11.5px;text-transform:uppercase;background:{{ praiseBg }};color:{{ praiseColor }}">👏 Praise{{ praiseSuffix }}</div>
+      <div style="flex:1;padding:11px 4px;text-align:center;border-radius:13px;border:2px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:11.5px;text-transform:uppercase;background:{{ judgeBg }};color:{{ judgeColor }}">🔥 Judge{{ judgeSuffix }}</div>
     </div>
   </sc-if>
-  <sc-for list="{{ says }}" as="s" hint-placeholder-count="0">
-    <div style="{{ s.style }}animation:ffFadeIn .35s ease both">
-      <span style="margin-right:4px">{{ s.emoji }}</span><b>{{ s.name }}</b> <span style="color:#6B5B48">{{ s.text }}</span>
-    </div>
-  </sc-for>
+  <div style="padding:0 12px 12px">
+    <sc-for list="{{ says }}" as="s" hint-placeholder-count="0">
+      <div style="font-size:12px;line-height:1.4;margin-top:9px;animation:ffFadeIn .35s ease both">
+        <span style="margin-right:4px">{{ s.emoji }}</span><b>{{ s.name }}</b> <span style="color:#6B5B48">{{ s.text }}</span>
+      </div>
+    </sc-for>
+  </div>
 </div>
 
 </x-dc>
@@ -49,15 +60,16 @@
     const ju = this.props.ju || 0;
     return {
       plateImg: this.props.plateImg,
+      pr, ju,
       stamped: this.props.stamped,
       scored: this.props.scored,
       notScored: !this.props.scored,
       says: this.props.says || [],
-      praiseBg: pr ? '#3F7D3B' : 'transparent',
-      praiseColor: pr ? '#fff' : '#22190F',
+      praiseBg: pr ? '#5F6B2A' : '#FFFDF7',
+      praiseColor: pr ? '#FBF7EC' : '#5F6B2A',
       praiseSuffix: pr ? ' ' + pr : '',
-      judgeBg: ju ? '#DC4230' : 'transparent',
-      judgeColor: ju ? '#fff' : '#22190F',
+      judgeBg: ju ? '#DC4230' : '#FFFDF7',
+      judgeColor: ju ? '#FBF7EC' : '#DC4230',
       judgeSuffix: ju ? ' ' + ju : ''
     };
   }
