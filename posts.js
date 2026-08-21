@@ -2,6 +2,21 @@ const router = require('express').Router();
 const pool = require('./db');
 const { rateImageWithClaude } = require('./ai');
 
+// Idempotent migration on boot: older databases predate these columns, and without them every
+// rating write fails silently. Safe to run on every start.
+(async () => {
+  const cols = [
+    "alter table posts add column if not exists ai_verdict text",
+    "alter table posts add column if not exists poster_note text",
+    "alter table posts add column if not exists ai_health int",
+    "alter table posts add column if not exists ai_score int"
+  ];
+  for (const sql of cols) {
+    try { await pool.query(sql); } catch (e) { console.error('[migrate] ' + sql + ' -> ' + e.message); }
+  }
+  console.log('[migrate] posts AI columns ensured');
+})();
+
 // Diagnostic: open /api/posts/ai-status in a browser to see why rating is or isn't working.
 // Pass ?image_url=<absolute url of a posted plate> to run a real end-to-end rating attempt.
 router.get('/ai-status', async (req, res) => {
@@ -14,8 +29,19 @@ router.get('/ai-status', async (req, res) => {
     return res.json(out);
   }
   if (!req.query.image_url) {
-    out.next_step = 'Add ?image_url=<absolute URL of an already-posted plate photo> to test a real rating.';
-    return res.json(out);
+    // No URL supplied — grab the most recent post and test that, so this works with a bare URL.
+    try {
+      const recent = await pool.query('select id, image_url, ai_health, ai_verdict, created_at from posts order by created_at desc limit 1');
+      if (!recent.rowCount) {
+        out.problem = 'No posts in the database yet — post a plate first, then reload this.';
+        return res.json(out);
+      }
+      out.tested_post = { id: recent.rows[0].id, image_url: recent.rows[0].image_url, stored_ai_health: recent.rows[0].ai_health, stored_ai_verdict: recent.rows[0].ai_verdict };
+      req.query.image_url = recent.rows[0].image_url;
+    } catch (e) {
+      out.problem = 'Could not read posts table: ' + e.message;
+      return res.json(out);
+    }
   }
   try {
     const rating = await rateImageWithClaude(req.query.image_url);
