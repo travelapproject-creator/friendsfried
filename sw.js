@@ -1,5 +1,5 @@
 const CACHE = 'ff-cache-v2';
-const ASSETS = ['index.html', 'Friends Fried Set a Table.dc.html', 'FriendsFriedMiniCard.dc.html', 'fine-print.html', 'support.js', 'manifest.json', 'icon-192.png', 'icon-512.png'];
+const ASSETS = ['index.html', 'Friends Fried Set a Table.dc.html', 'FriendsFriedMiniCard.dc.html', 'fine-print.html', 'support.js', 'manifest.json', 'icon-192.png', 'icon-512.png', 'plate-pizza.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)));

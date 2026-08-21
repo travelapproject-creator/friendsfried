@@ -1,15 +1,6 @@
 const router = require('express').Router();
 const pool = require('./db');
-
-// Idempotent migration on boot: scores_reset_at marks the point the host last reset the game. The
-// scoreboard only counts plates posted at or after it, so a reset is non-destructive — old plates stay
-// visible in each chair's history.
-(async () => {
-  try {
-    await pool.query('alter table tables add column if not exists scores_reset_at timestamptz');
-    console.log('[migrate] tables.scores_reset_at ensured');
-  } catch (e) { console.error('[migrate] scores_reset_at -> ' + e.message); }
-})();
+const { deleteUploadsByUrl } = require('./upload');
 
 function genCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -79,16 +70,40 @@ router.post('/:code/seats', async (req, res) => {
   }
 });
 
-// Remove/free a seat
+// Leave the table, or (host only) remove someone from it. Destructive and final: the seat's plates,
+// votes and comments cascade away with it, and the photo files are unlinked from disk. The seat then
+// reads as empty and anyone can take it.
+// by_seat_id must be the leaver themselves, or the host (seat_index 0) removing another seat.
 router.delete('/:code/seats/:seatIndex', async (req, res) => {
+  const bySeatId = (req.body && req.body.by_seat_id) || req.query.by_seat_id;
   try {
     const tableResult = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
     if (!tableResult.rowCount) return res.status(404).json({ error: 'Table not found' });
-    await pool.query('delete from seats where table_id=$1 and seat_index=$2', [tableResult.rows[0].id, req.params.seatIndex]);
-    res.status(204).end();
+    const tableId = tableResult.rows[0].id;
+
+    const target = await pool.query('select id, seat_index, name from seats where table_id=$1 and seat_index=$2', [tableId, req.params.seatIndex]);
+    if (!target.rowCount) return res.status(404).json({ error: 'That seat is already empty' });
+
+    if (!bySeatId) return res.status(400).json({ error: 'Missing by_seat_id' });
+    const actor = await pool.query('select seat_index from seats where id=$1 and table_id=$2', [bySeatId, tableId]);
+    if (!actor.rowCount) return res.status(403).json({ error: 'You are not at this table' });
+    const isSelf = target.rows[0].id === bySeatId;
+    const isHost = actor.rows[0].seat_index === 0;
+    if (!isSelf && !isHost) return res.status(403).json({ error: 'You can only leave your own seat' });
+
+    const photos = await pool.query('select image_url from posts where seat_id=$1', [target.rows[0].id]);
+    const plateCount = photos.rowCount;
+    let filesRemoved = 0;
+    try {
+      filesRemoved = deleteUploadsByUrl(photos.rows.map(r => r.image_url));
+    } catch (e) { console.error('[leave] file cleanup failed: ' + e.message); }
+
+    await pool.query('delete from seats where id=$1', [target.rows[0].id]);
+    console.log('[leave] ' + target.rows[0].name + ' left ' + req.params.code.toUpperCase() + ' — ' + plateCount + ' plates, ' + filesRemoved + ' files removed');
+    res.json({ left: target.rows[0].name, plates_deleted: plateCount, files_deleted: filesRemoved });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to remove seat' });
+    res.status(500).json({ error: 'Failed to leave the table' });
   }
 });
 
@@ -131,32 +146,13 @@ router.get('/:code/fry-counts', async (req, res) => {
   }
 });
 
-// Reset the game. Host only (seat_index 0) — verified server-side, since the client can be edited.
-// Non-destructive: stamps scores_reset_at, so the scoreboard starts fresh while old plates stay in history.
-router.post('/:code/reset-scores', async (req, res) => {
-  const { seat_id } = req.body;
-  if (!seat_id) return res.status(400).json({ error: 'Missing seat_id' });
-  try {
-    const t = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
-    if (!t.rowCount) return res.status(404).json({ error: 'Table not found' });
-    const seat = await pool.query('select seat_index from seats where id=$1 and table_id=$2', [seat_id, t.rows[0].id]);
-    if (!seat.rowCount) return res.status(404).json({ error: 'Seat not found at this table' });
-    if (seat.rows[0].seat_index !== 0) return res.status(403).json({ error: 'Only the host can reset scores' });
-    const updated = await pool.query('update tables set scores_reset_at=now() where id=$1 returning scores_reset_at', [t.rows[0].id]);
-    res.json({ scores_reset_at: updated.rows[0].scores_reset_at });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to reset scores' });
-  }
-});
-
 // Scoreboard: each seat's score is the average of their plates' friend-adjusted scores. The AI health
 // read (0-10) is each plate's base, then 1 point per praise (up) or judge (down), UNCAPPED — a plate
 // everyone praises can finish above 10, so no vote is ever discarded. One plate per seat per day is a
 // DB constraint, so this average is exactly the average of daily scores. Sorted lowest first, so
 // whoever is at the top has the lowest average.
 // Optional ?from=YYYY-MM-DD&to=YYYY-MM-DD windows it to one week; omit both for all-time.
-// A host reset (scores_reset_at) always applies on top of the window.
+// There is no reset: a group that wants a clean slate starts a new table.
 router.get('/:code/scores', async (req, res) => {
   try {
     const tableResult = await pool.query('select * from tables where code=$1', [req.params.code.toUpperCase()]);
@@ -171,9 +167,8 @@ router.get('/:code/scores', async (req, res) => {
           (coalesce(p.ai_health,6) + coalesce(sum(vp.signed_pts),0)) as adjusted_score
         from posts p
         left join vote_pts vp on vp.post_id = p.id
-        where p.created_at >= coalesce($2::timestamptz, '-infinity'::timestamptz)
-          and ($3::date is null or p.post_date >= $3::date)
-          and ($4::date is null or p.post_date <= $4::date)
+        where ($2::date is null or p.post_date >= $2::date)
+          and ($3::date is null or p.post_date <= $3::date)
         group by p.id, p.seat_id
       )
       select s.id, s.seat_index, s.name, s.emoji,
@@ -183,9 +178,9 @@ router.get('/:code/scores', async (req, res) => {
       where s.table_id = $1
       group by s.id
       order by score asc`,
-      [tableResult.rows[0].id, tableResult.rows[0].scores_reset_at || null, req.query.from || null, req.query.to || null]
+      [tableResult.rows[0].id, req.query.from || null, req.query.to || null]
     );
-    res.json({ scores: result.rows, scores_reset_at: tableResult.rows[0].scores_reset_at || null });
+    res.json({ scores: result.rows });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch scores' });

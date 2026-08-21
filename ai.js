@@ -41,7 +41,7 @@ async function rateImageWithClaude(imageUrl, note) {
         role: 'user',
         content: [
           { type: 'image', source: { type: 'base64', media_type: mediaType, data: buf.toString('base64') } },
-          { type: 'text', text: 'Look at this plate of food. Name the dish in 5 words or fewer, based on what you actually see. Then give it a precise 0-10 score for how healthy/nutritious/balanced it looks, to ONE decimal place (e.g. 7.4, 3.8, 6.1). Use the decimal to be exact — do not default to round numbers. Then write a short, plain, factual one-line reason describing what you see on the plate. No jokes, no wordplay, no addressing the eater directly. Max 20 words for the reason.' + (note ? ' The poster says the photo shows: "' + note + '" \u2014 trust this description of what the food actually is over your own visual read, for both the name and the score.' : '') + ' Respond with ONLY JSON: {"name": "<dish name>", "health": <number 0-10 with one decimal>, "verdict": "<text>"}' }
+          { type: 'text', text: 'Look at this plate of food. Name the dish in 5 words or fewer, based on what you actually see. Then name the dish and give it a precise 0-10 score for how healthy/nutritious/balanced it looks, to ONE decimal place (e.g. 7.4, 3.8, 6.1). Use the decimal to be exact — do not default to round numbers. Then write a short, plain, factual one-line reason describing what you see on the plate. No jokes, no wordplay, no addressing the eater directly. Max 20 words for the reason.' + (note ? ' The poster says the photo shows: "' + note + '" \u2014 trust this description of what the food actually is over your own visual read, for both the name and the score.' : '') + ' Respond with ONLY JSON: {"name": "<dish name>", "health": <number 0-10 with one decimal>}' }
         ]
       }]
     })
@@ -57,9 +57,8 @@ async function rateImageWithClaude(imageUrl, note) {
   const parsed = JSON.parse(match[0]);
   // Keep one decimal — rounding to an integer was collapsing every read onto 7 or 8.
   const health = Math.round(Math.max(0, Math.min(10, Number(parsed.health))) * 10) / 10;
-  const verdict = String(parsed.verdict || '').slice(0, 180);
   const name = String(parsed.name || '').slice(0, 60);
-  return { name, health, verdict };
+  return { name, health };
 }
 
 module.exports = { rateImageWithClaude };

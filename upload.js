@@ -47,4 +47,24 @@ router.post('/', upload.single('image'), (req, res) => {
   res.status(201).json({ url: `${base}/uploads/${req.file.filename}` });
 });
 
+// Deletes the files behind a list of stored image URLs. Row deletion cascades in Postgres, but the
+// JPEGs would otherwise sit on the volume forever. Best-effort per file: a missing file is not an error.
+function deleteUploadsByUrl(urls) {
+  let removed = 0;
+  for (const url of urls || []) {
+    if (!url) continue;
+    const name = path.basename(String(url).split('?')[0]);
+    // Never let a stored value escape the upload directory.
+    if (!name || name.includes('..') || name.includes('/')) continue;
+    try {
+      fs.unlinkSync(path.join(uploadDir, name));
+      removed++;
+    } catch (e) {
+      if (e.code !== 'ENOENT') console.error('[upload] could not delete ' + name + ': ' + e.message);
+    }
+  }
+  return removed;
+}
+
 module.exports = router;
+module.exports.deleteUploadsByUrl = deleteUploadsByUrl;

@@ -6,6 +6,7 @@ const { rateImageWithClaude } = require('./ai');
 // rating write fails silently. Safe to run on every start.
 (async () => {
   const cols = [
+    // ai_verdict is legacy: the AI returns only a name and a score now. Kept so old rows still read.
     "alter table posts add column if not exists ai_verdict text",
     "alter table posts add column if not exists ai_name text",
     "alter table posts add column if not exists poster_note text",
@@ -34,12 +35,12 @@ router.get('/ai-status', async (req, res) => {
   if (!req.query.image_url) {
     // No URL supplied — grab the most recent post and test that, so this works with a bare URL.
     try {
-      const recent = await pool.query('select id, image_url, ai_health, ai_verdict, created_at from posts order by created_at desc limit 1');
+      const recent = await pool.query('select id, image_url, ai_health, ai_name, created_at from posts order by created_at desc limit 1');
       if (!recent.rowCount) {
         out.problem = 'No posts in the database yet — post a plate first, then reload this.';
         return res.json(out);
       }
-      out.tested_post = { id: recent.rows[0].id, image_url: recent.rows[0].image_url, stored_ai_health: recent.rows[0].ai_health, stored_ai_verdict: recent.rows[0].ai_verdict };
+      out.tested_post = { id: recent.rows[0].id, image_url: recent.rows[0].image_url, stored_ai_health: recent.rows[0].ai_health, stored_ai_name: recent.rows[0].ai_name };
       req.query.image_url = recent.rows[0].image_url;
     } catch (e) {
       out.problem = 'Could not read posts table: ' + e.message;
@@ -146,8 +147,8 @@ router.post('/', async (req, res) => {
       const rating = await rateImageWithClaude(image_url);
       if (rating) {
         const upd = await pool.query(
-          'update posts set ai_health=$1, ai_verdict=$2, ai_name=$3 where id=$4 returning *',
-          [rating.health, rating.verdict, rating.name, post.id]
+          'update posts set ai_health=$1, ai_name=$2 where id=$3 returning *',
+          [rating.health, rating.name, post.id]
         );
         post = upd.rows[0];
       }
@@ -184,7 +185,7 @@ router.patch('/:id', async (req, res) => {
       try {
         const rating = await rateImageWithClaude(image_url);
         if (rating) {
-          const rated = await pool.query('update posts set ai_health=$1, ai_verdict=$2, ai_name=$3 where id=$4 returning *', [rating.health, rating.verdict, rating.name, post.id]);
+          const rated = await pool.query('update posts set ai_health=$1, ai_name=$2 where id=$3 returning *', [rating.health, rating.name, post.id]);
           post = rated.rows[0];
         }
       } catch (aiErr) {
@@ -210,8 +211,8 @@ router.post('/:id/recheck', async (req, res) => {
     const rating = await rateImageWithClaude(post.image_url, note.slice(0, 300));
     if (!rating) return res.status(502).json({ error: 'Re-rating unavailable right now' });
     const upd = await pool.query(
-      'update posts set ai_health=$1, ai_verdict=$2, ai_name=$3, poster_note=$4 where id=$5 returning *',
-      [rating.health, rating.verdict, rating.name, note.slice(0, 300), req.params.id]
+      'update posts set ai_health=$1, ai_name=$2, poster_note=$3 where id=$4 returning *',
+      [rating.health, rating.name, note.slice(0, 300), req.params.id]
     );
     res.json({ post: (await readPostWithScore(req.params.id)) || upd.rows[0] });
   } catch (err) {
