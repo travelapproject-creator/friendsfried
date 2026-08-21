@@ -95,7 +95,7 @@ a:hover{color:inherit}
       <div style="height:10px"></div>
       <button style="width:100%;padding:12px 22px;border-radius:3px;background:none;color:#6B5B48;border:none;font-size:13.5px;text-decoration:underline;cursor:pointer" onClick="{{ copyCode }}">Copy code</button>
       <sc-if value="{{ codeCopied }}" hint-placeholder-val="{{ false }}">
-        <p style="font-size:13px;color:#3F7D3B;margin:0">Copied.</p>
+        <p style="font-size:13px;color:#5F6B2A;margin:0">Copied.</p>
       </sc-if>
     </div>
   </sc-if>
@@ -126,7 +126,7 @@ a:hover{color:inherit}
         </div>
       </sc-if>
       <sc-if value="{{ resetDone }}" hint-placeholder-val="{{ false }}">
-        <div style="background:#3F7D3B;color:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:4px 5px 0 rgba(34,25,15,.8);padding:12px 15px;margin-bottom:14px;font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;letter-spacing:.04em">✓ SCORES RESET — NEW GAME STARTS NOW</div>
+        <div style="background:#5F6B2A;color:#FBF7EC;border:2.5px solid #22190F;border-radius:3px;box-shadow:4px 5px 0 rgba(34,25,15,.8);padding:12px 15px;margin-bottom:14px;font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;letter-spacing:.04em">✓ SCORES RESET — NEW GAME STARTS NOW</div>
       </sc-if>
       <sc-if value="{{ resetConfirm }}" hint-placeholder-val="{{ false }}">
         <div style="background:#DC4230;border:2.5px solid #22190F;border-radius:3px;box-shadow:5px 6px 0 rgba(34,25,15,.85);padding:18px 20px;margin-bottom:14px">
@@ -149,7 +149,7 @@ a:hover{color:inherit}
         </div>
       </sc-if>
       <sc-if value="{{ codeCopied }}" hint-placeholder-val="{{ false }}">
-        <p style="font-size:12px;color:#3F7D3B;margin:0 0 4px;text-align:right">Copied.</p>
+        <p style="font-size:12px;color:#5F6B2A;margin:0 0 4px;text-align:right">Copied.</p>
       </sc-if>
       <sc-if value="{{ showMainViews }}" hint-placeholder-val="{{ true }}">
       <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;justify-content:center">
@@ -337,7 +337,7 @@ a:hover{color:inherit}
                 </sc-if>
                 <sc-if value="{{ p.canVote }}" hint-placeholder-val="{{ false }}">
                   <div style="display:flex;gap:9px;margin-top:12px">
-                    <button disabled="{{ p.voteDisabled }}" style="flex:1;padding:11px;border-radius:3px;border:2px solid #3F7D3B;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;cursor:pointer;background:{{ p.prBg }};color:{{ p.prColor }};opacity:{{ p.voteOpacity }}" onClick="{{ p.onVotePr }}">👏 {{ p.prLabel }}</button>
+                    <button disabled="{{ p.voteDisabled }}" style="flex:1;padding:11px;border-radius:3px;border:2px solid #5F6B2A;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;cursor:pointer;background:{{ p.prBg }};color:{{ p.prColor }};opacity:{{ p.voteOpacity }}" onClick="{{ p.onVotePr }}">👏 {{ p.prLabel }}</button>
                     <button disabled="{{ p.voteDisabled }}" style="flex:1;padding:11px;border-radius:3px;border:2px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;cursor:pointer;background:{{ p.fryBg }};color:{{ p.fryColor }};opacity:{{ p.voteOpacity }}" onClick="{{ p.onVoteFry }}">🔥 {{ p.judgeLabel }}</button>
                   </div>
                 </sc-if>
@@ -408,7 +408,7 @@ a:hover{color:inherit}
             </div>
             <button style="width:100%;margin-top:12px;padding:12px;border-radius:3px;background:#FBF7EC;color:#22190F;border:2.5px solid #22190F;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;text-transform:uppercase;cursor:pointer" onClick="{{ shareHistory }}">Copy caption to share</button>
             <sc-if value="{{ shareCopied }}" hint-placeholder-val="{{ false }}">
-              <p style="font-size:12.5px;color:#3F7D3B;text-align:center;margin:8px 0 0">Copied.</p>
+              <p style="font-size:12.5px;color:#5F6B2A;text-align:center;margin:8px 0 0">Copied.</p>
             </sc-if>
           </sc-if>
           <sc-if value="{{ history.hasPosts }}" hint-placeholder-val="{{ false }}">
@@ -935,8 +935,8 @@ class Component extends DCLogic {
         onConfirmPost: () => this.confirmPost(key), onCancelPending: () => this.cancelPendingFile(key),
         isPosted, canVote: isPosted,
         plateScore: plateScore == null ? '·' : plateScore.toFixed(0),
-        plateScoreBg: plateScore == null ? 'rgba(34,25,15,.08)' : (plateScore >= 7 ? '#3F7D3B' : plateScore >= 4 ? '#F2CE45' : '#DC4230'),
-        plateScoreColor: plateScore == null ? '#A2937E' : (plateScore >= 4 && plateScore < 7 ? '#22190F' : '#FBF7EC'),
+        plateScoreBg: plateScore == null ? 'rgba(251,247,236,.6)' : (plateScore >= 7 ? '#5F6B2A' : plateScore >= 4 ? '#8F5D13' : '#A8321F'),
+        plateScoreColor: plateScore == null ? '#6B5B48' : '#FBF7EC',
         showPlateScore: isPosted,
         praiseTally: prCount,
         fryTally: fryCount,
@@ -957,15 +957,15 @@ class Component extends DCLogic {
         flashIcon: flash ? (flash.type === 'praise' ? '👏' : '🔥') : '',
         flashDelta: flash ? (flash.delta == null ? '' : (flash.delta > 0 ? '+' + flash.delta : String(flash.delta))) : '',
         flashMessage: flash ? (flash.delta === 0 ? 'Vote counted — already at the limit' : 'Score now ' + flash.score + '/10') : '',
-        flashBannerBg: flash ? (flash.type === 'praise' ? '#3F7D3B' : '#DC4230') : 'transparent',
-        flashBannerBorder: flash ? (flash.type === 'praise' ? '#2E5C2B' : '#A82D1F') : 'transparent',
-        flashBg: flash ? (flash.type === 'praise' ? 'rgba(63,125,59,.14)' : 'rgba(220,66,48,.14)') : 'transparent',
-        flashGlow: flash ? '0 0 0 3px ' + (flash.type === 'praise' ? '#3F7D3B' : '#DC4230') : 'none',
-        scoreColor: flash ? (flash.type === 'praise' ? '#3F7D3B' : '#DC4230') : '#6B5B48',
+        flashBannerBg: flash ? (flash.type === 'praise' ? '#5F6B2A' : '#DC4230') : 'transparent',
+        flashBannerBorder: flash ? (flash.type === 'praise' ? '#454D1C' : '#A82D1F') : 'transparent',
+        flashBg: flash ? '#FBF7EC' : 'transparent',
+        flashGlow: flash ? '0 0 0 3px ' + (flash.type === 'praise' ? '#5F6B2A' : '#DC4230') : 'none',
+        scoreColor: flash ? (flash.type === 'praise' ? '#5F6B2A' : '#DC4230') : '#6B5B48',
         scoreWeight: flash ? 700 : 400,        voteDisabled: !!this.state.votingKey, voteOpacity: this.state.votingKey ? .6 : 1,
         prLabel: this.state.votingKey === (key + '|praise') ? 'Saving…' : (myVote === 'praise' ? '✓ Praised' : 'Praise (+1)'),
         judgeLabel: this.state.votingKey === (key + '|fry') ? 'Saving…' : (myVote === 'fry' ? '✓ Judged' : 'Judge (-1)'),
-        prBg: myVote === 'praise' ? '#3F7D3B' : 'transparent', prColor: myVote === 'praise' ? '#fff' : '#22190F',
+        prBg: myVote === 'praise' ? '#5F6B2A' : 'transparent', prColor: myVote === 'praise' ? '#fff' : '#22190F',
         fryBg: myVote === 'fry' ? '#DC4230' : 'transparent', fryColor: myVote === 'fry' ? '#fff' : '#22190F',
         onVotePr: () => this.votePost(key, post && post.id, 'praise'), onVoteFry: () => this.votePost(key, post && post.id, 'fry'),
         comments: comments.map((cm) => {
@@ -1053,9 +1053,9 @@ class Component extends DCLogic {
   // The chair badge colour follows the same 0-10 bands as a plate's score badge.
   scoreBands(v) {
     const n = Number(v);
-    if (n >= 7) return { bg: '#3F7D3B', fg: '#FBF7EC' };
-    if (n >= 4) return { bg: '#F2CE45', fg: '#22190F' };
-    return { bg: '#DC4230', fg: '#FBF7EC' };
+    if (n >= 7) return { bg: '#5F6B2A', fg: '#FBF7EC' };
+    if (n >= 4) return { bg: '#8F5D13', fg: '#FBF7EC' };
+    return { bg: '#A8321F', fg: '#FBF7EC' };
   }
   // Lowest weekly average is Fry of the Week. Returns null until at least one plate is scored.
   fryOfWeek() {
@@ -1089,7 +1089,7 @@ class Component extends DCLogic {
         scoreColor: bands ? bands.fg : '#6B5B48',
         showChip: !occ || !hasScore,
         chipText: occ ? 'TAP FOR HISTORY' : (isAdding ? 'TAP TO CLOSE' : 'TAP TO ADD'),
-        chipColor: i === 0 ? '#D9A81F' : '#3F7D3B',
+        chipColor: i === 0 ? '#8A6410' : '#5F6B2A',
         cursor: 'pointer',
         onClick: occ ? (() => this.openHistory(i)) : (() => isAdding ? this.cancelAddSeat() : this.startAddSeat(i))
       };
@@ -1101,7 +1101,7 @@ class Component extends DCLogic {
       rowBg: 'transparent', textColor: occ ? '#A2937E' : '#22190F',
       label: i === 0 ? (occ ? occ.name : 'Host') : occ ? occ.name : 'Seat ' + (i + 1),
       chipText: i === 0 ? 'HOST' : occ ? 'TAKEN' : 'OPEN — SIT HERE',
-      chipColor: i === 0 ? '#D9A81F' : occ ? '#A2937E' : '#3F7D3B',
+      chipColor: i === 0 ? '#8A6410' : occ ? '#A2937E' : '#5F6B2A',
       onClick: occ ? (() => {}) : (() => this.pickJoinSeat(i))
     }));
   }
