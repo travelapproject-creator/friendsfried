@@ -31,10 +31,11 @@ create table posts (
   post_date     date not null default current_date,  -- one post per seat per day
   image_url     text not null,
   caption       text,
-  ai_score      int check (ai_score between 1 and 100),  -- Claude's 1-100 health-score rating of the plate
+  ai_score      int check (ai_score between 1 and 100),  -- legacy 1-100 rating, no longer written or read
   ai_verdict    text,                                    -- Claude's one-line verdict
   poster_note   text,                                    -- poster's correction if the AI misread the plate; re-rates using this context
-  ai_health     int check (ai_health between 0 and 10),   -- Claude's healthiness read, 0-10 (informational only, doesn't affect the leaderboard)
+  ai_health     numeric(3,1) check (ai_health between 0 and 10),  -- AI health read, one decimal (e.g. 7.4); the plate's BASE score
+  ai_name       text,                                    -- Claude's short name for the dish, read off the photo
   created_at    timestamptz not null default now(),
   unique (seat_id, post_date)
 );
@@ -44,6 +45,7 @@ create table posts (
 -- alter table posts add column if not exists ai_verdict text;
 -- alter table posts add column if not exists poster_note text;
 -- alter table posts add column if not exists ai_health int check (ai_health between 0 and 10);
+-- alter table posts add column if not exists ai_name text;
 
 create table votes (
   id            uuid primary key default gen_random_uuid(),

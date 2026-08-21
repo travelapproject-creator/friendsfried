@@ -4,6 +4,9 @@ const path = require('path');
 const fs = require('fs');
 
 const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, 'uploads');
+// True when UPLOAD_DIR points outside the app directory, i.e. at a mounted volume. Anything inside the
+// app directory is wiped on every redeploy.
+const isPersistent = !!process.env.UPLOAD_DIR && !path.resolve(uploadDir).startsWith(path.resolve(__dirname));
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
@@ -14,6 +17,28 @@ const storage = multer.diskStorage({
   }
 });
 const upload = multer({ storage, limits: { fileSize: 8 * 1024 * 1024 } });
+
+// Diagnostic: open /api/upload/status to see where photos are being written and whether that survives
+// a redeploy. The failure mode is silent otherwise — uploads succeed, then vanish on the next deploy.
+router.get('/status', (req, res) => {
+  let files = [];
+  try { files = fs.readdirSync(uploadDir); } catch (e) {}
+  let bytes = 0;
+  for (const f of files) {
+    try { bytes += fs.statSync(path.join(uploadDir, f)).size; } catch (e) {}
+  }
+  res.json({
+    upload_dir: uploadDir,
+    upload_dir_env_set: !!process.env.UPLOAD_DIR,
+    persistent: isPersistent,
+    verdict: isPersistent
+      ? 'Photos are written outside the app directory and should survive redeploys.'
+      : 'EPHEMERAL — every redeploy deletes these files. Mount a volume and set UPLOAD_DIR to its mount path.',
+    photo_count: files.length,
+    total_mb: +(bytes / 1048576).toFixed(2),
+    public_url: process.env.PUBLIC_URL || '(not set — falls back to the request host)'
+  });
+});
 
 router.post('/', upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });

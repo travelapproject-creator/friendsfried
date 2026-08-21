@@ -104,7 +104,7 @@ router.get('/:code/fry-counts', async (req, res) => {
       ),
       post_adjusted as (
         select p.id, p.seat_id, p.post_date,
-          greatest(0, least(10, coalesce(p.ai_health,6) + coalesce(sum(vp.signed_pts),0))) as adjusted_score
+          (coalesce(p.ai_health,6) + coalesce(sum(vp.signed_pts),0)) as adjusted_score
         from posts p
         left join vote_pts vp on vp.post_id = p.id
         group by p.id, p.seat_id, p.post_date
@@ -150,9 +150,11 @@ router.post('/:code/reset-scores', async (req, res) => {
   }
 });
 
-// Scoreboard: each seat's score is the average of their plates' friend-adjusted scores — the AI health
-// read (0-10) is each plate's base, then 1 point per praise (up) or judge (down), clamped 0-10. Sorted
-// lowest first, so whoever is at the top has the lowest average.
+// Scoreboard: each seat's score is the average of their plates' friend-adjusted scores. The AI health
+// read (0-10) is each plate's base, then 1 point per praise (up) or judge (down), UNCAPPED — a plate
+// everyone praises can finish above 10, so no vote is ever discarded. One plate per seat per day is a
+// DB constraint, so this average is exactly the average of daily scores. Sorted lowest first, so
+// whoever is at the top has the lowest average.
 // Optional ?from=YYYY-MM-DD&to=YYYY-MM-DD windows it to one week; omit both for all-time.
 // A host reset (scores_reset_at) always applies on top of the window.
 router.get('/:code/scores', async (req, res) => {
@@ -166,7 +168,7 @@ router.get('/:code/scores', async (req, res) => {
       ),
       post_adjusted as (
         select p.id, p.seat_id,
-          greatest(0, least(10, coalesce(p.ai_health,6) + coalesce(sum(vp.signed_pts),0))) as adjusted_score
+          (coalesce(p.ai_health,6) + coalesce(sum(vp.signed_pts),0)) as adjusted_score
         from posts p
         left join vote_pts vp on vp.post_id = p.id
         where p.created_at >= coalesce($2::timestamptz, '-infinity'::timestamptz)

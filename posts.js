@@ -9,8 +9,10 @@ const { rateImageWithClaude } = require('./ai');
     "alter table posts add column if not exists ai_verdict text",
     "alter table posts add column if not exists ai_name text",
     "alter table posts add column if not exists poster_note text",
-    "alter table posts add column if not exists ai_health int",
-    "alter table posts add column if not exists ai_score int"
+    "alter table posts add column if not exists ai_health numeric(3,1)",
+    "alter table posts add column if not exists ai_score int",
+    // Older databases created ai_health as int, which silently truncated every decimal read.
+    "alter table posts alter column ai_health type numeric(3,1)"
   ];
   for (const sql of cols) {
     try { await pool.query(sql); } catch (e) { console.error('[migrate] ' + sql + ' -> ' + e.message); }
@@ -68,11 +70,10 @@ router.get('/table/:code', async (req, res) => {
       `select p.*, s.name as seat_name, s.emoji as seat_emoji,
         (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')::int as praise_count,
         (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')::int as fry_count,
-        greatest(0, least(10,
-          coalesce(p.ai_health,6)
+        (coalesce(p.ai_health,6)
           + (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')
           - (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')
-        ))::numeric(3,1) as adjusted_score
+        )::numeric(4,1) as adjusted_score
        from posts p join seats s on s.id = p.seat_id
        where p.table_id=$1 and ${dateClause}
        order by p.created_at`,
@@ -99,11 +100,10 @@ router.get('/seat/:seatId', async (req, res) => {
       `select p.*,
         (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')::int as praise_count,
         (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')::int as fry_count,
-        greatest(0, least(10,
-          coalesce(p.ai_health,6)
+        (coalesce(p.ai_health,6)
           + (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')
           - (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')
-        ))::numeric(3,1) as adjusted_score
+        )::numeric(4,1) as adjusted_score
        from posts p where p.seat_id=$1 order by p.post_date desc`,
       [req.params.seatId]
     );
@@ -122,11 +122,10 @@ async function readPostWithScore(id) {
     `select p.*, s.name as seat_name, s.emoji as seat_emoji,
       (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')::int as praise_count,
       (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')::int as fry_count,
-      greatest(0, least(10,
-        coalesce(p.ai_health,6)
+      (coalesce(p.ai_health,6)
         + (select count(*) from votes v where v.post_id=p.id and v.vote_type='praise')
         - (select count(*) from votes v where v.post_id=p.id and v.vote_type='fry')
-      ))::numeric(3,1) as adjusted_score
+      )::numeric(4,1) as adjusted_score
      from posts p join seats s on s.id = p.seat_id where p.id=$1`,
     [id]
   );
@@ -163,24 +162,34 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Edit today's post (replace the photo; re-runs AI rating) — only the seat that posted it can edit
+// Edit today's post — only the seat that posted it can edit. Send image_url to replace the photo
+// (re-runs the AI rating), caption to change the words, or both. A caption-only edit never re-runs
+// the AI, so rewording your note can't move your score.
 router.patch('/:id', async (req, res) => {
-  const { image_url, seat_id } = req.body;
-  if (!image_url || !seat_id) return res.status(400).json({ error: 'image_url and seat_id required' });
+  const { image_url, caption, seat_id } = req.body;
+  if (!seat_id) return res.status(400).json({ error: 'seat_id required' });
+  if (image_url === undefined && caption === undefined) return res.status(400).json({ error: 'image_url or caption required' });
   try {
     const existing = await pool.query('select * from posts where id=$1', [req.params.id]);
     if (!existing.rowCount) return res.status(404).json({ error: 'Not found' });
     if (existing.rows[0].seat_id !== seat_id) return res.status(403).json({ error: 'Only the original poster can edit this' });
-    const result = await pool.query('update posts set image_url=$1 where id=$2 returning *', [image_url, req.params.id]);
-    let post = result.rows[0];
-    try {
-      const rating = await rateImageWithClaude(image_url);
-      if (rating) {
-        const upd = await pool.query('update posts set ai_health=$1, ai_verdict=$2, ai_name=$3 where id=$4 returning *', [rating.health, rating.verdict, rating.name, post.id]);
-        post = upd.rows[0];
+    let post = existing.rows[0];
+    if (caption !== undefined) {
+      const upd = await pool.query('update posts set caption=$1 where id=$2 returning *', [caption || null, req.params.id]);
+      post = upd.rows[0];
+    }
+    if (image_url) {
+      const upd = await pool.query('update posts set image_url=$1 where id=$2 returning *', [image_url, req.params.id]);
+      post = upd.rows[0];
+      try {
+        const rating = await rateImageWithClaude(image_url);
+        if (rating) {
+          const rated = await pool.query('update posts set ai_health=$1, ai_verdict=$2, ai_name=$3 where id=$4 returning *', [rating.health, rating.verdict, rating.name, post.id]);
+          post = rated.rows[0];
+        }
+      } catch (aiErr) {
+        console.error('AI rating failed:', aiErr.message);
       }
-    } catch (aiErr) {
-      console.error('AI rating failed:', aiErr.message);
     }
     res.json({ post: (await readPostWithScore(post.id)) || post });
   } catch (err) {

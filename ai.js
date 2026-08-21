@@ -1,7 +1,8 @@
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-5-20250929';
 
-// Downloads the posted image and asks Claude to name the dish and give a 0-10 healthiness read. That score
+// Downloads the posted image and asks Claude to name the dish and give a 0-10 healthiness read to one
+// decimal (e.g. 7.4). That score
 // is the plate's BASE score; each praise/fry vote then moves it by 1 (clamped 0-10). Returns null if no API
 // key is set or the response can't be parsed — callers treat this as best-effort, never blocking a post.
 async function rateImageWithClaude(imageUrl, note) {
@@ -40,7 +41,7 @@ async function rateImageWithClaude(imageUrl, note) {
         role: 'user',
         content: [
           { type: 'image', source: { type: 'base64', media_type: mediaType, data: buf.toString('base64') } },
-          { type: 'text', text: 'Look at this plate of food. Name the dish in 5 words or fewer, based on what you actually see. Then give it a 0-10 score for how healthy/nutritious/balanced it looks. Then write a short, plain, factual one-line reason describing what you see on the plate. No jokes, no wordplay, no addressing the eater directly. Max 20 words for the reason.' + (note ? ' The poster says the photo shows: "' + note + '" \u2014 trust this description of what the food actually is over your own visual read, for both the name and the score.' : '') + ' Respond with ONLY JSON: {"name": "<dish name>", "health": <integer 0-10>, "verdict": "<text>"}' }
+          { type: 'text', text: 'Look at this plate of food. Name the dish in 5 words or fewer, based on what you actually see. Then give it a precise 0-10 score for how healthy/nutritious/balanced it looks, to ONE decimal place (e.g. 7.4, 3.8, 6.1). Use the decimal to be exact — do not default to round numbers. Then write a short, plain, factual one-line reason describing what you see on the plate. No jokes, no wordplay, no addressing the eater directly. Max 20 words for the reason.' + (note ? ' The poster says the photo shows: "' + note + '" \u2014 trust this description of what the food actually is over your own visual read, for both the name and the score.' : '') + ' Respond with ONLY JSON: {"name": "<dish name>", "health": <number 0-10 with one decimal>, "verdict": "<text>"}' }
         ]
       }]
     })
@@ -54,7 +55,8 @@ async function rateImageWithClaude(imageUrl, note) {
     return null;
   }
   const parsed = JSON.parse(match[0]);
-  const health = Math.max(0, Math.min(10, Math.round(Number(parsed.health))));
+  // Keep one decimal — rounding to an integer was collapsing every read onto 7 or 8.
+  const health = Math.round(Math.max(0, Math.min(10, Number(parsed.health))) * 10) / 10;
   const verdict = String(parsed.verdict || '').slice(0, 180);
   const name = String(parsed.name || '').slice(0, 60);
   return { name, health, verdict };
