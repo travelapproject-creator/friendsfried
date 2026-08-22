@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Karla:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#22190F">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+body{margin:0;font-family:'Karla',system-ui,sans-serif;color:#22190F;background:#FFFDF7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(34,25,15,.08) 1px,transparent 0);
+  background-size:22px 22px;-webkit-font-smoothing:antialiased;line-height:1.5;min-height:100vh}
+a{color:inherit;text-decoration:none}
+a:hover{color:inherit}
+@keyframes ffIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes ffPulse{0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
+</style>
+</helmet>
+
+<div style="background:#22190F;padding:12px 22px;display:flex;align-items:center;gap:11px">
+  <a href="index.html" style="display:flex;align-items:center;gap:11px">
+    <svg width="28" height="28" viewBox="0 0 48 48" aria-hidden="true" style="display:block;flex-shrink:0">
+      <circle cx="24" cy="24" r="10" fill="#E8CE9B" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="24" cy="7" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="40" cy="18.5" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="34" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="14" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="8" cy="18.5" r="4.5" fill="#DC4230" stroke="#FBF7EC" stroke-width="2.5"></circle>
+    </svg>
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.045em;text-transform:uppercase;color:#FBF7EC">Friends<span style="color:#F2CE45">Fried</span></div>
+  </a>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end;min-width:0">
+    <a href="https://instagram.com/friendsfried_" target="_blank" rel="noopener" aria-label="Friends Fried on Instagram" title="@friendsfried_" style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;color:#F2CE45">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5.5"></rect>
+        <circle cx="12" cy="12" r="4.2"></circle>
+        <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"></circle>
+      </svg>
+    </a>
+    <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#F2CE45">Leaderboard</span>
+    <a href="fine-print.html" style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(251,247,236,.7)">How it works</a>
+  </div>
+</div>
+
+<div style="max-width:940px;margin:0 auto;padding:34px 22px 20px">
+  <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48">{{ weekLabel }}</div>
+  <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(32px,6vw,46px);letter-spacing:-.05em;text-transform:uppercase;line-height:.9;margin:6px 0 0">{{ headline }}</h1>
+  <p style="font-size:15.5px;color:#6B5B48;margin:13px 0 0;max-width:520px">Every table, one board. Nicknames only — but you know who you are.</p>
+  <div style="display:flex;gap:8px;margin-top:20px">
+    <button style="padding:9px 17px;border-radius:999px;border:2px solid #22190F;background:{{ weekTabBg }};color:{{ weekTabColor }};font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:background .2s ease,color .2s ease" onClick="{{ showWeek }}">This week</button>
+    <button style="padding:9px 17px;border-radius:999px;border:2px solid #22190F;background:{{ allTabBg }};color:{{ allTabColor }};font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:background .2s ease,color .2s ease" onClick="{{ showAll }}">All time</button>
+  </div>
+</div>
+
+<div style="max-width:940px;margin:0 auto;padding:0 22px 44px">
+
+  <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
+    <div style="font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.06em;color:#A2937E;animation:ffPulse 1.1s ease-in-out infinite;padding:20px 0">Counting the plates…</div>
+  </sc-if>
+
+  <sc-if value="{{ failed }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#FBF7EC;border:2.5px solid #22190F;border-radius:14px;box-shadow:5px 6px 0 rgba(34,25,15,.8);padding:20px">
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.03em;font-size:17px">Out for lunch</div>
+      <p style="font-size:14px;color:#6B5B48;margin:6px 0 0">{{ errorMsg }}</p>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+    <div style="background:#F2CE45;border:2.5px solid #22190F;border-radius:16px;box-shadow:6px 7px 0 rgba(34,25,15,.85);padding:24px">
+      <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.035em;font-size:22px">Nobody has eaten yet</div>
+      <p style="font-size:14.5px;margin:8px 0 0;max-width:420px">{{ emptyLine }}</p>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start">
+
+      <div style="flex:1 1 380px;min-width:0;animation:ffIn .4s ease both">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
+          <span style="font-size:22px">🥗</span>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.035em;font-size:21px">Eating best</div>
+          <span style="font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#8C7C64;margin-left:auto">{{ highLabel }}</span>
+        </div>
+        <sc-for list="{{ healthiest }}" as="r" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;margin-bottom:7px;border-radius:14px;background:{{ r.rowBg }};box-shadow:{{ r.rowShadow }};border:{{ r.rowBorder }}">
+            <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:{{ r.rankColor }};width:18px;flex-shrink:0">{{ r.rank }}</span>
+            <span style="width:34px;height:34px;border-radius:50%;background:#F0E7D5;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0">{{ r.emoji }}</span>
+            <div style="min-width:0;flex:1">
+              <div style="font-weight:700;font-size:14.5px;line-height:1.2;color:{{ r.nameColor }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.nickname }}</div>
+              <div style="font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.04em;color:{{ r.subColor }};margin-top:2px">{{ r.plates }}</div>
+            </div>
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;letter-spacing:-.045em;color:#FBF7EC;background:{{ r.scoreBg }};border-radius:999px;padding:4px 13px 5px;line-height:1;flex-shrink:0">{{ r.score }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="flex:1 1 380px;min-width:0;animation:ffIn .4s ease both">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px">
+          <span style="font-size:22px">🍟</span>
+          <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.035em;font-size:21px">{{ friesTitle }}</div>
+          <span style="font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:#8C7C64;margin-left:auto">{{ lowLabel }}</span>
+        </div>
+        <sc-for list="{{ fries }}" as="r" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:11px;padding:11px 13px;margin-bottom:7px;border-radius:14px;background:{{ r.rowBg }};box-shadow:{{ r.rowShadow }};border:{{ r.rowBorder }}">
+            <span style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;color:{{ r.rankColor }};width:18px;flex-shrink:0">{{ r.rank }}</span>
+            <span style="width:34px;height:34px;border-radius:50%;background:#F0E7D5;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0">{{ r.emoji }}</span>
+            <div style="min-width:0;flex:1">
+              <div style="font-weight:700;font-size:14.5px;line-height:1.2;color:{{ r.nameColor }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.nickname }}</div>
+              <div style="font-family:'Space Mono',monospace;font-size:9.5px;letter-spacing:.04em;color:{{ r.subColor }};margin-top:2px">{{ r.plates }}</div>
+            </div>
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;letter-spacing:-.045em;color:#FBF7EC;background:{{ r.scoreBg }};border-radius:999px;padding:4px 13px 5px;line-height:1;flex-shrink:0">{{ r.score }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <p style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.06em;color:#A2937E;margin:22px 0 0">{{ playerLine }}</p>
+  </sc-if>
+</div>
+
+<div style="background:#22190F;border-top:4px solid #DC4230;padding:34px 22px 30px;text-align:center">
+  <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:1.1;font-size:clamp(18px,3vw,28px);color:#FBF7EC;margin:0 auto">The only social app a true foodie needs</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:18px;margin-top:18px">
+    <a href="index.html" style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#F2CE45">Take a seat</a>
+    <a href="https://instagram.com/friendsfried_" target="_blank" rel="noopener" style="font-family:'Space Mono',monospace;font-size:10.5px;letter-spacing:.06em;color:rgba(251,247,236,.6)">@friendsfried_</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const API_BASE = 'https://friendsfried-production.up.railway.app/api';
+
+class Component extends DCLogic {
+  state = { loading: true, error: '', data: null, range: 'week' };
+
+  componentDidMount() { this.load(); }
+
+  showWeek = () => { if (this.state.range !== 'week') this.setState({ range: 'week', loading: true, error: '' }, this.load); };
+  showAll = () => { if (this.state.range !== 'all') this.setState({ range: 'all', loading: true, error: '' }, this.load); };
+
+  load = async () => {
+    try {
+      const res = await fetch(API_BASE + '/tables/leaderboard?range=' + this.state.range);
+      if (!res.ok) throw new Error('unreachable');
+      const data = await res.json();
+      this.setState({ data, loading: false });
+    } catch (e) {
+      this.setState({ error: 'The board is not answering. Try again in a minute.', loading: false });
+    }
+  };
+
+  // Monday-based week, matching date_trunc('week') on the server.
+  weekRange() {
+    const d = new Date();
+    const dow = (d.getDay() + 6) % 7;
+    const start = new Date(d);
+    start.setDate(d.getDate() - dow);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    const m = { month: 'short', day: 'numeric' };
+    return start.toLocaleString('en-US', m) + ' – ' + end.toLocaleString('en-US', m);
+  }
+
+  row(r, i, isFry) {
+    const score = Number(r.total_score);
+    // Only the top of each board gets the loud treatment — one row, not every row.
+    const lead = i === 0;
+    return {
+      rank: i + 1,
+      emoji: r.emoji || '🍽️',
+      nickname: r.nickname,
+      plates: (r.plates || 0) + (r.plates === 1 ? ' plate' : ' plates'),
+      score: score.toFixed(1),
+      scoreBg: (lead && isFry) ? '#22190F' : (isFry ? '#A8321F' : '#5F6B2A'),
+      rowBg: lead ? (isFry ? '#A8321F' : '#F2CE45') : '#FBF7EC',
+      rowShadow: lead ? '5px 6px 0 rgba(34,25,15,.8)' : 'none',
+      rowBorder: lead ? '2.5px solid #22190F' : '1px solid rgba(34,25,15,.12)',
+      rankColor: (lead && isFry) ? 'rgba(251,247,236,.8)' : (lead ? '#5C3D08' : '#A2937E'),
+      nameColor: (lead && isFry) ? '#FBF7EC' : '#22190F',
+      subColor: (lead && isFry) ? 'rgba(251,247,236,.75)' : '#8C7C64'
+    };
+  }
+
+  renderVals() {
+    const { loading, error, data } = this.state;
+    const healthiest = ((data || {}).healthiest) || [];
+    const fries = ((data || {}).fries) || [];
+    const players = (data || {}).players || 0;
+    const isWeek = this.state.range === 'week';
+    return {
+      showWeek: this.showWeek, showAll: this.showAll,
+      weekTabBg: isWeek ? '#22190F' : 'transparent',
+      weekTabColor: isWeek ? '#FBF7EC' : '#22190F',
+      allTabBg: isWeek ? 'transparent' : '#22190F',
+      allTabColor: isWeek ? '#22190F' : '#FBF7EC',
+      headline: isWeek ? 'This week, everywhere' : 'All time, everywhere',
+      highLabel: isWeek ? 'Highest total' : 'Highest ever',
+      lowLabel: isWeek ? 'Lowest total' : 'Lowest ever',
+      friesTitle: isWeek ? 'Fries of the week' : 'Fries of all time',
+      emptyLine: isWeek
+        ? 'No plates anywhere this week. The board fills itself the moment somebody posts.'
+        : 'No plates anywhere yet. The board fills itself the moment somebody posts.',
+      loading,
+      failed: !loading && !!error,
+      errorMsg: error,
+      empty: !loading && !error && healthiest.length === 0,
+      ready: !loading && !error && healthiest.length > 0,
+      weekLabel: isWeek ? 'Week of ' + this.weekRange() : 'Since the first plate',
+      healthiest: healthiest.map((r, i) => this.row(r, i, false)),
+      fries: fries.map((r, i) => this.row(r, i, true)),
+      playerLine: players + (players === 1 ? ' plate-poster' : ' plate-posters')
+        + (isWeek ? ' counted this week. Resets Monday.' : ' with 3+ plates. Nothing resets.')
+    };
+  }
+}
+</script>
+</body>
+</html>
