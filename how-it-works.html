@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Karla:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Karla',system-ui,sans-serif;color:#22190F;background:#FFFDF7;
+  background-image:radial-gradient(circle at 1px 1px,rgba(34,25,15,.08) 1px,transparent 0);
+  background-size:22px 22px;-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+a:hover{color:inherit}
+</style>
+</helmet>
+
+<nav style="background:#22190F;border-bottom:4px solid #DC4230">
+  <div style="max-width:1060px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <a href="index.html" style="display:flex;align-items:center;gap:11px">
+    <svg width="30" height="30" viewBox="0 0 48 48" aria-hidden="true" style="display:block;flex-shrink:0">
+      <circle cx="24" cy="24" r="10" fill="#E8CE9B" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="24" cy="7" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="40" cy="18.5" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="34" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="14" cy="38" r="4.5" fill="#22190F" stroke="#FBF7EC" stroke-width="2.5"></circle>
+      <circle cx="8" cy="18.5" r="4.5" fill="#DC4230" stroke="#FBF7EC" stroke-width="2.5"></circle>
+    </svg>
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.045em;text-transform:uppercase;line-height:1;color:#FBF7EC">Friends<span style="color:#F2CE45">Fried</span></div>
+    </a>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:18px">
+    
+    <a href="leaderboard.html" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#F2CE45">Leaderboard</a>
+    <a href="https://instagram.com/friendsfried_" target="_blank" rel="noopener" aria-label="Friends Fried on Instagram" title="@friendsfried_" style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;color:#F2CE45">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5.5"></rect>
+        <circle cx="12" cy="12" r="4.2"></circle>
+        <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"></circle>
+      </svg>
+    </a>
+    <a href="fine-print.html" style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(251,247,236,.7)">Fine print</a>
+    </div>
+  </div>
+</nav>
+
+<section style="padding:56px 0 34px">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px">
+    <a href="index.html" style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:#6B5B48">← Back</a>
+    <div style="font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#6B5B48;margin-top:18px">How it works</div>
+    <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.9;font-size:clamp(32px,4.6vw,50px);margin:10px 0 12px">Four steps, one week</h1>
+    <p style="font-size:17px;color:#6B5B48;max-width:560px;text-wrap:pretty">One plate a day, four friends voting on it, and a total that decides who fries on Sunday.</p>
+  </div>
+</section>
+
+<section style="padding:0 0 10px">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:18px">
+    <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+      <div style="background:#FFFDF7;border:2.5px solid #22190F;border-radius:20px;box-shadow:5px 6px 0 rgba(34,25,15,.8);padding:20px 18px 22px;min-width:0">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:34px;height:34px;flex-shrink:0;border-radius:50%;background:{{ s.chip }};color:#FBF7EC;display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:16px">{{ s.n }}</div>
+          <h3 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;letter-spacing:-.04em;text-transform:uppercase;line-height:1;margin:0">{{ s.title }}</h3>
+        </div>
+        <p style="font-size:14.5px;line-height:1.55;color:#4A3D2C;margin:12px 0 0;text-wrap:pretty">{{ s.body }}</p>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<section style="padding:34px 0 0">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px">
+    <div style="background:#F2CE45;border:2.5px solid #22190F;border-radius:22px;box-shadow:7px 9px 0 rgba(34,25,15,.85);padding:24px 22px 26px">
+      <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#5C3D08">The math on one plate</div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.04em">
+        <sc-for list="{{ math }}" as="m" hint-placeholder-count="7">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px">
+            <div style="font-size:{{ m.size }}px;line-height:1;color:{{ m.color }}">{{ m.value }}</div>
+            <div style="font-family:'Space Mono',monospace;font-weight:700;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:#5C3D08;opacity:.75">{{ m.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <p style="font-size:14.5px;line-height:1.55;color:#3D2E14;margin:16px 0 0;max-width:620px;text-wrap:pretty">The health read is fixed the moment the photo lands. Votes move it from there, one point each way, and nothing is capped — a plate everyone praises can finish above ten.</p>
+    </div>
+  </div>
+</section>
+
+<section style="padding:34px 0 0">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px">
+    <div style="background:#22190F;border:2.5px solid #22190F;border-radius:22px;box-shadow:7px 9px 0 rgba(34,25,15,.4);padding:26px 22px 28px;display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start">
+      <div style="flex:1 1 300px;min-width:0">
+        <div style="font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#F2CE45">The prize nobody wants</div>
+        <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:.92;font-size:clamp(26px,3.4vw,38px);color:#FBF7EC;margin:10px 0 0">Fry of the Week</h2>
+        <p style="font-size:15px;line-height:1.6;color:rgba(251,247,236,.72);margin:14px 0 0;max-width:520px;text-wrap:pretty">Weeks run Monday to Sunday. When Sunday closes, the lowest total at the table gets it — exactly one person, no ties broken in your favour. It is announced on the leaderboard and it sits on your seat all week.</p>
+      </div>
+      <div style="flex:0 0 auto;background:#DC4230;border-radius:18px;padding:20px 22px;text-align:center;min-width:150px">
+        <div style="font-size:34px;line-height:1">🍟</div>
+        <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;letter-spacing:-.035em;text-transform:uppercase;color:#FBF7EC;margin-top:8px;line-height:1.05">One per week<br>Every week</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding:34px 0 66px">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <a href="index.html" style="padding:14px 22px;border-radius:13px;background:#DC4230;color:#fff;border:2.5px solid #DC4230;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;box-shadow:3px 4px 0 rgba(34,25,15,.3);transition:transform .1s,box-shadow .1s" style-hover="transform:translate(-1px,-1px);box-shadow:5px 6px 0 rgba(34,25,15,.3)" style-active="transform:translate(2px,2px);box-shadow:none">Take a seat</a>
+    <a href="fine-print.html" style="font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6B5B48;border-bottom:1.5px solid rgba(34,25,15,.25);padding-bottom:2px">Read the fine print →</a>
+  </div>
+</section>
+
+<footer style="background:#22190F;color:rgba(251,247,236,.62);padding:34px 0;font-size:13.5px;line-height:1.6">
+  <div style="max-width:1060px;margin:0 auto;padding:0 22px">
+    <div style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.045em;text-transform:uppercase;line-height:1;color:#FBF7EC;margin-bottom:6px">Friends<span style="color:#F2CE45">Fried</span></div>
+    <p style="margin:0">The health score is a rough, for-fun estimate, not nutrition advice. Friends Fried is not a diet, fitness, or medical product. If food or eating feels stressful, this app isn't the right tool — talk to someone you trust.</p>
+    <p style="margin-top:12px;opacity:.7">© 2026 Friends Fried · Privacy · Terms</p>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1060,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  renderVals() {
+    const steps = [
+      { n: '1', title: 'Set a table', body: 'A table has five seats. Whoever starts it gets a four-letter code and shares it — four friends join with that code, and nobody else can see in.', chip: '#DC4230' },
+      { n: '2', title: 'Post one plate', body: 'One photo a day, not every meal. It gets a health score from 0 to 10 that never changes — and if it read the plate wrong, you can describe what is actually there.', chip: '#8F5D13' },
+      { n: '3', title: 'The table votes', body: 'Praise adds a point, judgment takes one away. With four friends at the table a plate can move four points either way.', chip: '#5F6B2A' },
+      { n: '4', title: 'The week adds up', body: 'Every plate you post adds its score to your week. A day you skip adds nothing, so missing one costs you while everyone else keeps climbing.', chip: '#22190F' }
+    ];
+    const math = [
+      { value: '8.4', label: 'health read', size: 40, color: '#22190F' },
+      { value: '+', label: '', size: 26, color: '#5C3D08' },
+      { value: '3', label: 'praise', size: 40, color: '#5F6B2A' },
+      { value: '−', label: '', size: 26, color: '#5C3D08' },
+      { value: '1', label: 'judgment', size: 40, color: '#A8321F' },
+      { value: '=', label: '', size: 26, color: '#5C3D08' },
+      { value: '10.4', label: 'plate score', size: 44, color: '#22190F' }
+    ];
+    return { steps, math };
+  }
+}
+</script>
+</body>
+</html>
