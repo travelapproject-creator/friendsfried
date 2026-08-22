@@ -1,4 +1,4 @@
-const CACHE = 'ff-cache-v2';
+const CACHE = 'ff-cache-v3';
 const ASSETS = ['index.html', 'Friends Fried Set a Table.dc.html', 'FriendsFriedMiniCard.dc.html', 'leaderboard.html', 'fine-print.html', 'how-it-works.html', 'support.js', 'manifest.json', 'icon-192.png', 'icon-512.png', 'plate-pizza.png'];
 
 self.addEventListener('install', (e) => {
